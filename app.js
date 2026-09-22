@@ -47,12 +47,14 @@ const routine = [
 
 const state = {
   currentIndex: 0,
-  phase: "exercise",
+  phase: "prep",
   remaining: 0,
   paused: false,
   timerId: null,
   workoutStartedAt: null,
   lastViewBeforeInfo: "workoutView",
+  soundOn: localStorage.getItem("hapodSound") === "true",
+  audioContext: null,
 };
 
 const els = {
@@ -62,6 +64,8 @@ const els = {
   exerciseTotal: document.querySelector("#exerciseTotal"),
   routineMinutes: document.querySelector("#routineMinutes"),
   completedCount: document.querySelector("#completedCount"),
+  todayNote: document.querySelector("#todayNote"),
+  soundToggle: document.querySelector("#soundToggle"),
   startWorkout: document.querySelector("#startWorkout"),
   viewPlan: document.querySelector("#viewPlan"),
   progressLabel: document.querySelector("#progressLabel"),
@@ -70,7 +74,10 @@ const els = {
   exerciseName: document.querySelector("#exerciseName"),
   exerciseTarget: document.querySelector("#exerciseTarget"),
   timerFace: document.querySelector("#timerFace"),
+  timerValue: document.querySelector("#timerValue"),
+  timerHint: document.querySelector("#timerHint"),
   coachLine: document.querySelector("#coachLine"),
+  nextUp: document.querySelector("#nextUp"),
   pauseResume: document.querySelector("#pauseResume"),
   skipStep: document.querySelector("#skipStep"),
   showInfo: document.querySelector("#showInfo"),
@@ -82,6 +89,7 @@ const els = {
   infoBodyPart: document.querySelector("#infoBodyPart"),
   infoShortBenefit: document.querySelector("#infoShortBenefit"),
   infoLongBenefit: document.querySelector("#infoLongBenefit"),
+  celebration: document.querySelector("#celebration"),
   finishStats: document.querySelector("#finishStats"),
   finishHome: document.querySelector("#finishHome"),
 };
@@ -121,6 +129,8 @@ function plannedSeconds() {
 function updateHome() {
   const stats = getStats();
   els.streakCount.textContent = stats.streak;
+  els.soundToggle.textContent = state.soundOn ? "Sound On" : "Sound Off";
+  els.soundToggle.setAttribute("aria-pressed", String(state.soundOn));
   els.exerciseTotal.textContent = routine.length;
   els.routineMinutes.textContent = Math.max(1, Math.round(plannedSeconds() / 60));
   els.completedCount.textContent = stats.completed;
@@ -129,6 +139,10 @@ function updateHome() {
     month: "long",
     day: "numeric",
   }).format(new Date());
+  els.todayNote.textContent =
+    stats.lastCompletedDate === localDateKey()
+      ? "Today's routine is already finished."
+      : "One focused session. No counting stress.";
 }
 
 function renderPlan() {
@@ -140,7 +154,7 @@ function renderPlan() {
       <span class="plan-number">${index + 1}</span>
       <div>
         <strong>${exercise.name}</strong>
-        <p>${exercise.target} · ${exercise.bodyPart}</p>
+        <p>${exercise.target} - ${exercise.bodyPart}</p>
       </div>
     `;
     item.addEventListener("click", () => showExerciseInfo(index, "planView"));
@@ -158,11 +172,44 @@ async function requestWakeLock() {
   }
 }
 
+function pulse(pattern = 35) {
+  if ("vibrate" in navigator) {
+    navigator.vibrate(pattern);
+  }
+}
+
+function ensureAudio() {
+  if (!state.soundOn || state.audioContext) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (AudioContext) {
+    state.audioContext = new AudioContext();
+  }
+}
+
+function beep(frequency = 660, duration = 0.08) {
+  if (!state.soundOn) return;
+  ensureAudio();
+  if (!state.audioContext) return;
+
+  const oscillator = state.audioContext.createOscillator();
+  const gain = state.audioContext.createGain();
+  oscillator.frequency.value = frequency;
+  oscillator.type = "sine";
+  gain.gain.setValueAtTime(0.001, state.audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.22, state.audioContext.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, state.audioContext.currentTime + duration);
+  oscillator.connect(gain).connect(state.audioContext.destination);
+  oscillator.start();
+  oscillator.stop(state.audioContext.currentTime + duration);
+}
+
 function startWorkout() {
   state.currentIndex = 0;
-  state.phase = "exercise";
+  state.phase = "prep";
   state.paused = false;
   state.workoutStartedAt = Date.now();
+  ensureAudio();
+  pulse([25, 35, 25]);
   requestWakeLock();
   startStep();
   showView("workoutView");
@@ -180,7 +227,15 @@ function startStep() {
     return;
   }
 
-  if (state.phase === "exercise") {
+  if (state.phase === "prep") {
+    state.remaining = 5;
+    els.modeLabel.textContent = "Get ready";
+    els.exerciseName.textContent = exercise.name;
+    els.exerciseTarget.textContent = `Starting ${exercise.target}`;
+    els.coachLine.textContent = "Set your position. The next cue starts the move.";
+    els.skipStep.textContent = "Start";
+    beep(520, 0.06);
+  } else if (state.phase === "exercise") {
     state.remaining = exercise.type === "time" ? exercise.seconds : 0;
     els.modeLabel.textContent = exercise.type === "time" ? "Timed exercise" : "Rep exercise";
     els.exerciseName.textContent = exercise.name;
@@ -189,7 +244,9 @@ function startStep() {
       exercise.type === "time"
         ? "Stay smooth and controlled. The timer will handle the count."
         : "Complete the reps at your pace, then tap Next.";
-    els.skipStep.textContent = exercise.type === "time" ? "Skip" : "Next";
+    els.skipStep.textContent = exercise.type === "time" ? "Skip" : "Done";
+    beep(760, 0.08);
+    pulse(35);
   } else {
     state.remaining = exercise.restSeconds;
     els.modeLabel.textContent = "Rest";
@@ -197,10 +254,12 @@ function startStep() {
     els.exerciseTarget.textContent = `${exercise.restSeconds} seconds before the next move`;
     els.coachLine.textContent = "Breathe, reset, and get ready for the next exercise.";
     els.skipStep.textContent = "Skip";
+    beep(440, 0.07);
   }
 
   state.paused = false;
   els.pauseResume.textContent = "Pause";
+  updateNextUp();
   updateWorkoutDisplay();
 
   if (state.remaining > 0) {
@@ -212,6 +271,10 @@ function tick() {
   if (state.paused) return;
   state.remaining -= 1;
   updateWorkoutDisplay();
+  if (state.remaining <= 3 && state.remaining > 0) {
+    beep(620 + (4 - state.remaining) * 80, 0.055);
+    pulse(20);
+  }
   if (state.remaining <= 0) {
     advanceStep();
   }
@@ -219,23 +282,49 @@ function tick() {
 
 function updateWorkoutDisplay() {
   const totalSteps = routine.length;
-  const completedAmount = state.currentIndex + (state.phase === "rest" ? 0.55 : 0);
+  const completedAmount =
+    state.currentIndex + (state.phase === "exercise" ? 0.2 : state.phase === "rest" ? 0.75 : 0);
   const progress = Math.min(100, (completedAmount / totalSteps) * 100);
+  const exercise = currentExercise();
 
-  els.progressLabel.textContent = `Exercise ${Math.min(state.currentIndex + 1, totalSteps)} of ${totalSteps}`;
+  els.progressLabel.textContent = `${state.phase === "rest" ? "Rest after" : "Exercise"} ${Math.min(
+    state.currentIndex + 1,
+    totalSteps
+  )} of ${totalSteps}`;
   els.progressFill.style.width = `${progress}%`;
-  els.timerFace.textContent =
-    state.remaining > 0 ? formatTime(state.remaining) : currentExercise().target;
+  els.timerValue.textContent =
+    state.remaining > 0 ? formatTime(state.remaining) : exercise.target;
+  els.timerHint.textContent =
+    state.phase === "prep" ? "Get ready" : state.phase === "rest" ? "Rest" : "Work";
+  document.querySelector(".exercise-card").classList.toggle("is-rest", state.phase === "rest");
+  document
+    .querySelector(".exercise-card")
+    .classList.toggle("is-warning", state.remaining <= 3 && state.remaining > 0);
+}
+
+function updateNextUp() {
+  const next = routine[state.currentIndex + 1];
+  if (state.phase === "prep") {
+    els.nextUp.textContent = "Next: start this move with control.";
+  } else if (state.phase === "exercise" && currentExercise().restSeconds > 0) {
+    els.nextUp.textContent = `Next: ${currentExercise().restSeconds} second rest.`;
+  } else if (next) {
+    els.nextUp.textContent = `Next: ${next.name}.`;
+  } else {
+    els.nextUp.textContent = "Next: finish strong.";
+  }
 }
 
 function advanceStep() {
   clearInterval(state.timerId);
   const exercise = currentExercise();
-  if (state.phase === "exercise" && exercise.restSeconds > 0) {
+  if (state.phase === "prep") {
+    state.phase = "exercise";
+  } else if (state.phase === "exercise" && exercise.restSeconds > 0) {
     state.phase = "rest";
   } else {
     state.currentIndex += 1;
-    state.phase = "exercise";
+    state.phase = "prep";
   }
   startStep();
 }
@@ -257,8 +346,27 @@ function finishWorkout() {
   els.finishStats.textContent = `${routine.length} exercises finished in about ${minutes} minute${
     minutes === 1 ? "" : "s"
   }. Current streak: ${stats.streak}.`;
+  beep(820, 0.09);
+  window.setTimeout(() => beep(980, 0.1), 110);
+  pulse([30, 45, 30, 45, 60]);
+  launchCelebration();
   updateHome();
   showView("finishView");
+}
+
+function launchCelebration() {
+  const colors = ["#2f7d62", "#d59b2d", "#386fa4", "#14342b"];
+  els.celebration.innerHTML = "";
+  for (let index = 0; index < 24; index += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.background = colors[index % colors.length];
+    piece.style.setProperty("--x", `${Math.random() * 260 - 130}px`);
+    piece.style.setProperty("--y", `${Math.random() * 220 + 100}px`);
+    piece.style.setProperty("--r", `${Math.random() * 540 - 270}deg`);
+    piece.style.animationDelay = `${index * 16}ms`;
+    els.celebration.appendChild(piece);
+  }
 }
 
 function showExerciseInfo(index = state.currentIndex, backView = "workoutView") {
@@ -279,6 +387,15 @@ els.closeInfo.addEventListener("click", () => showView(state.lastViewBeforeInfo)
 els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
 els.finishHome.addEventListener("click", () => showView("homeView"));
+els.soundToggle.addEventListener("click", () => {
+  state.soundOn = !state.soundOn;
+  localStorage.setItem("hapodSound", String(state.soundOn));
+  updateHome();
+  if (state.soundOn) {
+    ensureAudio();
+    beep(660, 0.07);
+  }
+});
 
 els.pauseResume.addEventListener("click", () => {
   state.paused = !state.paused;

@@ -10,6 +10,7 @@
   --gold: #d59b2d;
   --blue: #386fa4;
   --danger: #a34336;
+  --shadow: 0 22px 55px rgba(16, 35, 30, 0.12);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -28,8 +29,9 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(150deg, rgba(47, 125, 98, 0.12), transparent 42%),
-    linear-gradient(25deg, rgba(213, 155, 45, 0.16), transparent 40%),
+    radial-gradient(circle at 18% 12%, rgba(213, 155, 45, 0.18), transparent 26rem),
+    radial-gradient(circle at 86% 3%, rgba(56, 111, 164, 0.16), transparent 24rem),
+    linear-gradient(150deg, rgba(47, 125, 98, 0.14), transparent 42%),
     var(--paper);
 }
 
@@ -39,7 +41,21 @@ button {
   font: inherit;
   font-weight: 750;
   cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(56, 111, 164, 0.35);
+  outline-offset: 3px;
 }
 
 .app-shell {
@@ -55,6 +71,7 @@ button {
   justify-content: space-between;
   gap: 14px;
   margin-bottom: 22px;
+  animation: rise-in 520ms ease both;
 }
 
 .eyebrow,
@@ -112,6 +129,27 @@ h4 {
   text-align: center;
 }
 
+.top-actions {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.sound-toggle {
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--deep);
+  border: 1px solid rgba(20, 52, 43, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.76rem;
+}
+
+.sound-toggle[aria-pressed="true"] {
+  color: white;
+  border-color: transparent;
+  background: var(--leaf);
+}
+
 .streak-pill span {
   color: var(--leaf);
   font-size: 1.7rem;
@@ -132,6 +170,7 @@ h4 {
 
 .view.active {
   display: block;
+  animation: view-in 280ms ease both;
 }
 
 .hero,
@@ -140,20 +179,60 @@ h4 {
 .finish-card {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 20px 45px rgba(16, 35, 30, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
 }
 
 .hero {
+  position: relative;
+  overflow: hidden;
   padding: 24px 20px;
 }
 
-.hero p:last-child,
+.hero::after {
+  position: absolute;
+  right: -44px;
+  bottom: -54px;
+  width: 180px;
+  height: 180px;
+  border: 20px solid rgba(47, 125, 98, 0.1);
+  border-radius: 50%;
+  content: "";
+}
+
+.hero-mark {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  color: white;
+  background: linear-gradient(135deg, var(--deep), var(--leaf));
+  box-shadow: 0 14px 24px rgba(20, 52, 43, 0.18);
+  font-weight: 950;
+}
+
+.hero > p,
 .finish-card p {
   margin: 0;
   color: var(--muted);
   font-size: 1.05rem;
   line-height: 1.5;
+}
+
+.today-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  color: var(--deep);
+  background: rgba(213, 155, 45, 0.12);
+  font-weight: 750;
+  line-height: 1.35;
 }
 
 .summary-grid {
@@ -170,6 +249,15 @@ h4 {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
   text-align: center;
+  animation: rise-in 460ms ease both;
+}
+
+.summary-grid article:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.summary-grid article:nth-child(3) {
+  animation-delay: 120ms;
 }
 
 .summary-grid span {
@@ -201,7 +289,8 @@ h4 {
 
 .primary-action {
   color: white;
-  background: var(--deep);
+  background: linear-gradient(135deg, var(--deep), #1d5e4a);
+  box-shadow: 0 15px 28px rgba(20, 52, 43, 0.18);
 }
 
 .secondary-action,
@@ -209,6 +298,13 @@ h4 {
   color: var(--deep);
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.82);
+}
+
+.secondary-action:hover,
+.timer-controls button:hover,
+.icon-button:hover,
+.sound-toggle:hover {
+  border-color: rgba(47, 125, 98, 0.35);
 }
 
 .progress-block {
@@ -229,13 +325,33 @@ h4 {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--leaf), var(--gold));
-  transition: width 180ms ease;
+  transition: width 420ms ease;
 }
 
 .exercise-card {
+  position: relative;
+  overflow: hidden;
   min-height: 430px;
   padding: 22px 18px;
   text-align: center;
+}
+
+.exercise-card::before {
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(47, 125, 98, 0.1);
+  border-radius: 8px;
+  pointer-events: none;
+  content: "";
+}
+
+.exercise-card.is-rest .timer-face {
+  border-color: rgba(56, 111, 164, 0.18);
+}
+
+.exercise-card.is-warning .timer-face {
+  border-color: rgba(213, 155, 45, 0.55);
+  animation: focus-pulse 800ms ease infinite;
 }
 
 .target-line {
@@ -247,10 +363,12 @@ h4 {
 }
 
 .timer-face {
+  position: relative;
   display: grid;
   width: min(78vw, 350px);
   aspect-ratio: 1;
   place-items: center;
+  align-content: center;
   margin: 24px auto 18px;
   border: 12px solid rgba(47, 125, 98, 0.16);
   border-radius: 50%;
@@ -261,6 +379,18 @@ h4 {
   font-size: clamp(3.2rem, 16vw, 5.6rem);
   font-weight: 950;
   font-variant-numeric: tabular-nums;
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease;
+}
+
+.timer-face small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
 }
 
 .coach-line {
@@ -270,6 +400,17 @@ h4 {
   font-size: 1rem;
   line-height: 1.45;
   max-width: 34rem;
+}
+
+.next-up {
+  min-height: 40px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--deep);
+  background: rgba(47, 125, 98, 0.09);
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .timer-controls {
@@ -313,6 +454,17 @@ h4 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.plan-item:hover {
+  border-color: rgba(47, 125, 98, 0.35);
+  box-shadow: 0 12px 26px rgba(16, 35, 30, 0.08);
+  transform: translateY(-1px);
 }
 
 .plan-item strong {
@@ -356,6 +508,8 @@ h4 {
 }
 
 .finish-card {
+  position: relative;
+  overflow: hidden;
   margin-top: 18svh;
   text-align: center;
 }
@@ -363,6 +517,66 @@ h4 {
 .finish-card .primary-action {
   width: 100%;
   margin-top: 20px;
+}
+
+.celebration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-fall 1100ms ease-out forwards;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes focus-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), var(--y)) rotate(var(--r));
+  }
 }
 
 @media (max-width: 390px) {
@@ -381,5 +595,15 @@ h4 {
 
   .exercise-card {
     min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
   }
 }

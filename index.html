@@ -24,20 +24,25 @@
           <p class="eyebrow">Hardworking Andrii's Plan of the Day</p>
           <h1>HAPOD</h1>
         </div>
-        <div class="streak-pill" aria-label="Current streak">
-          <span id="streakCount">0</span>
-          <small>day streak</small>
+        <div class="top-actions">
+          <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">Sound Off</button>
+          <div class="streak-pill" aria-label="Current streak">
+            <span id="streakCount">0</span>
+            <small>day streak</small>
+          </div>
         </div>
       </section>
 
       <section id="homeView" class="view active" aria-labelledby="homeTitle">
         <div class="hero">
+          <div class="hero-mark" aria-hidden="true">H</div>
           <p class="date-line" id="todayLabel"></p>
           <h2 id="homeTitle">Happy Birthday, Dad.</h2>
           <p>
             Built for your mornings, so the plan is ready and the counting stays out of
             your way.
           </p>
+          <div class="today-note" id="todayNote"></div>
         </div>
 
         <div class="summary-grid">
@@ -73,8 +78,12 @@
           <p class="mode-label" id="modeLabel">Exercise</p>
           <h2 id="exerciseName">Ready</h2>
           <p class="target-line" id="exerciseTarget"></p>
-          <div class="timer-face" id="timerFace" aria-live="polite">00:00</div>
+          <div class="timer-face" id="timerFace" aria-live="polite">
+            <span id="timerValue">00:00</span>
+            <small id="timerHint">Ready</small>
+          </div>
           <p class="coach-line" id="coachLine"></p>
+          <div class="next-up" id="nextUp"></div>
         </article>
 
         <div class="timer-controls">
@@ -123,6 +132,7 @@
 
       <section id="finishView" class="view" aria-labelledby="finishTitle">
         <div class="finish-card">
+          <div class="celebration" id="celebration" aria-hidden="true"></div>
           <p class="eyebrow">Routine complete</p>
           <h2 id="finishTitle">Done. Proud of you, Dad.</h2>
           <p id="finishStats"></p>
