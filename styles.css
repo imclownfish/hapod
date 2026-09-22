@@ -1,0 +1,385 @@
+:root {
+  color-scheme: light;
+  --ink: #10231e;
+  --muted: #587069;
+  --paper: #fbfaf5;
+  --panel: #ffffff;
+  --line: #dfe8df;
+  --deep: #14342b;
+  --leaf: #2f7d62;
+  --gold: #d59b2d;
+  --blue: #386fa4;
+  --danger: #a34336;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--paper);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(150deg, rgba(47, 125, 98, 0.12), transparent 42%),
+    linear-gradient(25deg, rgba(213, 155, 45, 0.16), transparent 40%),
+    var(--paper);
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-shell {
+  width: min(720px, 100%);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.eyebrow,
+.date-line,
+.mode-label,
+.progress-block p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  margin: 2px 0 0;
+  color: var(--deep);
+  font-size: clamp(2.45rem, 12vw, 4.7rem);
+  line-height: 0.9;
+}
+
+h2 {
+  margin: 8px 0 10px;
+  color: var(--deep);
+  font-size: clamp(2rem, 8vw, 3.7rem);
+  line-height: 0.98;
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+}
+
+h4 {
+  margin: 0 0 6px;
+  color: var(--deep);
+  font-size: 0.9rem;
+}
+
+.streak-pill {
+  display: grid;
+  min-width: 86px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  text-align: center;
+}
+
+.streak-pill span {
+  color: var(--leaf);
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.streak-pill small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.hero,
+.exercise-card,
+.info-panel,
+.finish-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 20px 45px rgba(16, 35, 30, 0.08);
+}
+
+.hero {
+  padding: 24px 20px;
+}
+
+.hero p:last-child,
+.finish-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.summary-grid article {
+  min-height: 82px;
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.summary-grid span {
+  color: var(--deep);
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.summary-grid p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 10px;
+}
+
+.primary-action,
+.secondary-action,
+.timer-controls button {
+  min-height: 56px;
+  padding: 0 16px;
+}
+
+.primary-action {
+  color: white;
+  background: var(--deep);
+}
+
+.secondary-action,
+.timer-controls button {
+  color: var(--deep);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.progress-block {
+  margin: 4px 0 14px;
+}
+
+.progress-track {
+  height: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dde7dd;
+}
+
+.progress-track span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--leaf), var(--gold));
+  transition: width 180ms ease;
+}
+
+.exercise-card {
+  min-height: 430px;
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.target-line {
+  min-height: 28px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.timer-face {
+  display: grid;
+  width: min(78vw, 350px);
+  aspect-ratio: 1;
+  place-items: center;
+  margin: 24px auto 18px;
+  border: 12px solid rgba(47, 125, 98, 0.16);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, white 55%, rgba(213, 155, 45, 0.12)),
+    linear-gradient(135deg, rgba(56, 111, 164, 0.08), transparent);
+  color: var(--deep);
+  font-size: clamp(3.2rem, 16vw, 5.6rem);
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+}
+
+.coach-line {
+  min-height: 50px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.45;
+  max-width: 34rem;
+}
+
+.timer-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.icon-button {
+  width: 48px;
+  height: 48px;
+  color: var(--deep);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 1.4rem;
+}
+
+.exercise-list {
+  display: grid;
+  gap: 10px;
+}
+
+.plan-item {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.plan-item strong {
+  color: var(--deep);
+  font-size: 1.05rem;
+}
+
+.plan-item p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.plan-number {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 8px;
+  color: white;
+  background: var(--leaf);
+  font-weight: 900;
+}
+
+.info-panel,
+.finish-card {
+  padding: 20px;
+}
+
+.info-panel > p,
+.detail-group p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.detail-group {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.finish-card {
+  margin-top: 18svh;
+  text-align: center;
+}
+
+.finish-card .primary-action {
+  width: 100%;
+  margin-top: 20px;
+}
+
+@media (max-width: 390px) {
+  .app-shell {
+    padding-inline: 12px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-row,
+  .timer-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-card {
+    min-height: auto;
+  }
+}
