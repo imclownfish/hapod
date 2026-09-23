@@ -25,14 +25,9 @@
           <h1>HAPOD</h1>
         </div>
         <div class="top-actions">
-          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" />
-            </svg>
-          </button>
+          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings"></button>
           <div class="streak-pill" aria-label="Current streak">
-            <span id="streakCount">0</span>
+            <span class="streak-main"><span id="streakIcon"></span><span id="streakCount">0</span></span>
             <small id="streakLabel">day streak</small>
           </div>
         </div>
@@ -40,12 +35,11 @@
 
       <section id="homeView" class="view active" aria-labelledby="homeTitle">
         <div class="hero">
-          <div class="hero-mark" aria-hidden="true">H</div>
+          <div class="hero-mark" id="heroMark" aria-hidden="true">H</div>
           <p class="date-line" id="todayLabel"></p>
-          <h2 id="homeTitle">З днем народження, тату.</h2>
+          <h2 id="homeTitle">План на сьогодні</h2>
           <p>
-            Твій тижневий план вже розкладений по днях, з таймерами, підказками
-            і короткими поясненнями.
+            ТВІЙ ТИЖНЕВИЙ ПЛАН ВЖЕ РОЗКЛАДЕНИЙ ПО СЕКУНДАХ 🙂
           </p>
           <div class="today-note" id="todayNote"></div>
         </div>

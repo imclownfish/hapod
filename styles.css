@@ -13,6 +13,7 @@
   --danger: #ff5f57;
   --action-start: #155f49;
   --action-end: #2f9b73;
+  --action-text: #ffffff;
   --timer-track: rgba(255, 255, 255, 0.1);
   --shadow: 0 22px 55px rgba(0, 0, 0, 0.35);
   font-family:
@@ -34,6 +35,7 @@
   --danger: #a34336;
   --action-start: #14342b;
   --action-end: #1d5e4a;
+  --action-text: #ffffff;
   --timer-track: #dfe8df;
   --shadow: 0 22px 55px rgba(16, 35, 30, 0.12);
 }
@@ -99,7 +101,7 @@ button svg {
 }
 
 .app-shell {
-  width: min(720px, 100%);
+  width: min(920px, 100%);
   min-height: 100svh;
   margin: 0 auto;
   padding: max(18px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
@@ -169,6 +171,25 @@ h4 {
   text-align: center;
 }
 
+.streak-main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+#streakIcon {
+  display: inline-grid;
+  color: var(--gold);
+}
+
+#streakIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+}
+
 .top-actions {
   display: grid;
   justify-items: end;
@@ -185,6 +206,21 @@ h4 {
   border-radius: 50%;
   background: var(--soft-panel);
   font-size: 1.05rem;
+  transition:
+    transform 260ms ease,
+    right 260ms ease,
+    top 260ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.settings-button.is-open {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: min(calc(100vw - 58px), 410px);
+  z-index: 35;
+  background: var(--panel);
+  box-shadow: var(--shadow);
 }
 
 .streak-pill span {
@@ -245,10 +281,17 @@ h4 {
   place-items: center;
   margin-bottom: 18px;
   border-radius: 8px;
-  color: white;
-  background: linear-gradient(135deg, var(--deep), var(--leaf));
+  color: var(--action-text);
+  background: linear-gradient(135deg, var(--action-start), var(--action-end));
   box-shadow: 0 14px 24px rgba(20, 52, 43, 0.18);
   font-weight: 950;
+}
+
+.hero-mark svg {
+  width: 1.45rem;
+  height: 1.45rem;
+  fill: none;
+  stroke: currentColor;
 }
 
 .hero > p,
@@ -312,9 +355,9 @@ h4 {
 }
 
 .day-button[aria-pressed="true"] {
-  color: white;
+  color: var(--action-text);
   border-color: transparent;
-  background: linear-gradient(135deg, var(--deep), var(--leaf));
+  background: linear-gradient(135deg, var(--action-start), var(--action-end));
   box-shadow: 0 12px 22px rgba(20, 52, 43, 0.18);
 }
 
@@ -386,7 +429,7 @@ h4 {
 }
 
 .primary-action {
-  color: white;
+  color: var(--action-text);
   background: linear-gradient(135deg, var(--action-start), var(--action-end));
   box-shadow: 0 15px 28px rgba(20, 52, 43, 0.18);
 }
@@ -667,6 +710,22 @@ h4 {
   display: flex;
 }
 
+#settingsDialog {
+  align-items: stretch;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+#settingsDialog .dialog-card {
+  width: min(390px, 88vw);
+  min-height: 100svh;
+  border-block: 0;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  transform: translateX(100%);
+  animation: drawer-in 260ms ease forwards;
+}
+
 .dialog-card {
   width: min(520px, 100%);
   padding: 18px;
@@ -756,7 +815,7 @@ h4 {
 }
 
 .segmented button[aria-pressed="true"] {
-  color: white;
+  color: var(--action-text);
   background: linear-gradient(135deg, var(--action-start), var(--action-end));
 }
 
@@ -785,6 +844,17 @@ h4 {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0.95;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -821,14 +891,6 @@ h4 {
 }
 
 @media (max-width: 390px) {
-  .app-shell {
-    padding-inline: 12px;
-  }
-
-  .topbar {
-    align-items: flex-start;
-  }
-
   .day-strip {
     grid-template-columns: repeat(7, minmax(34px, 1fr));
     gap: 5px;
@@ -840,17 +902,93 @@ h4 {
     font-size: 0.78rem;
   }
 
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .action-row,
-  .timer-controls {
+  .action-row {
     grid-template-columns: 1fr;
   }
 
   .exercise-card {
     min-height: auto;
+  }
+}
+
+@media (min-width: 860px) {
+  .view.active#homeView {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .hero {
+    grid-row: span 3;
+    min-height: 100%;
+  }
+
+  .day-section {
+    margin-top: 0;
+  }
+
+  .summary-grid {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .app-shell {
+    padding-inline: 12px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 18vw, 3.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 11vw, 2.75rem);
+  }
+
+  .hero {
+    padding: 20px 16px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .summary-grid article {
+    min-height: 74px;
+    padding: 12px 6px;
+  }
+
+  .summary-grid span {
+    font-size: 1.35rem;
+  }
+
+  .day-section {
+    padding: 12px;
+  }
+
+  .day-section-copy {
+    display: block;
+  }
+
+  .day-section-copy strong {
+    display: block;
+    margin-top: 4px;
+    text-align: left;
+  }
+
+  .timer-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #settingsDialog .dialog-card {
+    width: min(360px, 88vw);
   }
 }
 

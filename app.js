@@ -340,7 +340,13 @@ const weeklyPlan = [
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const TODAY_INDEX = new Date().getDay();
+const BIRTHDAY_MONTH = 8;
+const BIRTHDAY_DAY = 26;
 const ICONS = {
+  gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" /></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
+  flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c4.2 0 7-2.9 7-6.8 0-2.4-1.3-4.5-3.2-6.5-.6 1.8-1.7 2.9-3.1 3.4.7-3.7-.9-6.8-4-9.1.2 3.3-1.9 5.1-3.1 7.1A8.2 8.2 0 0 0 5 15.2C5 19.1 7.8 22 12 22Z" /><path d="M12 18.5c1.5 0 2.6-1 2.6-2.5 0-1.1-.6-1.9-1.4-2.7-.3.9-.9 1.5-1.8 1.8.3-1.6-.3-2.9-1.5-4-.1 1.7-1.1 2.6-1.5 3.6a3.2 3.2 0 0 0-.3 1.3c0 1.5 1.1 2.5 2.6 2.5Z" /></svg>',
+  calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 9h18" /><path d="M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" /><path d="M8 13h.01" /><path d="M12 13h.01" /><path d="M16 13h.01" /><path d="M8 17h.01" /><path d="M12 17h.01" /></svg>',
   play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7-11-7Z" /></svg>',
   list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13" /><path d="M8 12h13" /><path d="M8 18h13" /><path d="M3 6h.01" /><path d="M3 12h.01" /><path d="M3 18h.01" /></svg>',
   pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14" /><path d="M16 5v14" /></svg>',
@@ -374,7 +380,7 @@ const DAY_COPY = {
 const TEXT = {
   uk: {
     appIntro:
-      "Твій тижневий план вже розкладений по днях, з таймерами, підказками і короткими поясненнями.",
+      "ТВІЙ ТИЖНЕВИЙ ПЛАН ВЖЕ РОЗКЛАДЕНИЙ ПО СЕКУНДАХ 🙂",
     streak: "днів серія",
     moves: "рухів",
     minutes: "хвилин",
@@ -386,7 +392,18 @@ const TEXT = {
     todayAuto: "Сьогоднішній день обрано автоматично",
     lockedDay: "Цей день заблоковано, бо сьогодні інший план",
     selectedOverride: "День розблоковано вручну",
-    warmup: "Розминка 5 хв: оберти суглобів, 15 легких присідань, кілька легких рухів.",
+    birthdayTitle: "З днем народження, тату.",
+    normalTitle: "План на сьогодні",
+    warmup: "Useful tip: почни з 5 хв легкої розминки, щоб суглоби і пульс встигли підготуватися.",
+    facts: [
+      "Fun fact, 7-8 тисяч кроків на день часто дають більше користі, ніж рідкісні довгі тренування.",
+      "Useful tip: білок у кожному прийомі їжі допомагає м'язам відновлюватися після тренування.",
+      "Interesting fact, сон - це частина програми: сила і настрій часто падають раніше, ніж ти помітиш втому.",
+      "Did you know, ікіґай - це не тільки велика мрія, а й маленька причина встати і зробити план сьогодні.",
+      "Useful tip: повільний темп у вправі може зробити легку гантель значно важчою без додаткового обладнання.",
+      "Interesting fact, м'язи ростуть не під час підходу, а коли тіло відновлюється після нього.",
+      "Fun fact, регулярність перемагає ідеальність: коротка сесія сьогодні краща за ідеальну, яку відклали.",
+    ],
     completedToday: "Сьогоднішню сесію вже завершено.",
     getReady: "Приготуйся",
     startTarget: "Старт",
@@ -444,7 +461,7 @@ const TEXT = {
   },
   en: {
     appIntro:
-      "Your weekly plan is organized by day, with timers, cues, and quick exercise notes.",
+      "YOUR WEEKLY PLAN IS NOW SCHEDULED DOWN TO THE SECONDS 🙂",
     streak: "day streak",
     moves: "moves",
     minutes: "minutes",
@@ -456,7 +473,18 @@ const TEXT = {
     todayAuto: "Today is selected automatically",
     lockedDay: "This day is locked because today has a different plan",
     selectedOverride: "Day unlocked manually",
-    warmup: "5 min warm-up: joint circles, 15 easy squats, and a few light reps.",
+    birthdayTitle: "Happy Birthday, Dad.",
+    normalTitle: "Today's Plan",
+    warmup: "Useful tip: start with 5 easy minutes so your joints and heart rate have time to wake up.",
+    facts: [
+      "Fun fact, 7-8 thousand steps a day can matter more than one rare huge workout.",
+      "Useful tip: protein with each meal helps muscles repair after training.",
+      "Interesting fact, sleep is part of the plan: strength and mood often dip before you notice fatigue.",
+      "Did you know, ikigai can be a small reason to get up and do today's plan, not only a huge life mission.",
+      "Useful tip: slow tempo can make a light dumbbell feel much heavier without extra equipment.",
+      "Interesting fact, muscles grow during recovery, not during the set itself.",
+      "Fun fact, consistency beats perfection: a short session today beats a perfect one you postpone.",
+    ],
     completedToday: "Today's session is already complete.",
     getReady: "Get ready",
     startTarget: "Start",
@@ -534,6 +562,8 @@ const state = {
 const els = {
   views: document.querySelectorAll(".view"),
   streakCount: document.querySelector("#streakCount"),
+  streakIcon: document.querySelector("#streakIcon"),
+  heroMark: document.querySelector("#heroMark"),
   todayLabel: document.querySelector("#todayLabel"),
   exerciseTotal: document.querySelector("#exerciseTotal"),
   routineMinutes: document.querySelector("#routineMinutes"),
@@ -629,6 +659,16 @@ function dayCopy(index) {
   return { short, title, subtitle };
 }
 
+function isBirthdayToday(date = new Date()) {
+  return date.getMonth() === BIRTHDAY_MONTH && date.getDate() === BIRTHDAY_DAY;
+}
+
+function dailyFact(date = new Date()) {
+  const facts = t("facts");
+  const daySeed = Math.floor(date.getTime() / 86400000);
+  return facts[daySeed % facts.length];
+}
+
 function currentPlan() {
   return weeklyPlan[state.selectedDay];
 }
@@ -659,11 +699,21 @@ function showView(id) {
 function showDialog(dialog) {
   dialog.classList.add("active");
   dialog.setAttribute("aria-hidden", "false");
+  if (dialog === els.settingsDialog) {
+    els.settingsOpen.classList.add("is-open");
+    els.settingsOpen.innerHTML = ICONS.x;
+    els.settingsOpen.setAttribute("aria-label", "Close settings");
+  }
 }
 
 function hideDialog(dialog) {
   dialog.classList.remove("active");
   dialog.setAttribute("aria-hidden", "true");
+  if (dialog === els.settingsDialog) {
+    els.settingsOpen.classList.remove("is-open");
+    els.settingsOpen.innerHTML = ICONS.gear;
+    els.settingsOpen.setAttribute("aria-label", "Settings");
+  }
 }
 
 function formatTime(seconds) {
@@ -687,6 +737,11 @@ function updateHome() {
     state.theme === "dark" ? "#081310" : "#14342b"
   );
   els.streakCount.textContent = stats.streak;
+  els.streakIcon.innerHTML = ICONS.flame;
+  els.heroMark.innerHTML = ICONS.calendar;
+  if (!els.settingsDialog.classList.contains("active")) {
+    els.settingsOpen.innerHTML = ICONS.gear;
+  }
   els.streakLabel.textContent = t("streak");
   els.movesLabel.textContent = t("moves");
   els.minutesLabel.textContent = t("minutes");
@@ -704,13 +759,9 @@ function updateHome() {
   const selectedCopy = dayCopy(state.selectedDay);
   els.todayLabel.textContent = `${selectedCopy.title} - ${selectedCopy.subtitle}`;
   els.homeTitle.textContent =
-    state.language === "uk" ? "З днем народження, тату." : "Happy Birthday, Dad.";
+    isBirthdayToday() ? t("birthdayTitle") : t("normalTitle");
   document.querySelector(".hero > p").textContent = t("appIntro");
-  els.todayNote.textContent = plan.restDay
-    ? plan.note
-    : stats.lastCompletedDate === localDateKey()
-      ? t("completedToday")
-      : t("warmup");
+  els.todayNote.textContent = dailyFact();
   els.lockStatus.textContent = isSelectedToday()
     ? t("todayAuto")
     : isSelectedUnlocked()
@@ -1064,7 +1115,13 @@ els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
 els.cancelWorkout.addEventListener("click", cancelWorkout);
 els.finishHome.addEventListener("click", () => showView("homeView"));
-els.settingsOpen.addEventListener("click", () => showDialog(els.settingsDialog));
+els.settingsOpen.addEventListener("click", () => {
+  if (els.settingsDialog.classList.contains("active")) {
+    hideDialog(els.settingsDialog);
+  } else {
+    showDialog(els.settingsDialog);
+  }
+});
 els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
 els.settingsDialog.addEventListener("click", (event) => {
   if (event.target === els.settingsDialog) {
