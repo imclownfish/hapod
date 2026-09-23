@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -25,10 +25,10 @@
           <h1>HAPOD</h1>
         </div>
         <div class="top-actions">
-          <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">Sound Off</button>
+          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings">⚙</button>
           <div class="streak-pill" aria-label="Current streak">
             <span id="streakCount">0</span>
-            <small>day streak</small>
+            <small id="streakLabel">day streak</small>
           </div>
         </div>
       </section>
@@ -45,26 +45,32 @@
           <div class="today-note" id="todayNote"></div>
         </div>
 
-        <div class="day-strip" id="dayStrip" aria-label="Choose workout day"></div>
-
         <div class="summary-grid">
           <article>
             <span id="exerciseTotal">0</span>
-            <p>рухів</p>
+            <p id="movesLabel">рухів</p>
           </article>
           <article>
             <span id="routineMinutes">0</span>
-            <p>хвилин</p>
+            <p id="minutesLabel">хвилин</p>
           </article>
           <article>
             <span id="completedCount">0</span>
-            <p>сесій</p>
+            <p id="sessionsLabel">сесій</p>
           </article>
         </div>
 
         <div class="action-row">
           <button class="primary-action" id="startWorkout" type="button">Почати</button>
           <button class="secondary-action" id="viewPlan" type="button">План</button>
+        </div>
+
+        <div class="day-section">
+          <div class="day-section-copy">
+            <p class="eyebrow" id="weekLabel">Тиждень</p>
+            <strong id="lockStatus">Сьогоднішній день обрано автоматично</strong>
+          </div>
+          <div class="day-strip" id="dayStrip" aria-label="Choose workout day"></div>
         </div>
       </section>
 
@@ -80,7 +86,7 @@
           <p class="mode-label" id="modeLabel">Exercise</p>
           <h2 id="exerciseName">Ready</h2>
           <p class="target-line" id="exerciseTarget"></p>
-          <div class="timer-face" id="timerFace" aria-live="polite">
+          <div class="timer-face" id="timerFace" aria-live="polite" style="--timer-progress: 0%; --timer-color: var(--leaf)">
             <span id="timerValue">00:00</span>
             <small id="timerHint">Ready</small>
           </div>
@@ -139,6 +145,54 @@
           <h2 id="finishTitle">Сесію завершено. Пишаюся тобою, тату.</h2>
           <p id="finishStats"></p>
           <button class="primary-action" id="finishHome" type="button">На головну</button>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="overrideDialog" aria-hidden="true">
+        <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="overrideTitle">
+          <p class="eyebrow" id="overrideEyebrow">Locked day</p>
+          <h2 id="overrideTitle">Do this day anyway?</h2>
+          <p id="overrideText"></p>
+          <div class="dialog-actions">
+            <button class="secondary-action" id="overrideNo" type="button">No</button>
+            <button class="primary-action" id="overrideYes" type="button">Yes</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="settingsDialog" aria-hidden="true">
+        <div class="dialog-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+          <div class="section-heading compact-heading">
+            <button class="icon-button" id="settingsClose" type="button" aria-label="Close settings">&larr;</button>
+            <div>
+              <p class="eyebrow" id="settingsEyebrow">App</p>
+              <h2 id="settingsTitle">Settings</h2>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <strong id="soundSettingTitle">Sound cues</strong>
+              <p id="soundSettingText">Beeps at start, rest, and final seconds.</p>
+            </div>
+            <button class="setting-pill" id="soundToggle" type="button" aria-pressed="false">Off</button>
+          </div>
+
+          <div class="setting-group">
+            <strong id="languageSettingTitle">Language</strong>
+            <div class="segmented" role="group" aria-label="Language">
+              <button id="langUk" type="button">Українська</button>
+              <button id="langEn" type="button">English</button>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <strong id="themeSettingTitle">Theme</strong>
+            <div class="segmented" role="group" aria-label="Theme">
+              <button id="themeDark" type="button">Dark</button>
+              <button id="themeLight" type="button">Light</button>
+            </div>
+          </div>
         </div>
       </section>
     </main>

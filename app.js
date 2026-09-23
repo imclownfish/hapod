@@ -338,16 +338,183 @@ const weeklyPlan = [
   },
 ];
 
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
+const TODAY_INDEX = new Date().getDay();
+const DAY_COPY = {
+  uk: {
+    0: ["Нд", "Неділя", "Повний відпочинок"],
+    1: ["Пн", "Понеділок", "Верх тіла + прес"],
+    2: ["Вт", "Вівторок", "Ноги + сідниці"],
+    3: ["Ср", "Середа", "Відпочинок / хода"],
+    4: ["Чт", "Четвер", "Спина: тяга + прес"],
+    5: ["Пт", "П'ятниця", "Кругове, все тіло"],
+    6: ["Сб", "Субота", "Активне відновлення"],
+  },
+  en: {
+    0: ["Sun", "Sunday", "Full rest"],
+    1: ["Mon", "Monday", "Upper body + core"],
+    2: ["Tue", "Tuesday", "Legs + glutes"],
+    3: ["Wed", "Wednesday", "Rest / walk"],
+    4: ["Thu", "Thursday", "Back: pull + core"],
+    5: ["Fri", "Friday", "Full-body circuit"],
+    6: ["Sat", "Saturday", "Active recovery"],
+  },
+};
+const TEXT = {
+  uk: {
+    appIntro:
+      "Твій тижневий план вже розкладений по днях, з таймерами, підказками і короткими поясненнями.",
+    streak: "днів серія",
+    moves: "рухів",
+    minutes: "хвилин",
+    sessions: "сесій",
+    start: "Почати",
+    markDay: "Відмітити день",
+    plan: "План",
+    week: "Тиждень",
+    todayAuto: "Сьогоднішній день обрано автоматично",
+    lockedDay: "Цей день заблоковано, бо сьогодні інший план",
+    selectedOverride: "День розблоковано вручну",
+    warmup: "Розминка 5 хв: оберти суглобів, 15 легких присідань, кілька легких рухів.",
+    completedToday: "Сьогоднішню сесію вже завершено.",
+    getReady: "Приготуйся",
+    startTarget: "Старт",
+    prepCoach: "Займи позицію. Наступний сигнал починає вправу.",
+    timer: "Таймер",
+    reps: "Повтори",
+    timedCoach: "Рухайся рівно і контрольовано. Таймер рахує за тебе.",
+    repsCoach: "Зроби підходи у своєму темпі, потім натисни Готово.",
+    skip: "Пропустити",
+    done: "Готово",
+    rest: "Відпочинок",
+    restBefore: "с перед наступним рухом",
+    restCoach: "Дихай, розслаб плечі і готуйся до наступної вправи.",
+    restAfter: "Відпочинок після",
+    pause: "Пауза",
+    resume: "Продовжити",
+    work: "Робота",
+    readiness: "Готовність",
+    exercise: "Вправа",
+    of: "з",
+    nextControlled: "Далі: почати рух контрольовано.",
+    nextRest: "Далі:",
+    secondsRest: "с відпочинку.",
+    next: "Далі:",
+    finish: "Далі: фініш.",
+    dayComplete: "день відновлення відмічено. Поточна серія:",
+    workoutComplete: "рухів завершено приблизно за",
+    currentStreak: "Поточна серія:",
+    minShort: "хв",
+    details: "Деталі",
+    planDay: "План дня",
+    trains: "Працює",
+    benefitNow: "Користь зараз",
+    benefitLater: "Користь з часом",
+    finishTitle: "Сесію завершено. Пишаюся тобою, тату.",
+    home: "На головну",
+    overrideEyebrow: "Заблокований день",
+    overrideTitle: "Все одно зробити цей день?",
+    overrideText:
+      "HAPOD обирає сьогоднішній план автоматично. Якщо ти спеціально хочеш інший день, можна розблокувати його для цієї сесії.",
+    no: "Ні",
+    yes: "Так",
+    settingsEyebrow: "Додаток",
+    settings: "Налаштування",
+    soundCues: "Звукові сигнали",
+    soundText: "Писки на старті, відпочинку і останніх секундах.",
+    on: "Увімк.",
+    off: "Вимк.",
+    language: "Мова",
+    theme: "Тема",
+    dark: "Темна",
+    light: "Світла",
+    lockIcon: "🔒",
+  },
+  en: {
+    appIntro:
+      "Your weekly plan is organized by day, with timers, cues, and quick exercise notes.",
+    streak: "day streak",
+    moves: "moves",
+    minutes: "minutes",
+    sessions: "sessions",
+    start: "Start",
+    markDay: "Mark day",
+    plan: "Plan",
+    week: "Week",
+    todayAuto: "Today is selected automatically",
+    lockedDay: "This day is locked because today has a different plan",
+    selectedOverride: "Day unlocked manually",
+    warmup: "5 min warm-up: joint circles, 15 easy squats, and a few light reps.",
+    completedToday: "Today's session is already complete.",
+    getReady: "Get ready",
+    startTarget: "Start",
+    prepCoach: "Set your position. The next cue starts the exercise.",
+    timer: "Timer",
+    reps: "Reps",
+    timedCoach: "Move smoothly and stay controlled. The timer counts for you.",
+    repsCoach: "Do the sets at your pace, then tap Done.",
+    skip: "Skip",
+    done: "Done",
+    rest: "Rest",
+    restBefore: "sec before the next move",
+    restCoach: "Breathe, relax your shoulders, and get ready for the next exercise.",
+    restAfter: "Rest after",
+    pause: "Pause",
+    resume: "Resume",
+    work: "Work",
+    readiness: "Ready",
+    exercise: "Exercise",
+    of: "of",
+    nextControlled: "Next: start with control.",
+    nextRest: "Next:",
+    secondsRest: "sec rest.",
+    next: "Next:",
+    finish: "Next: finish.",
+    dayComplete: "recovery day marked complete. Current streak:",
+    workoutComplete: "moves finished in about",
+    currentStreak: "Current streak:",
+    minShort: "min",
+    details: "Details",
+    planDay: "Day plan",
+    trains: "Trains",
+    benefitNow: "Benefit now",
+    benefitLater: "Benefit over time",
+    finishTitle: "Session complete. Proud of you, Dad.",
+    home: "Home",
+    overrideEyebrow: "Locked day",
+    overrideTitle: "Do this day anyway?",
+    overrideText:
+      "HAPOD selects today's plan automatically. If you intentionally want another day, you can unlock it for this session.",
+    no: "No",
+    yes: "Yes",
+    settingsEyebrow: "App",
+    settings: "Settings",
+    soundCues: "Sound cues",
+    soundText: "Beeps at start, rest, and final seconds.",
+    on: "On",
+    off: "Off",
+    language: "Language",
+    theme: "Theme",
+    dark: "Dark",
+    light: "Light",
+    lockIcon: "🔒",
+  },
+};
+
 const state = {
-  selectedDay: new Date().getDay(),
+  selectedDay: TODAY_INDEX,
   currentIndex: 0,
   phase: "prep",
   remaining: 0,
+  stepTotal: 0,
   paused: false,
   timerId: null,
   workoutStartedAt: null,
   lastViewBeforeInfo: "workoutView",
   soundOn: localStorage.getItem("hapodSound") === "true",
+  language: localStorage.getItem("hapodLanguage") || "uk",
+  theme: localStorage.getItem("hapodTheme") || "dark",
+  unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
   audioContext: null,
 };
 
@@ -360,6 +527,32 @@ const els = {
   completedCount: document.querySelector("#completedCount"),
   todayNote: document.querySelector("#todayNote"),
   soundToggle: document.querySelector("#soundToggle"),
+  settingsOpen: document.querySelector("#settingsOpen"),
+  settingsDialog: document.querySelector("#settingsDialog"),
+  settingsClose: document.querySelector("#settingsClose"),
+  overrideDialog: document.querySelector("#overrideDialog"),
+  overrideNo: document.querySelector("#overrideNo"),
+  overrideYes: document.querySelector("#overrideYes"),
+  homeTitle: document.querySelector("#homeTitle"),
+  movesLabel: document.querySelector("#movesLabel"),
+  minutesLabel: document.querySelector("#minutesLabel"),
+  sessionsLabel: document.querySelector("#sessionsLabel"),
+  streakLabel: document.querySelector("#streakLabel"),
+  weekLabel: document.querySelector("#weekLabel"),
+  lockStatus: document.querySelector("#lockStatus"),
+  settingsEyebrow: document.querySelector("#settingsEyebrow"),
+  settingsTitle: document.querySelector("#settingsTitle"),
+  soundSettingTitle: document.querySelector("#soundSettingTitle"),
+  soundSettingText: document.querySelector("#soundSettingText"),
+  languageSettingTitle: document.querySelector("#languageSettingTitle"),
+  themeSettingTitle: document.querySelector("#themeSettingTitle"),
+  langUk: document.querySelector("#langUk"),
+  langEn: document.querySelector("#langEn"),
+  themeDark: document.querySelector("#themeDark"),
+  themeLight: document.querySelector("#themeLight"),
+  overrideEyebrow: document.querySelector("#overrideEyebrow"),
+  overrideTitle: document.querySelector("#overrideTitle"),
+  overrideText: document.querySelector("#overrideText"),
   dayStrip: document.querySelector("#dayStrip"),
   startWorkout: document.querySelector("#startWorkout"),
   viewPlan: document.querySelector("#viewPlan"),
@@ -389,6 +582,27 @@ const els = {
   finishHome: document.querySelector("#finishHome"),
 };
 
+function t(key) {
+  return TEXT[state.language][key];
+}
+
+function isSelectedToday() {
+  return state.selectedDay === TODAY_INDEX;
+}
+
+function isSelectedUnlocked() {
+  return isSelectedToday() || state.unlockedDays.has(state.selectedDay);
+}
+
+function saveUnlockedDays() {
+  localStorage.setItem("hapodUnlockedDays", JSON.stringify([...state.unlockedDays]));
+}
+
+function dayCopy(index) {
+  const [short, title, subtitle] = DAY_COPY[state.language][index];
+  return { short, title, subtitle };
+}
+
 function currentPlan() {
   return weeklyPlan[state.selectedDay];
 }
@@ -416,6 +630,16 @@ function showView(id) {
   els.views.forEach((view) => view.classList.toggle("active", view.id === id));
 }
 
+function showDialog(dialog) {
+  dialog.classList.add("active");
+  dialog.setAttribute("aria-hidden", "false");
+}
+
+function hideDialog(dialog) {
+  dialog.classList.remove("active");
+  dialog.setAttribute("aria-hidden", "true");
+}
+
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
   const secs = Math.max(0, seconds % 60).toString().padStart(2, "0");
@@ -430,30 +654,90 @@ function plannedSeconds() {
 function updateHome() {
   const stats = getStats();
   const plan = currentPlan();
+  document.documentElement.lang = state.language;
+  document.documentElement.dataset.theme = state.theme;
+  document.querySelector('meta[name="theme-color"]').setAttribute(
+    "content",
+    state.theme === "dark" ? "#081310" : "#14342b"
+  );
   els.streakCount.textContent = stats.streak;
-  els.soundToggle.textContent = state.soundOn ? "Sound On" : "Sound Off";
+  els.streakLabel.textContent = t("streak");
+  els.movesLabel.textContent = t("moves");
+  els.minutesLabel.textContent = t("minutes");
+  els.sessionsLabel.textContent = t("sessions");
+  els.weekLabel.textContent = t("week");
+  els.soundToggle.textContent = state.soundOn ? t("on") : t("off");
   els.soundToggle.setAttribute("aria-pressed", String(state.soundOn));
+  els.langUk.setAttribute("aria-pressed", String(state.language === "uk"));
+  els.langEn.setAttribute("aria-pressed", String(state.language === "en"));
+  els.themeDark.setAttribute("aria-pressed", String(state.theme === "dark"));
+  els.themeLight.setAttribute("aria-pressed", String(state.theme === "light"));
   els.exerciseTotal.textContent = plan.restDay ? "0" : routine().length;
   els.routineMinutes.textContent = plan.minutes;
   els.completedCount.textContent = stats.completed;
-  els.todayLabel.textContent = `${plan.title} - ${plan.subtitle}`;
+  const selectedCopy = dayCopy(state.selectedDay);
+  els.todayLabel.textContent = `${selectedCopy.title} - ${selectedCopy.subtitle}`;
+  els.homeTitle.textContent =
+    state.language === "uk" ? "З днем народження, тату." : "Happy Birthday, Dad.";
+  document.querySelector(".hero > p").textContent = t("appIntro");
   els.todayNote.textContent = plan.restDay
     ? plan.note
     : stats.lastCompletedDate === localDateKey()
-      ? "Сьогоднішню сесію вже завершено."
-      : "Розминка 5 хв: оберти суглобів, 15 легких присідань, кілька легких рухів.";
-  els.startWorkout.textContent = plan.restDay ? "Відмітити день" : "Почати";
+      ? t("completedToday")
+      : t("warmup");
+  els.lockStatus.textContent = isSelectedToday()
+    ? t("todayAuto")
+    : isSelectedUnlocked()
+      ? t("selectedOverride")
+      : t("lockedDay");
+  els.startWorkout.textContent = plan.restDay ? t("markDay") : t("start");
+  els.viewPlan.textContent = t("plan");
+  document.querySelector("#infoTitle").textContent = t("details");
+  document.querySelector("#planView .eyebrow").textContent = t("planDay");
+  document.querySelector("#infoView .eyebrow").textContent = t("details");
+  document.querySelectorAll(".detail-group h4")[0].textContent = t("trains");
+  document.querySelectorAll(".detail-group h4")[1].textContent = t("benefitNow");
+  document.querySelectorAll(".detail-group h4")[2].textContent = t("benefitLater");
+  document.querySelector("#finishTitle").textContent = t("finishTitle");
+  els.finishHome.textContent = t("home");
+  els.overrideEyebrow.textContent = t("overrideEyebrow");
+  els.overrideTitle.textContent = t("overrideTitle");
+  els.overrideText.textContent = t("overrideText");
+  els.overrideNo.textContent = t("no");
+  els.overrideYes.textContent = t("yes");
+  els.settingsEyebrow.textContent = t("settingsEyebrow");
+  els.settingsTitle.textContent = t("settings");
+  els.soundSettingTitle.textContent = t("soundCues");
+  els.soundSettingText.textContent = t("soundText");
+  els.languageSettingTitle.textContent = t("language");
+  els.themeSettingTitle.textContent = t("theme");
+  els.themeDark.textContent = t("dark");
+  els.themeLight.textContent = t("light");
   renderDayStrip();
 }
 
 function renderDayStrip() {
   els.dayStrip.innerHTML = "";
-  weeklyPlan.forEach((day, index) => {
+  WEEK_ORDER.forEach((index) => {
+    const day = weeklyPlan[index];
+    const copy = dayCopy(index);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "day-button";
-    button.textContent = day.short;
+    button.textContent = copy.short;
     button.setAttribute("aria-pressed", String(index === state.selectedDay));
+    button.classList.toggle("is-today", index === TODAY_INDEX);
+    button.classList.toggle("is-locked", index !== TODAY_INDEX && !state.unlockedDays.has(index));
+    button.setAttribute(
+      "aria-label",
+      `${copy.title}. ${
+        index === TODAY_INDEX
+          ? t("todayAuto")
+          : state.unlockedDays.has(index)
+            ? t("selectedOverride")
+            : t("lockedDay")
+      }`
+    );
     button.addEventListener("click", () => {
       state.selectedDay = index;
       updateHome();
@@ -465,8 +749,9 @@ function renderDayStrip() {
 
 function renderPlan() {
   const plan = currentPlan();
+  const copy = dayCopy(state.selectedDay);
   els.exerciseList.innerHTML = "";
-  document.querySelector("#planTitle").textContent = `${plan.title}: ${plan.subtitle}`;
+  document.querySelector("#planTitle").textContent = `${copy.title}: ${copy.subtitle}`;
   routine().forEach((exercise, index) => {
     const item = document.createElement("article");
     item.className = "plan-item";
@@ -538,9 +823,14 @@ function markDayComplete() {
 }
 
 function startWorkout() {
+  if (!isSelectedUnlocked()) {
+    showDialog(els.overrideDialog);
+    return;
+  }
+
   if (currentPlan().restDay) {
     const stats = markDayComplete();
-    els.finishStats.textContent = `${currentPlan().title}: день відновлення відмічено. Поточна серія: ${stats.streak}.`;
+    els.finishStats.textContent = `${dayCopy(state.selectedDay).title}: ${t("dayComplete")} ${stats.streak}.`;
     launchCelebration();
     updateHome();
     showView("finishView");
@@ -572,36 +862,39 @@ function startStep() {
 
   if (state.phase === "prep") {
     state.remaining = 5;
-    els.modeLabel.textContent = "Приготуйся";
+    state.stepTotal = 5;
+    els.modeLabel.textContent = t("getReady");
     els.exerciseName.textContent = exercise.name;
-    els.exerciseTarget.textContent = `Старт: ${exercise.target}`;
-    els.coachLine.textContent = "Займи позицію. Наступний сигнал починає вправу.";
-    els.skipStep.textContent = "Старт";
+    els.exerciseTarget.textContent = `${t("startTarget")}: ${exercise.target}`;
+    els.coachLine.textContent = t("prepCoach");
+    els.skipStep.textContent = t("startTarget");
     beep(520, 0.06);
   } else if (state.phase === "exercise") {
     state.remaining = exercise.type === "time" ? exercise.seconds : 0;
-    els.modeLabel.textContent = exercise.type === "time" ? "Таймер" : "Повтори";
+    state.stepTotal = exercise.type === "time" ? exercise.seconds : 0;
+    els.modeLabel.textContent = exercise.type === "time" ? t("timer") : t("reps");
     els.exerciseName.textContent = exercise.name;
     els.exerciseTarget.textContent = exercise.target;
     els.coachLine.textContent =
       exercise.type === "time"
-        ? "Рухайся рівно і контрольовано. Таймер рахує за тебе."
-        : "Зроби підходи у своєму темпі, потім натисни Готово.";
-    els.skipStep.textContent = exercise.type === "time" ? "Пропустити" : "Готово";
+        ? t("timedCoach")
+        : t("repsCoach");
+    els.skipStep.textContent = exercise.type === "time" ? t("skip") : t("done");
     beep(760, 0.08);
     pulse(35);
   } else {
     state.remaining = exercise.restSeconds || 60;
-    els.modeLabel.textContent = "Відпочинок";
-    els.exerciseName.textContent = "Відпочинок";
-    els.exerciseTarget.textContent = `${state.remaining} с перед наступним рухом`;
-    els.coachLine.textContent = "Дихай, розслаб плечі і готуйся до наступної вправи.";
-    els.skipStep.textContent = "Пропустити";
+    state.stepTotal = state.remaining;
+    els.modeLabel.textContent = t("rest");
+    els.exerciseName.textContent = t("rest");
+    els.exerciseTarget.textContent = `${state.remaining} ${t("restBefore")}`;
+    els.coachLine.textContent = t("restCoach");
+    els.skipStep.textContent = t("skip");
     beep(440, 0.07);
   }
 
   state.paused = false;
-  els.pauseResume.textContent = "Пауза";
+  els.pauseResume.textContent = t("pause");
   updateNextUp();
   updateWorkoutDisplay();
 
@@ -630,32 +923,41 @@ function updateWorkoutDisplay() {
   const progress = Math.min(100, (completedAmount / totalSteps) * 100);
   const exercise = currentExercise();
 
-  els.progressLabel.textContent = `${state.phase === "rest" ? "Відпочинок після" : "Вправа"} ${Math.min(
+  els.progressLabel.textContent = `${state.phase === "rest" ? t("restAfter") : t("exercise")} ${Math.min(
     state.currentIndex + 1,
     totalSteps
-  )} з ${totalSteps}`;
+  )} ${t("of")} ${totalSteps}`;
   els.progressFill.style.width = `${progress}%`;
   els.timerValue.textContent =
     state.remaining > 0 ? formatTime(state.remaining) : exercise.target;
   els.timerHint.textContent =
-    state.phase === "prep" ? "Готовність" : state.phase === "rest" ? "Пауза" : "Робота";
+    state.phase === "prep" ? t("readiness") : state.phase === "rest" ? t("rest") : t("work");
+  const timedStep = state.stepTotal > 0;
+  const elapsed = timedStep ? Math.max(0, state.stepTotal - state.remaining) : state.stepTotal;
+  const timerProgress = timedStep ? Math.min(100, (elapsed / state.stepTotal) * 100) : 100;
+  const warning = timedStep && state.remaining <= 3 && state.remaining > 0;
+  els.timerFace.style.setProperty("--timer-progress", `${timerProgress}%`);
+  els.timerFace.style.setProperty(
+    "--timer-color",
+    warning ? "var(--danger)" : state.phase === "rest" ? "var(--blue)" : "var(--leaf)"
+  );
   document.querySelector(".exercise-card").classList.toggle("is-rest", state.phase === "rest");
   document
     .querySelector(".exercise-card")
-    .classList.toggle("is-warning", state.remaining <= 3 && state.remaining > 0);
+    .classList.toggle("is-warning", warning);
 }
 
 function updateNextUp() {
   const next = routine()[state.currentIndex + 1];
   const exercise = currentExercise();
   if (state.phase === "prep") {
-    els.nextUp.textContent = "Далі: почати рух контрольовано.";
+    els.nextUp.textContent = t("nextControlled");
   } else if (state.phase === "exercise" && exercise.restSeconds > 0) {
-    els.nextUp.textContent = `Далі: ${exercise.restSeconds} с відпочинку.`;
+    els.nextUp.textContent = `${t("nextRest")} ${exercise.restSeconds} ${t("secondsRest")}`;
   } else if (next) {
-    els.nextUp.textContent = `Далі: ${next.name}.`;
+    els.nextUp.textContent = `${t("next")} ${next.name}.`;
   } else {
-    els.nextUp.textContent = "Далі: фініш.";
+    els.nextUp.textContent = t("finish");
   }
 }
 
@@ -677,7 +979,7 @@ function finishWorkout() {
   clearInterval(state.timerId);
   const stats = markDayComplete();
   const minutes = Math.max(1, Math.round((Date.now() - state.workoutStartedAt) / 60000));
-  els.finishStats.textContent = `${currentPlan().title}: ${routine().length} рухів завершено приблизно за ${minutes} хв. Поточна серія: ${stats.streak}.`;
+  els.finishStats.textContent = `${dayCopy(state.selectedDay).title}: ${routine().length} ${t("workoutComplete")} ${minutes} ${t("minShort")}. ${t("currentStreak")} ${stats.streak}.`;
   beep(820, 0.09);
   window.setTimeout(() => beep(980, 0.1), 110);
   pulse([30, 45, 30, 45, 60]);
@@ -719,6 +1021,27 @@ els.closeInfo.addEventListener("click", () => showView(state.lastViewBeforeInfo)
 els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
 els.finishHome.addEventListener("click", () => showView("homeView"));
+els.settingsOpen.addEventListener("click", () => showDialog(els.settingsDialog));
+els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
+els.settingsDialog.addEventListener("click", (event) => {
+  if (event.target === els.settingsDialog) {
+    hideDialog(els.settingsDialog);
+  }
+});
+els.overrideNo.addEventListener("click", () => hideDialog(els.overrideDialog));
+els.overrideYes.addEventListener("click", () => {
+  state.unlockedDays.add(state.selectedDay);
+  saveUnlockedDays();
+  hideDialog(els.overrideDialog);
+  updateHome();
+  renderPlan();
+  startWorkout();
+});
+els.overrideDialog.addEventListener("click", (event) => {
+  if (event.target === els.overrideDialog) {
+    hideDialog(els.overrideDialog);
+  }
+});
 els.soundToggle.addEventListener("click", () => {
   state.soundOn = !state.soundOn;
   localStorage.setItem("hapodSound", String(state.soundOn));
@@ -728,10 +1051,32 @@ els.soundToggle.addEventListener("click", () => {
     beep(660, 0.07);
   }
 });
+els.langUk.addEventListener("click", () => {
+  state.language = "uk";
+  localStorage.setItem("hapodLanguage", state.language);
+  updateHome();
+  renderPlan();
+});
+els.langEn.addEventListener("click", () => {
+  state.language = "en";
+  localStorage.setItem("hapodLanguage", state.language);
+  updateHome();
+  renderPlan();
+});
+els.themeDark.addEventListener("click", () => {
+  state.theme = "dark";
+  localStorage.setItem("hapodTheme", state.theme);
+  updateHome();
+});
+els.themeLight.addEventListener("click", () => {
+  state.theme = "light";
+  localStorage.setItem("hapodTheme", state.theme);
+  updateHome();
+});
 
 els.pauseResume.addEventListener("click", () => {
   state.paused = !state.paused;
-  els.pauseResume.textContent = state.paused ? "Продовжити" : "Пауза";
+  els.pauseResume.textContent = state.paused ? t("resume") : t("pause");
 });
 
 if ("serviceWorker" in navigator) {
@@ -740,5 +1085,6 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+document.documentElement.dataset.theme = state.theme;
 updateHome();
 renderPlan();
