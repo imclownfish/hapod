@@ -25,7 +25,12 @@
           <h1>HAPOD</h1>
         </div>
         <div class="top-actions">
-          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings">⚙</button>
+          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" />
+            </svg>
+          </button>
           <div class="streak-pill" aria-label="Current streak">
             <span id="streakCount">0</span>
             <small id="streakLabel">day streak</small>
@@ -98,6 +103,7 @@
           <button id="pauseResume" type="button">Пауза</button>
           <button id="skipStep" type="button">Далі</button>
           <button id="showInfo" type="button">Деталі</button>
+          <button id="cancelWorkout" type="button">Скасувати</button>
         </div>
       </section>
 

@@ -340,6 +340,17 @@ const weeklyPlan = [
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const TODAY_INDEX = new Date().getDay();
+const ICONS = {
+  play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7-11-7Z" /></svg>',
+  list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13" /><path d="M8 12h13" /><path d="M8 18h13" /><path d="M3 6h.01" /><path d="M3 12h.01" /><path d="M3 18h.01" /></svg>',
+  pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14" /><path d="M16 5v14" /></svg>',
+  resume: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7-11-7Z" /></svg>',
+  next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>',
+  info: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v-5" /><path d="M12 7h.01" /><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" /></svg>',
+  cancel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
+  home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" /></svg>',
+};
 const DAY_COPY = {
   uk: {
     0: ["Нд", "Неділя", "Повний відпочинок"],
@@ -385,6 +396,7 @@ const TEXT = {
     timedCoach: "Рухайся рівно і контрольовано. Таймер рахує за тебе.",
     repsCoach: "Зроби підходи у своєму темпі, потім натисни Готово.",
     skip: "Пропустити",
+    cancel: "Скасувати",
     done: "Готово",
     rest: "Відпочинок",
     restBefore: "с перед наступним рухом",
@@ -420,8 +432,8 @@ const TEXT = {
     yes: "Так",
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
-    soundCues: "Звукові сигнали",
-    soundText: "Писки на старті, відпочинку і останніх секундах.",
+    soundCues: "Звуки",
+    soundText: "Біп на старті, під час відпочинку і на останніх секундах.",
     on: "Увімк.",
     off: "Вимк.",
     language: "Мова",
@@ -454,6 +466,7 @@ const TEXT = {
     timedCoach: "Move smoothly and stay controlled. The timer counts for you.",
     repsCoach: "Do the sets at your pace, then tap Done.",
     skip: "Skip",
+    cancel: "Cancel",
     done: "Done",
     rest: "Rest",
     restBefore: "sec before the next move",
@@ -569,6 +582,7 @@ const els = {
   pauseResume: document.querySelector("#pauseResume"),
   skipStep: document.querySelector("#skipStep"),
   showInfo: document.querySelector("#showInfo"),
+  cancelWorkout: document.querySelector("#cancelWorkout"),
   exerciseList: document.querySelector("#exerciseList"),
   backFromPlan: document.querySelector("#backFromPlan"),
   closeInfo: document.querySelector("#closeInfo"),
@@ -586,6 +600,11 @@ function t(key) {
   return TEXT[state.language][key];
 }
 
+function setButton(button, label, iconName) {
+  button.classList.toggle("with-icon", Boolean(iconName));
+  button.innerHTML = iconName ? `${ICONS[iconName]}<span>${label}</span>` : label;
+}
+
 function isSelectedToday() {
   return state.selectedDay === TODAY_INDEX;
 }
@@ -596,6 +615,13 @@ function isSelectedUnlocked() {
 
 function saveUnlockedDays() {
   localStorage.setItem("hapodUnlockedDays", JSON.stringify([...state.unlockedDays]));
+}
+
+function relockSelectedDayIfNeeded() {
+  if (!isSelectedToday() && state.unlockedDays.has(state.selectedDay)) {
+    state.unlockedDays.delete(state.selectedDay);
+    saveUnlockedDays();
+  }
 }
 
 function dayCopy(index) {
@@ -690,8 +716,9 @@ function updateHome() {
     : isSelectedUnlocked()
       ? t("selectedOverride")
       : t("lockedDay");
-  els.startWorkout.textContent = plan.restDay ? t("markDay") : t("start");
-  els.viewPlan.textContent = t("plan");
+  setButton(els.startWorkout, plan.restDay ? t("markDay") : t("start"), plan.restDay ? "check" : "play");
+  setButton(els.viewPlan, t("plan"), "list");
+  setButton(els.cancelWorkout, t("cancel"), "cancel");
   document.querySelector("#infoTitle").textContent = t("details");
   document.querySelector("#planView .eyebrow").textContent = t("planDay");
   document.querySelector("#infoView .eyebrow").textContent = t("details");
@@ -699,12 +726,12 @@ function updateHome() {
   document.querySelectorAll(".detail-group h4")[1].textContent = t("benefitNow");
   document.querySelectorAll(".detail-group h4")[2].textContent = t("benefitLater");
   document.querySelector("#finishTitle").textContent = t("finishTitle");
-  els.finishHome.textContent = t("home");
+  setButton(els.finishHome, t("home"), "home");
   els.overrideEyebrow.textContent = t("overrideEyebrow");
   els.overrideTitle.textContent = t("overrideTitle");
   els.overrideText.textContent = t("overrideText");
-  els.overrideNo.textContent = t("no");
-  els.overrideYes.textContent = t("yes");
+  setButton(els.overrideNo, t("no"), "cancel");
+  setButton(els.overrideYes, t("yes"), "check");
   els.settingsEyebrow.textContent = t("settingsEyebrow");
   els.settingsTitle.textContent = t("settings");
   els.soundSettingTitle.textContent = t("soundCues");
@@ -831,6 +858,7 @@ function startWorkout() {
   if (currentPlan().restDay) {
     const stats = markDayComplete();
     els.finishStats.textContent = `${dayCopy(state.selectedDay).title}: ${t("dayComplete")} ${stats.streak}.`;
+    relockSelectedDayIfNeeded();
     launchCelebration();
     updateHome();
     showView("finishView");
@@ -867,7 +895,7 @@ function startStep() {
     els.exerciseName.textContent = exercise.name;
     els.exerciseTarget.textContent = `${t("startTarget")}: ${exercise.target}`;
     els.coachLine.textContent = t("prepCoach");
-    els.skipStep.textContent = t("startTarget");
+    setButton(els.skipStep, t("startTarget"), "play");
     beep(520, 0.06);
   } else if (state.phase === "exercise") {
     state.remaining = exercise.type === "time" ? exercise.seconds : 0;
@@ -879,7 +907,7 @@ function startStep() {
       exercise.type === "time"
         ? t("timedCoach")
         : t("repsCoach");
-    els.skipStep.textContent = exercise.type === "time" ? t("skip") : t("done");
+    setButton(els.skipStep, exercise.type === "time" ? t("skip") : t("done"), exercise.type === "time" ? "next" : "check");
     beep(760, 0.08);
     pulse(35);
   } else {
@@ -889,12 +917,13 @@ function startStep() {
     els.exerciseName.textContent = t("rest");
     els.exerciseTarget.textContent = `${state.remaining} ${t("restBefore")}`;
     els.coachLine.textContent = t("restCoach");
-    els.skipStep.textContent = t("skip");
+    setButton(els.skipStep, t("skip"), "next");
     beep(440, 0.07);
   }
 
   state.paused = false;
-  els.pauseResume.textContent = t("pause");
+  setButton(els.pauseResume, t("pause"), "pause");
+  setButton(els.showInfo, t("details"), "info");
   updateNextUp();
   updateWorkoutDisplay();
 
@@ -930,6 +959,7 @@ function updateWorkoutDisplay() {
   els.progressFill.style.width = `${progress}%`;
   els.timerValue.textContent =
     state.remaining > 0 ? formatTime(state.remaining) : exercise.target;
+  els.timerFace.classList.toggle("has-long-value", els.timerValue.textContent.length > 7);
   els.timerHint.textContent =
     state.phase === "prep" ? t("readiness") : state.phase === "rest" ? t("rest") : t("work");
   const timedStep = state.stepTotal > 0;
@@ -980,12 +1010,24 @@ function finishWorkout() {
   const stats = markDayComplete();
   const minutes = Math.max(1, Math.round((Date.now() - state.workoutStartedAt) / 60000));
   els.finishStats.textContent = `${dayCopy(state.selectedDay).title}: ${routine().length} ${t("workoutComplete")} ${minutes} ${t("minShort")}. ${t("currentStreak")} ${stats.streak}.`;
+  relockSelectedDayIfNeeded();
   beep(820, 0.09);
   window.setTimeout(() => beep(980, 0.1), 110);
   pulse([30, 45, 30, 45, 60]);
   launchCelebration();
   updateHome();
   showView("finishView");
+}
+
+function cancelWorkout() {
+  clearInterval(state.timerId);
+  state.paused = false;
+  state.remaining = 0;
+  state.stepTotal = 0;
+  relockSelectedDayIfNeeded();
+  updateHome();
+  renderPlan();
+  showView("homeView");
 }
 
 function launchCelebration() {
@@ -1020,6 +1062,7 @@ els.backFromPlan.addEventListener("click", () => showView("homeView"));
 els.closeInfo.addEventListener("click", () => showView(state.lastViewBeforeInfo));
 els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
+els.cancelWorkout.addEventListener("click", cancelWorkout);
 els.finishHome.addEventListener("click", () => showView("homeView"));
 els.settingsOpen.addEventListener("click", () => showDialog(els.settingsDialog));
 els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
@@ -1076,7 +1119,7 @@ els.themeLight.addEventListener("click", () => {
 
 els.pauseResume.addEventListener("click", () => {
   state.paused = !state.paused;
-  els.pauseResume.textContent = state.paused ? t("resume") : t("pause");
+  setButton(els.pauseResume, state.paused ? t("resume") : t("pause"), state.paused ? "resume" : "pause");
 });
 
 if ("serviceWorker" in navigator) {
