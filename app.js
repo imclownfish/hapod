@@ -697,11 +697,25 @@ function showView(id) {
 }
 
 function showDialog(dialog) {
+  if (dialog === els.settingsDialog) {
+    openSettingsDrawer();
+    return;
+  }
   dialog.classList.add("active");
   dialog.setAttribute("aria-hidden", "false");
-  if (dialog === els.settingsDialog) {
-    els.settingsOpen.classList.add("is-open");
-    els.settingsOpen.classList.add("is-morphing");
+}
+
+function openSettingsDrawer() {
+  const rect = els.settingsOpen.getBoundingClientRect();
+  const startRight = window.innerWidth - rect.right;
+  els.settingsOpen.style.top = `${rect.top}px`;
+  els.settingsOpen.style.right = `${startRight}px`;
+  els.settingsOpen.classList.add("is-floating");
+  els.settingsDialog.classList.remove("is-closing");
+  els.settingsDialog.classList.add("active");
+  els.settingsDialog.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => {
+    els.settingsOpen.classList.add("is-open", "is-morphing");
     window.setTimeout(() => {
       if (els.settingsDialog.classList.contains("active")) {
         els.settingsOpen.innerHTML = ICONS.x;
@@ -709,18 +723,38 @@ function showDialog(dialog) {
     }, 170);
     window.setTimeout(() => els.settingsOpen.classList.remove("is-morphing"), 540);
     els.settingsOpen.setAttribute("aria-label", "Close settings");
-  }
+  });
 }
 
 function hideDialog(dialog) {
+  if (dialog === els.settingsDialog) {
+    closeSettingsDrawer();
+    return;
+  }
   dialog.classList.remove("active");
   dialog.setAttribute("aria-hidden", "true");
-  if (dialog === els.settingsDialog) {
-    els.settingsOpen.classList.remove("is-open");
-    els.settingsOpen.classList.remove("is-morphing");
+}
+
+function closeSettingsDrawer() {
+  const homeRect = document.querySelector(".top-actions").getBoundingClientRect();
+  const targetRight = window.innerWidth - homeRect.right;
+  const targetTop = homeRect.top;
+  els.settingsDialog.classList.add("is-closing");
+  els.settingsOpen.classList.add("is-morphing");
+  els.settingsOpen.classList.remove("is-open");
+  els.settingsOpen.style.right = `${targetRight}px`;
+  els.settingsOpen.style.top = `${targetTop}px`;
+  window.setTimeout(() => {
     els.settingsOpen.innerHTML = ICONS.gear;
+  }, 150);
+  window.setTimeout(() => {
+    els.settingsDialog.classList.remove("active", "is-closing");
+    els.settingsDialog.setAttribute("aria-hidden", "true");
+    els.settingsOpen.classList.remove("is-floating", "is-morphing");
+    els.settingsOpen.removeAttribute("style");
+    els.settingsOpen.classList.remove("is-morphing");
     els.settingsOpen.setAttribute("aria-label", "Settings");
-  }
+  }, 360);
 }
 
 function formatTime(seconds) {
