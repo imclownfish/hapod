@@ -749,7 +749,6 @@ const state = {
   theme: localStorage.getItem("hapodTheme") || "dark",
   unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
   audioContext: null,
-  settingsButtonHome: null,
 };
 
 const els = {
@@ -903,39 +902,12 @@ function showDialog(dialog) {
   dialog.setAttribute("aria-hidden", "false");
 }
 
-function drawerWidthPx() {
-  const maxWidth = window.innerWidth <= 540 ? 360 : 390;
-  return Math.min(maxWidth, window.innerWidth * 0.88);
-}
-
-function drawerButtonTargetLeft() {
-  const buttonWidth = els.settingsOpen.offsetWidth || 42;
-  return Math.max(12, window.innerWidth - drawerWidthPx() - buttonWidth - 12);
-}
-
 function openSettingsDrawer() {
-  const rect = els.settingsOpen.getBoundingClientRect();
-  state.settingsButtonHome = { left: rect.left, top: rect.top };
-  els.settingsOpen.style.position = "fixed";
-  els.settingsOpen.style.left = `${rect.left}px`;
-  els.settingsOpen.style.top = `${rect.top}px`;
-  els.settingsOpen.style.right = "auto";
-  els.settingsOpen.classList.add("is-floating");
-  void els.settingsOpen.offsetWidth;
   els.settingsDialog.classList.remove("is-closing");
   els.settingsDialog.classList.add("active");
   els.settingsDialog.setAttribute("aria-hidden", "false");
-  requestAnimationFrame(() => {
-    els.settingsOpen.classList.add("is-open", "is-morphing");
-    els.settingsOpen.style.left = `${drawerButtonTargetLeft()}px`;
-    window.setTimeout(() => {
-      if (els.settingsDialog.classList.contains("active")) {
-        els.settingsOpen.innerHTML = ICONS.x;
-      }
-    }, 170);
-    window.setTimeout(() => els.settingsOpen.classList.remove("is-morphing"), 540);
-    els.settingsOpen.setAttribute("aria-label", t("closeSettings"));
-  });
+  els.settingsOpen.classList.add("is-hidden");
+  els.settingsOpen.setAttribute("aria-hidden", "true");
 }
 
 function hideDialog(dialog) {
@@ -948,26 +920,14 @@ function hideDialog(dialog) {
 }
 
 function closeSettingsDrawer() {
-  const home = state.settingsButtonHome || els.settingsOpen.getBoundingClientRect();
-  const targetLeft = Math.max(12, Math.min(home.left, window.innerWidth - 54));
-  const targetTop = Math.max(12, home.top);
   els.settingsDialog.classList.add("is-closing");
-  els.settingsOpen.classList.add("is-morphing");
-  els.settingsOpen.classList.remove("is-open");
-  els.settingsOpen.style.left = `${targetLeft}px`;
-  els.settingsOpen.style.top = `${targetTop}px`;
-  window.setTimeout(() => {
-    els.settingsOpen.innerHTML = ICONS.gear;
-  }, 150);
   window.setTimeout(() => {
     els.settingsDialog.classList.remove("active", "is-closing");
     els.settingsDialog.setAttribute("aria-hidden", "true");
-    els.settingsOpen.classList.remove("is-floating", "is-morphing");
-    els.settingsOpen.removeAttribute("style");
-    els.settingsOpen.classList.remove("is-morphing");
+    els.settingsOpen.classList.remove("is-hidden");
+    els.settingsOpen.removeAttribute("aria-hidden");
     els.settingsOpen.setAttribute("aria-label", t("settings"));
-    state.settingsButtonHome = null;
-  }, 520);
+  }, 360);
 }
 
 function formatTime(seconds) {
