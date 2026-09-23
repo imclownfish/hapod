@@ -377,6 +377,194 @@ const DAY_COPY = {
     6: ["Sat", "Saturday", "Active recovery"],
   },
 };
+
+const EXERCISE_EN = {
+  "Повний відпочинок": {
+    name: "Full rest",
+    target: "0 strength exercises",
+    description: "Let the body recover. If you really want movement, take an easy walk with no pressure.",
+    bodyPart: "Whole-body recovery",
+    shortBenefit: "Reduces fatigue and gives muscles time to rebuild.",
+    longBenefit: "Helps you keep progressing without overtraining.",
+  },
+  "Алмазні віджимання": {
+    name: "Diamond push-ups",
+    target: "3 x 12",
+    description: "Place your hands in a diamond under the center of your chest. Keep elbows about 45 degrees back and hold the body in one straight line.",
+    bodyPart: "Triceps, chest, front delts, core",
+    shortBenefit: "Quickly warms up pressing muscles and switches on the core.",
+    longBenefit: "Improves push-up strength and shoulder stability.",
+  },
+  "Floor press гантелями": {
+    name: "Dumbbell floor press",
+    target: "3 x 8-10",
+    description: "Lie on your back with knees bent. Keep elbows about 45 degrees from the body, lower until they lightly touch the floor, then press up.",
+    bodyPart: "Chest, triceps, shoulders",
+    shortBenefit: "Gives a strong controlled press without a bench.",
+    longBenefit: "Builds chest and arm strength with less shoulder risk.",
+  },
+  "Щучі віджимання": {
+    name: "Pike push-ups",
+    target: "3 x 8",
+    description: "Lift hips into a pike shape and move your head toward the floor between your hands. Easier: lower the hips. Harder: feet on a chair.",
+    bodyPart: "Shoulders, triceps, upper chest",
+    shortBenefit: "Replaces overhead pressing without equipment.",
+    longBenefit: "Strengthens shoulders and upper-body control.",
+  },
+  "Горизонтальна тяга під столом": {
+    name: "Under-table rows",
+    target: "3 x 10",
+    description: "Under a sturdy table, keep your body straight and pull your chest toward the edge. Squeeze shoulder blades together.",
+    bodyPart: "Lats, rhomboids, biceps, rear delts",
+    shortBenefit: "Balances push-ups so the shoulders do not drift forward.",
+    longBenefit: "Improves posture and back strength.",
+  },
+  "Планка на передпліччях": {
+    name: "Forearm plank",
+    target: "3 x 40 sec",
+    description: "Elbows under shoulders, glutes tight, pelvis slightly tucked. Do not let the lower back sag.",
+    bodyPart: "Core, abs, glutes, shoulders",
+    shortBenefit: "Turns on core stability.",
+    longBenefit: "Helps your back handle daily load better.",
+  },
+  "Dead bug": {
+    name: "Dead bug",
+    target: "3 x 10 / side",
+    description: "Keep your lower back pressed into the floor. Slowly lower the opposite arm and leg without losing control.",
+    bodyPart: "Deep abs and hip stabilizers",
+    shortBenefit: "Teaches the lower back to stay stable.",
+    longBenefit: "Reduces the risk of lower-back overload.",
+  },
+  "Зважені дотики до стопи": {
+    name: "Weighted toe touches",
+    target: "3 x 10-12",
+    description: "Hold the 2.25 kg dumbbell overhead. Lift one leg and reach the dumbbell toward the foot, then switch legs.",
+    bodyPart: "Abs, obliques, hip flexors",
+    shortBenefit: "Hits the abs hard without a long static hold.",
+    longBenefit: "Improves core control and rotational strength.",
+  },
+  "Болгарські присідання": {
+    name: "Bulgarian split squats",
+    target: "3 x 10 / leg",
+    description: "Place the back foot on a chair and stand about 1 meter away. Lower straight down with a slight forward lean.",
+    bodyPart: "Quads, glutes, hamstrings",
+    shortBenefit: "Loads the legs strongly even with light weight.",
+    longBenefit: "Improves leg strength, balance, and knee stability.",
+  },
+  "Румунська тяга з гантелями": {
+    name: "Dumbbell Romanian deadlift",
+    target: "3 x 12",
+    description: "Keep knees slightly bent, hips back, and back straight. Feel the hamstring stretch, then drive the hips forward.",
+    bodyPart: "Hamstrings, glutes, back",
+    shortBenefit: "Teaches a strong hip hinge without rounding the back.",
+    longBenefit: "Builds the posterior chain, important for the back and walking.",
+  },
+  "Випади на місці": {
+    name: "Stationary lunges",
+    target: "3 x 12 / leg",
+    description: "Hold dumbbells, keep your back tall. Both knees near 90 degrees, push through the front heel.",
+    bodyPart: "Quads, glutes, hip stabilizers",
+    shortBenefit: "Raises heart rate and trains one leg at a time.",
+    longBenefit: "Improves knee control and stair strength.",
+  },
+  "Сідничний міст на одній нозі": {
+    name: "Single-leg glute bridge",
+    target: "3 x 12 / leg",
+    description: "Lift the hips using the glute until knee, hip, and shoulder line up. Pause 1 second at the top.",
+    bodyPart: "Glutes, hamstrings, core",
+    shortBenefit: "Activates glutes without loading the knees.",
+    longBenefit: "Supports healthier hip and lower-back mechanics.",
+  },
+  "Підйоми на носки зі сходинки": {
+    name: "Step calf raises",
+    target: "3 x 20",
+    description: "Put toes on the edge of a step or threshold, drop heels below the edge, then rise as high as possible. Pause 1 second.",
+    bodyPart: "Calves, Achilles tendon, feet",
+    shortBenefit: "Finishes the lower legs well.",
+    longBenefit: "Improves foot strength, walking, and calf endurance.",
+  },
+  "Хода або відпочинок": {
+    name: "Walk or rest",
+    target: "6-8k steps or full rest",
+    description: "No strength training. If you have energy, take an easy walk, but do not turn it into a race.",
+    bodyPart: "Recovery, heart, joints",
+    shortBenefit: "Helps blood flow and reduces fatigue after leg day.",
+    longBenefit: "Keeps activity consistent without extra stress.",
+  },
+  "Тяга гантелями в нахилі": {
+    name: "Bent-over dumbbell rows",
+    target: "3 x 12",
+    description: "Hinge about 45 degrees with a straight back. Pull toward the lower stomach, squeeze shoulder blades, pause 1 second.",
+    bodyPart: "Lats, mid-back, biceps",
+    shortBenefit: "Turns on the back and balances pressing days.",
+    longBenefit: "Improves posture and pulling strength.",
+  },
+  "Вертикальна тяга гумкою або друга тяга": {
+    name: "Band pulldown or second row",
+    target: "3 x 12",
+    description: "With a band, pull from above to the chest, shoulder blades down and together. Without a band, do another narrow-grip under-table row.",
+    bodyPart: "Lats, lower traps, biceps",
+    shortBenefit: "Adds a vertical pull direction for shoulder balance.",
+    longBenefit: "Helps keep shoulders back and down.",
+  },
+  "Face pulls гумкою": {
+    name: "Band face pulls",
+    target: "2 x 15, if you have a band",
+    description: "Anchor the band at face height. Pull toward the forehead while spreading the elbows.",
+    bodyPart: "Rear delts, upper back, rotator cuff",
+    shortBenefit: "Relieves the shoulders after pressing.",
+    longBenefit: "Supports posture and healthier shoulders.",
+  },
+  "Bird dog": {
+    name: "Bird dog",
+    target: "3 x 8 / side",
+    description: "On hands and knees, keep the spine neutral. Extend opposite arm and leg, hold 8-10 seconds, and keep hips from twisting.",
+    bodyPart: "Back extensors, glutes, deep core",
+    shortBenefit: "Loads the back more safely than supermans.",
+    longBenefit: "Improves lower-back stability.",
+  },
+  "Бічна планка": {
+    name: "Side plank",
+    target: "3 x 30 sec / side",
+    description: "Elbow under shoulder, lift hips into a straight line from head to hips to feet.",
+    bodyPart: "Obliques, core, shoulders",
+    shortBenefit: "Turns on side-core stability.",
+    longBenefit: "Helps control the hips and lower back.",
+  },
+  "Зворотні скручування": {
+    name: "Reverse crunches",
+    target: "3 x 15",
+    description: "Pull knees in and lift the hips using the abs. Lower slowly for 2-3 seconds without swinging the legs.",
+    bodyPart: "Lower abs, deep core",
+    shortBenefit: "Gives controlled ab work without extra lower-back pressure.",
+    longBenefit: "Improves lower-ab strength and hip control.",
+  },
+  "Ротаційні knee tucks": {
+    name: "Rotational knee tucks",
+    target: "3 x 12 / side",
+    description: "Lie with support on your hands, pull knees to chest and rotate to one side, then move through center to the other side.",
+    bodyPart: "Obliques, abs, core rotation",
+    shortBenefit: "Trains the abs in rotation, not only straight forward.",
+    longBenefit: "Improves core control during turns.",
+  },
+  "Коло 1-4": {
+    name: "Circuit rounds 1-4",
+    target: "4 rounds",
+    description: "12 push-ups, 12 squats, 10 under-table rows, 10 chair step-ups per leg, 30 sec plank. No rest inside a round, 90 sec between rounds.",
+    bodyPart: "Full body: chest, back, legs, core, heart",
+    shortBenefit: "Raises heart rate fast and brings the whole body into one session.",
+    longBenefit: "Improves general endurance and work capacity.",
+  },
+  "Хода": {
+    name: "Walk",
+    target: "8-10k steps",
+    description: "Calm activity with no strength load. The main goal is to get steps and recover.",
+    bodyPart: "Heart, legs, recovery",
+    shortBenefit: "Keeps you moving without adding much fatigue.",
+    longBenefit: "Helps with weight control and endurance.",
+  },
+};
+
 const TEXT = {
   uk: {
     appIntro:
@@ -449,6 +637,7 @@ const TEXT = {
     yes: "Так",
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
+    closeSettings: "Закрити налаштування",
     soundCues: "Звуки",
     soundText: "Біп на старті, під час відпочинку і на останніх секундах.",
     on: "Увімк.",
@@ -458,6 +647,7 @@ const TEXT = {
     dark: "Темна",
     light: "Світла",
     lockIcon: "🔒",
+    optional: "опційно",
   },
   en: {
     appIntro:
@@ -530,6 +720,7 @@ const TEXT = {
     yes: "Yes",
     settingsEyebrow: "App",
     settings: "Settings",
+    closeSettings: "Close settings",
     soundCues: "Sound cues",
     soundText: "Beeps at start, rest, and final seconds.",
     on: "On",
@@ -539,6 +730,7 @@ const TEXT = {
     dark: "Dark",
     light: "Light",
     lockIcon: "🔒",
+    optional: "optional",
   },
 };
 
@@ -557,6 +749,7 @@ const state = {
   theme: localStorage.getItem("hapodTheme") || "dark",
   unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
   audioContext: null,
+  settingsButtonHome: null,
 };
 
 const els = {
@@ -659,6 +852,11 @@ function dayCopy(index) {
   return { short, title, subtitle };
 }
 
+function exerciseCopy(exercise) {
+  if (state.language !== "en" || !exercise) return exercise;
+  return { ...exercise, ...(EXERCISE_EN[exercise.name] || {}) };
+}
+
 function isBirthdayToday(date = new Date()) {
   return date.getMonth() === BIRTHDAY_MONTH && date.getDate() === BIRTHDAY_DAY;
 }
@@ -705,24 +903,38 @@ function showDialog(dialog) {
   dialog.setAttribute("aria-hidden", "false");
 }
 
+function drawerWidthPx() {
+  const maxWidth = window.innerWidth <= 540 ? 360 : 390;
+  return Math.min(maxWidth, window.innerWidth * 0.88);
+}
+
+function drawerButtonTargetLeft() {
+  const buttonWidth = els.settingsOpen.offsetWidth || 42;
+  return Math.max(12, window.innerWidth - drawerWidthPx() - buttonWidth - 12);
+}
+
 function openSettingsDrawer() {
   const rect = els.settingsOpen.getBoundingClientRect();
-  const startRight = window.innerWidth - rect.right;
+  state.settingsButtonHome = { left: rect.left, top: rect.top };
+  els.settingsOpen.style.position = "fixed";
+  els.settingsOpen.style.left = `${rect.left}px`;
   els.settingsOpen.style.top = `${rect.top}px`;
-  els.settingsOpen.style.right = `${startRight}px`;
+  els.settingsOpen.style.right = "auto";
   els.settingsOpen.classList.add("is-floating");
+  void els.settingsOpen.offsetWidth;
   els.settingsDialog.classList.remove("is-closing");
   els.settingsDialog.classList.add("active");
   els.settingsDialog.setAttribute("aria-hidden", "false");
   requestAnimationFrame(() => {
     els.settingsOpen.classList.add("is-open", "is-morphing");
+    els.settingsOpen.style.left = `${drawerButtonTargetLeft()}px`;
     window.setTimeout(() => {
       if (els.settingsDialog.classList.contains("active")) {
         els.settingsOpen.innerHTML = ICONS.x;
       }
     }, 170);
     window.setTimeout(() => els.settingsOpen.classList.remove("is-morphing"), 540);
-    els.settingsOpen.setAttribute("aria-label", "Close settings");
+    els.settingsOpen.setAttribute("aria-label", t("closeSettings"));
   });
 }
 
@@ -736,13 +948,13 @@ function hideDialog(dialog) {
 }
 
 function closeSettingsDrawer() {
-  const homeRect = document.querySelector(".top-actions").getBoundingClientRect();
-  const targetRight = window.innerWidth - homeRect.right;
-  const targetTop = homeRect.top;
+  const home = state.settingsButtonHome || els.settingsOpen.getBoundingClientRect();
+  const targetLeft = Math.max(12, Math.min(home.left, window.innerWidth - 54));
+  const targetTop = Math.max(12, home.top);
   els.settingsDialog.classList.add("is-closing");
   els.settingsOpen.classList.add("is-morphing");
   els.settingsOpen.classList.remove("is-open");
-  els.settingsOpen.style.right = `${targetRight}px`;
+  els.settingsOpen.style.left = `${targetLeft}px`;
   els.settingsOpen.style.top = `${targetTop}px`;
   window.setTimeout(() => {
     els.settingsOpen.innerHTML = ICONS.gear;
@@ -753,8 +965,9 @@ function closeSettingsDrawer() {
     els.settingsOpen.classList.remove("is-floating", "is-morphing");
     els.settingsOpen.removeAttribute("style");
     els.settingsOpen.classList.remove("is-morphing");
-    els.settingsOpen.setAttribute("aria-label", "Settings");
-  }, 360);
+    els.settingsOpen.setAttribute("aria-label", t("settings"));
+    state.settingsButtonHome = null;
+  }, 520);
 }
 
 function formatTime(seconds) {
@@ -816,6 +1029,7 @@ function updateHome() {
   document.querySelectorAll(".detail-group h4")[0].textContent = t("trains");
   document.querySelectorAll(".detail-group h4")[1].textContent = t("benefitNow");
   document.querySelectorAll(".detail-group h4")[2].textContent = t("benefitLater");
+  document.querySelector("#finishView .eyebrow").textContent = t("done");
   document.querySelector("#finishTitle").textContent = t("finishTitle");
   setButton(els.finishHome, t("home"), "home");
   els.overrideEyebrow.textContent = t("overrideEyebrow");
@@ -831,7 +1045,39 @@ function updateHome() {
   els.themeSettingTitle.textContent = t("theme");
   els.themeDark.textContent = t("dark");
   els.themeLight.textContent = t("light");
+  refreshWorkoutText();
   renderDayStrip();
+}
+
+function refreshWorkoutText() {
+  const exercise = currentExercise();
+  if (!exercise) return;
+
+  const displayExercise = exerciseCopy(exercise);
+  if (state.phase === "prep") {
+    els.modeLabel.textContent = t("getReady");
+    els.exerciseName.textContent = displayExercise.name;
+    els.exerciseTarget.textContent = `${t("startTarget")}: ${displayExercise.target}`;
+    els.coachLine.textContent = t("prepCoach");
+    setButton(els.skipStep, t("startTarget"), "play");
+  } else if (state.phase === "exercise") {
+    els.modeLabel.textContent = exercise.type === "time" ? t("timer") : t("reps");
+    els.exerciseName.textContent = displayExercise.name;
+    els.exerciseTarget.textContent = displayExercise.target;
+    els.coachLine.textContent = exercise.type === "time" ? t("timedCoach") : t("repsCoach");
+    setButton(els.skipStep, exercise.type === "time" ? t("skip") : t("done"), exercise.type === "time" ? "next" : "check");
+  } else {
+    els.modeLabel.textContent = t("rest");
+    els.exerciseName.textContent = t("rest");
+    els.exerciseTarget.textContent = `${state.remaining} ${t("restBefore")}`;
+    els.coachLine.textContent = t("restCoach");
+    setButton(els.skipStep, t("skip"), "next");
+  }
+
+  setButton(els.pauseResume, state.paused ? t("resume") : t("pause"), state.paused ? "resume" : "pause");
+  setButton(els.showInfo, t("details"), "info");
+  updateNextUp();
+  updateWorkoutDisplay();
 }
 
 function renderDayStrip() {
@@ -871,13 +1117,14 @@ function renderPlan() {
   els.exerciseList.innerHTML = "";
   document.querySelector("#planTitle").textContent = `${copy.title}: ${copy.subtitle}`;
   routine().forEach((exercise, index) => {
+    const displayExercise = exerciseCopy(exercise);
     const item = document.createElement("article");
     item.className = "plan-item";
     item.innerHTML = `
       <span class="plan-number">${index + 1}</span>
       <div>
-        <strong>${exercise.name}${exercise.optional ? " (опційно)" : ""}</strong>
-        <p>${exercise.target} - ${exercise.bodyPart}</p>
+        <strong>${displayExercise.name}${exercise.optional ? ` (${t("optional")})` : ""}</strong>
+        <p>${displayExercise.target} - ${displayExercise.bodyPart}</p>
       </div>
     `;
     item.addEventListener("click", () => showExerciseInfo(index, "planView"));
@@ -974,6 +1221,7 @@ function currentExercise() {
 function startStep() {
   clearInterval(state.timerId);
   const exercise = currentExercise();
+  const displayExercise = exerciseCopy(exercise);
   if (!exercise) {
     finishWorkout();
     return;
@@ -983,8 +1231,8 @@ function startStep() {
     state.remaining = 5;
     state.stepTotal = 5;
     els.modeLabel.textContent = t("getReady");
-    els.exerciseName.textContent = exercise.name;
-    els.exerciseTarget.textContent = `${t("startTarget")}: ${exercise.target}`;
+    els.exerciseName.textContent = displayExercise.name;
+    els.exerciseTarget.textContent = `${t("startTarget")}: ${displayExercise.target}`;
     els.coachLine.textContent = t("prepCoach");
     setButton(els.skipStep, t("startTarget"), "play");
     beep(520, 0.06);
@@ -992,8 +1240,8 @@ function startStep() {
     state.remaining = exercise.type === "time" ? exercise.seconds : 0;
     state.stepTotal = exercise.type === "time" ? exercise.seconds : 0;
     els.modeLabel.textContent = exercise.type === "time" ? t("timer") : t("reps");
-    els.exerciseName.textContent = exercise.name;
-    els.exerciseTarget.textContent = exercise.target;
+    els.exerciseName.textContent = displayExercise.name;
+    els.exerciseTarget.textContent = displayExercise.target;
     els.coachLine.textContent =
       exercise.type === "time"
         ? t("timedCoach")
@@ -1042,6 +1290,7 @@ function updateWorkoutDisplay() {
     state.currentIndex + (state.phase === "exercise" ? 0.2 : state.phase === "rest" ? 0.75 : 0);
   const progress = Math.min(100, (completedAmount / totalSteps) * 100);
   const exercise = currentExercise();
+  const displayExercise = exerciseCopy(exercise);
 
   els.progressLabel.textContent = `${state.phase === "rest" ? t("restAfter") : t("exercise")} ${Math.min(
     state.currentIndex + 1,
@@ -1049,7 +1298,7 @@ function updateWorkoutDisplay() {
   )} ${t("of")} ${totalSteps}`;
   els.progressFill.style.width = `${progress}%`;
   els.timerValue.textContent =
-    state.remaining > 0 ? formatTime(state.remaining) : exercise.target;
+    state.remaining > 0 ? formatTime(state.remaining) : displayExercise.target;
   els.timerFace.classList.toggle("has-long-value", els.timerValue.textContent.length > 7);
   els.timerHint.textContent =
     state.phase === "prep" ? t("readiness") : state.phase === "rest" ? t("rest") : t("work");
@@ -1071,12 +1320,13 @@ function updateWorkoutDisplay() {
 function updateNextUp() {
   const next = routine()[state.currentIndex + 1];
   const exercise = currentExercise();
+  const nextDisplay = exerciseCopy(next);
   if (state.phase === "prep") {
     els.nextUp.textContent = t("nextControlled");
   } else if (state.phase === "exercise" && exercise.restSeconds > 0) {
     els.nextUp.textContent = `${t("nextRest")} ${exercise.restSeconds} ${t("secondsRest")}`;
   } else if (next) {
-    els.nextUp.textContent = `${t("next")} ${next.name}.`;
+    els.nextUp.textContent = `${t("next")} ${nextDisplay.name}.`;
   } else {
     els.nextUp.textContent = t("finish");
   }
@@ -1138,12 +1388,13 @@ function launchCelebration() {
 
 function showExerciseInfo(index = state.currentIndex, backView = "workoutView") {
   const exercise = routine()[index] || currentExercise();
+  const displayExercise = exerciseCopy(exercise);
   state.lastViewBeforeInfo = backView;
-  els.infoExerciseName.textContent = exercise.name;
-  els.infoDescription.textContent = exercise.description;
-  els.infoBodyPart.textContent = exercise.bodyPart;
-  els.infoShortBenefit.textContent = exercise.shortBenefit;
-  els.infoLongBenefit.textContent = exercise.longBenefit;
+  els.infoExerciseName.textContent = displayExercise.name;
+  els.infoDescription.textContent = displayExercise.description;
+  els.infoBodyPart.textContent = displayExercise.bodyPart;
+  els.infoShortBenefit.textContent = displayExercise.shortBenefit;
+  els.infoLongBenefit.textContent = displayExercise.longBenefit;
   showView("infoView");
 }
 
