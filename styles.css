@@ -58,6 +58,8 @@ body {
     radial-gradient(circle at 86% 3%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 24rem),
     linear-gradient(150deg, color-mix(in srgb, var(--leaf) 14%, transparent), transparent 42%),
     var(--paper);
+  background-size: 120% 120%, 130% 130%, 100% 100%, auto;
+  animation: ambient-bg 18s ease-in-out infinite alternate;
 }
 
 button {
@@ -104,7 +106,7 @@ button svg {
   width: min(920px, 100%);
   min-height: 100svh;
   margin: 0 auto;
-  padding: max(18px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  padding: max(28px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -112,7 +114,7 @@ button svg {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   animation: rise-in 520ms ease both;
 }
 
@@ -126,6 +128,8 @@ button svg {
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 h1,
@@ -207,9 +211,9 @@ h4 {
   background: var(--soft-panel);
   font-size: 1.05rem;
   transition:
-    transform 260ms ease,
-    right 260ms ease,
-    top 260ms ease,
+    transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    right 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    top 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
     background 160ms ease,
     border-color 160ms ease;
 }
@@ -217,10 +221,14 @@ h4 {
 .settings-button.is-open {
   position: fixed;
   top: max(18px, env(safe-area-inset-top));
-  right: min(calc(100vw - 58px), 410px);
+  right: min(calc(88vw + 10px), 402px);
   z-index: 35;
   background: var(--panel);
   box-shadow: var(--shadow);
+}
+
+.settings-button.is-morphing svg {
+  animation: settings-spin 540ms cubic-bezier(0.36, 0, 0.2, 1) both;
 }
 
 .streak-pill span {
@@ -294,7 +302,6 @@ h4 {
   stroke: currentColor;
 }
 
-.hero > p,
 .finish-card p {
   margin: 0;
   color: var(--muted);
@@ -305,7 +312,7 @@ h4 {
 .today-note {
   position: relative;
   z-index: 1;
-  margin-top: 18px;
+  margin-top: 14px;
   padding: 12px 14px;
   border-left: 4px solid var(--gold);
   border-radius: 8px;
@@ -316,7 +323,7 @@ h4 {
 }
 
 .day-section {
-  margin-top: 16px;
+  margin-top: 10px;
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -380,7 +387,7 @@ h4 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 14px 0;
+  margin: 10px 0;
 }
 
 .summary-grid article {
@@ -703,7 +710,8 @@ h4 {
   align-items: end;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.38);
+  transition: background 260ms ease;
 }
 
 .dialog-layer.active {
@@ -723,7 +731,7 @@ h4 {
   border-right: 0;
   border-radius: 8px 0 0 8px;
   transform: translateX(100%);
-  animation: drawer-in 260ms ease forwards;
+  animation: drawer-in 340ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .dialog-card {
@@ -847,6 +855,18 @@ h4 {
   }
 }
 
+@keyframes ambient-bg {
+  0% {
+    background-position: 0% 0%, 100% 0%, 0% 0%, 0 0;
+  }
+  50% {
+    background-position: 7% 4%, 92% 8%, 0% 0%, 0 0;
+  }
+  100% {
+    background-position: 12% 8%, 86% 13%, 0% 0%, 0 0;
+  }
+}
+
 @keyframes drawer-in {
   from {
     opacity: 0.95;
@@ -855,6 +875,18 @@ h4 {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes settings-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  46% {
+    transform: rotate(-155deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
   }
 }
 
@@ -915,8 +947,9 @@ h4 {
   .view.active#homeView {
     display: grid;
     grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
-    gap: 16px;
+    gap: 10px 16px;
     align-items: start;
+    align-content: center;
   }
 
   .hero {
@@ -930,12 +963,22 @@ h4 {
 
   .summary-grid {
     margin-top: 0;
+    margin-bottom: 0;
+    align-self: end;
+  }
+
+  .action-row {
+    align-self: center;
+  }
+
+  .day-section {
+    align-self: start;
   }
 }
 
 @media (max-width: 540px) {
   .app-shell {
-    padding-inline: 12px;
+    padding: max(18px, env(safe-area-inset-top)) 12px max(20px, env(safe-area-inset-bottom));
   }
 
   .topbar {
@@ -990,6 +1033,10 @@ h4 {
   #settingsDialog .dialog-card {
     width: min(360px, 88vw);
   }
+
+  .settings-button.is-open {
+    right: min(calc(88vw + 10px), calc(100vw - 54px));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -997,6 +1044,7 @@ h4 {
   *::before,
   *::after {
     animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
   }

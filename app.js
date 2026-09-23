@@ -701,7 +701,13 @@ function showDialog(dialog) {
   dialog.setAttribute("aria-hidden", "false");
   if (dialog === els.settingsDialog) {
     els.settingsOpen.classList.add("is-open");
-    els.settingsOpen.innerHTML = ICONS.x;
+    els.settingsOpen.classList.add("is-morphing");
+    window.setTimeout(() => {
+      if (els.settingsDialog.classList.contains("active")) {
+        els.settingsOpen.innerHTML = ICONS.x;
+      }
+    }, 170);
+    window.setTimeout(() => els.settingsOpen.classList.remove("is-morphing"), 540);
     els.settingsOpen.setAttribute("aria-label", "Close settings");
   }
 }
@@ -711,6 +717,7 @@ function hideDialog(dialog) {
   dialog.setAttribute("aria-hidden", "true");
   if (dialog === els.settingsDialog) {
     els.settingsOpen.classList.remove("is-open");
+    els.settingsOpen.classList.remove("is-morphing");
     els.settingsOpen.innerHTML = ICONS.gear;
     els.settingsOpen.setAttribute("aria-label", "Settings");
   }
@@ -760,7 +767,6 @@ function updateHome() {
   els.todayLabel.textContent = `${selectedCopy.title} - ${selectedCopy.subtitle}`;
   els.homeTitle.textContent =
     isBirthdayToday() ? t("birthdayTitle") : t("normalTitle");
-  document.querySelector(".hero > p").textContent = t("appIntro");
   els.todayNote.textContent = dailyFact();
   els.lockStatus.textContent = isSelectedToday()
     ? t("todayAuto")
