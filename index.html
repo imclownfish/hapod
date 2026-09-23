@@ -37,32 +37,34 @@
         <div class="hero">
           <div class="hero-mark" aria-hidden="true">H</div>
           <p class="date-line" id="todayLabel"></p>
-          <h2 id="homeTitle">Happy Birthday, Dad.</h2>
+          <h2 id="homeTitle">З днем народження, тату.</h2>
           <p>
-            Built for your mornings, so the plan is ready and the counting stays out of
-            your way.
+            Твій тижневий план вже розкладений по днях, з таймерами, підказками
+            і короткими поясненнями.
           </p>
           <div class="today-note" id="todayNote"></div>
         </div>
 
+        <div class="day-strip" id="dayStrip" aria-label="Choose workout day"></div>
+
         <div class="summary-grid">
           <article>
             <span id="exerciseTotal">0</span>
-            <p>exercises</p>
+            <p>рухів</p>
           </article>
           <article>
             <span id="routineMinutes">0</span>
-            <p>planned min</p>
+            <p>хвилин</p>
           </article>
           <article>
             <span id="completedCount">0</span>
-            <p>sessions</p>
+            <p>сесій</p>
           </article>
         </div>
 
         <div class="action-row">
-          <button class="primary-action" id="startWorkout" type="button">Start Routine</button>
-          <button class="secondary-action" id="viewPlan" type="button">View Plan</button>
+          <button class="primary-action" id="startWorkout" type="button">Почати</button>
+          <button class="secondary-action" id="viewPlan" type="button">План</button>
         </div>
       </section>
 
@@ -87,9 +89,9 @@
         </article>
 
         <div class="timer-controls">
-          <button id="pauseResume" type="button">Pause</button>
-          <button id="skipStep" type="button">Skip</button>
-          <button id="showInfo" type="button">Info</button>
+          <button id="pauseResume" type="button">Пауза</button>
+          <button id="skipStep" type="button">Далі</button>
+          <button id="showInfo" type="button">Деталі</button>
         </div>
       </section>
 
@@ -97,8 +99,8 @@
         <div class="section-heading">
           <button class="icon-button" id="backFromPlan" type="button" aria-label="Back to home">&larr;</button>
           <div>
-            <p class="eyebrow">Morning plan</p>
-            <h2 id="planTitle">Today's Routine</h2>
+            <p class="eyebrow">План дня</p>
+            <h2 id="planTitle">Сьогодні</h2>
           </div>
         </div>
         <div id="exerciseList" class="exercise-list"></div>
@@ -108,23 +110,23 @@
         <div class="section-heading">
           <button class="icon-button" id="closeInfo" type="button" aria-label="Back to workout">&larr;</button>
           <div>
-            <p class="eyebrow">Exercise notes</p>
-            <h2 id="infoTitle">Details</h2>
+            <p class="eyebrow">Пояснення</p>
+            <h2 id="infoTitle">Деталі</h2>
           </div>
         </div>
         <article class="info-panel">
           <h3 id="infoExerciseName"></h3>
           <p id="infoDescription"></p>
           <div class="detail-group">
-            <h4>Trains</h4>
+            <h4>Працює</h4>
             <p id="infoBodyPart"></p>
           </div>
           <div class="detail-group">
-            <h4>Short-term benefit</h4>
+            <h4>Користь зараз</h4>
             <p id="infoShortBenefit"></p>
           </div>
           <div class="detail-group">
-            <h4>Long-term benefit</h4>
+            <h4>Користь з часом</h4>
             <p id="infoLongBenefit"></p>
           </div>
         </article>
@@ -133,10 +135,10 @@
       <section id="finishView" class="view" aria-labelledby="finishTitle">
         <div class="finish-card">
           <div class="celebration" id="celebration" aria-hidden="true"></div>
-          <p class="eyebrow">Routine complete</p>
-          <h2 id="finishTitle">Done. Proud of you, Dad.</h2>
+          <p class="eyebrow">Готово</p>
+          <h2 id="finishTitle">Сесію завершено. Пишаюся тобою, тату.</h2>
           <p id="finishStats"></p>
-          <button class="primary-action" id="finishHome" type="button">Back Home</button>
+          <button class="primary-action" id="finishHome" type="button">На головну</button>
         </div>
       </section>
     </main>
