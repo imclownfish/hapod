@@ -339,9 +339,9 @@ const weeklyPlan = [
 ];
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
-const TODAY_INDEX = new Date().getDay();
 const BIRTHDAY_MONTH = 8;
 const BIRTHDAY_DAY = 26;
+const PREP_SECONDS = 20;
 const ICONS = {
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" /></svg>',
   x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
@@ -584,18 +584,18 @@ const TEXT = {
     normalTitle: "План на сьогодні",
     warmup: "Useful tip: почни з 5 хв легкої розминки, щоб суглоби і пульс встигли підготуватися.",
     facts: [
-      "Fun fact, 7-8 тисяч кроків на день часто дають більше користі, ніж рідкісні довгі тренування.",
-      "Useful tip: білок у кожному прийомі їжі допомагає м'язам відновлюватися після тренування.",
-      "Interesting fact, сон - це частина програми: сила і настрій часто падають раніше, ніж ти помітиш втому.",
-      "Did you know, ікіґай - це не тільки велика мрія, а й маленька причина встати і зробити план сьогодні.",
-      "Useful tip: повільний темп у вправі може зробити легку гантель значно важчою без додаткового обладнання.",
-      "Interesting fact, м'язи ростуть не під час підходу, а коли тіло відновлюється після нього.",
-      "Fun fact, регулярність перемагає ідеальність: коротка сесія сьогодні краща за ідеальну, яку відклали.",
+      "Fun fact, у метааналізі 2022 року найбільше зниження ризику смертності було біля 8 000-10 000 кроків на день для дорослих до 60 років.",
+      "Useful tip: Міжнародне товариство спортивного харчування називає 1.4-2.0 г білка на кг маси тіла на день типовим діапазоном для активних людей.",
+      "Interesting fact, CDC радить дорослим спати щонайменше 7 годин за ніч.",
+      "Did you know, ВООЗ радить дорослим 150-300 хв помірної активності або 75-150 хв інтенсивної активності на тиждень.",
+      "Useful tip: темп 3 секунди вниз і 1 секунда вгору робить 10 повторів приблизно 40 секундами роботи м'язів.",
+      "Interesting fact, рекомендації ACSM часто ставлять 48 годин між важкими тренуваннями однієї групи м'язів.",
+      "Fun fact, 500 мл води важать приблизно 0.5 кг, тому навіть маленька пляшка має реальну вагу для легких вправ.",
     ],
     completedToday: "Сьогоднішню сесію вже завершено.",
     getReady: "Приготуйся",
     startTarget: "Старт",
-    prepCoach: "Займи позицію. Наступний сигнал починає вправу.",
+    prepCoach: "Підготуй килимок або вагу, займи позицію. Можна натиснути Старт раніше.",
     timer: "Таймер",
     reps: "Повтори",
     timedCoach: "Рухайся рівно і контрольовано. Таймер рахує за тебе.",
@@ -667,18 +667,18 @@ const TEXT = {
     normalTitle: "Today's Plan",
     warmup: "Useful tip: start with 5 easy minutes so your joints and heart rate have time to wake up.",
     facts: [
-      "Fun fact, 7-8 thousand steps a day can matter more than one rare huge workout.",
-      "Useful tip: protein with each meal helps muscles repair after training.",
-      "Interesting fact, sleep is part of the plan: strength and mood often dip before you notice fatigue.",
-      "Did you know, ikigai can be a small reason to get up and do today's plan, not only a huge life mission.",
-      "Useful tip: slow tempo can make a light dumbbell feel much heavier without extra equipment.",
-      "Interesting fact, muscles grow during recovery, not during the set itself.",
-      "Fun fact, consistency beats perfection: a short session today beats a perfect one you postpone.",
+      "Fun fact, a 2022 meta-analysis found the largest mortality-risk drop around 8,000-10,000 steps per day for adults under 60.",
+      "Useful tip: the International Society of Sports Nutrition lists 1.4-2.0 g of protein per kg of body weight per day as a common active-person range.",
+      "Interesting fact, the CDC recommends adults sleep at least 7 hours per night.",
+      "Did you know, the WHO recommends 150-300 minutes of moderate activity or 75-150 minutes of vigorous activity per week for adults.",
+      "Useful tip: a 3-second lower and 1-second lift makes 10 reps about 40 seconds of muscle work.",
+      "Interesting fact, ACSM guidance often uses 48 hours between hard sessions for the same muscle group.",
+      "Fun fact, 500 ml of water weighs about 0.5 kg, so even a small bottle has real load for light exercises.",
     ],
     completedToday: "Today's session is already complete.",
     getReady: "Get ready",
     startTarget: "Start",
-    prepCoach: "Set your position. The next cue starts the exercise.",
+    prepCoach: "Set up the mat or weight, then get into position. You can tap Start early.",
     timer: "Timer",
     reps: "Reps",
     timedCoach: "Move smoothly and stay controlled. The timer counts for you.",
@@ -735,7 +735,7 @@ const TEXT = {
 };
 
 const state = {
-  selectedDay: TODAY_INDEX,
+  selectedDay: new Date().getDay(),
   currentIndex: 0,
   phase: "prep",
   remaining: 0,
@@ -749,6 +749,7 @@ const state = {
   theme: localStorage.getItem("hapodTheme") || "dark",
   unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
   audioContext: null,
+  dailyRefreshId: null,
 };
 
 const els = {
@@ -814,6 +815,7 @@ const els = {
   infoShortBenefit: document.querySelector("#infoShortBenefit"),
   infoLongBenefit: document.querySelector("#infoLongBenefit"),
   celebration: document.querySelector("#celebration"),
+  finishView: document.querySelector("#finishView"),
   finishStats: document.querySelector("#finishStats"),
   finishHome: document.querySelector("#finishHome"),
 };
@@ -828,7 +830,7 @@ function setButton(button, label, iconName) {
 }
 
 function isSelectedToday() {
-  return state.selectedDay === TODAY_INDEX;
+  return state.selectedDay === todayIndex();
 }
 
 function isSelectedUnlocked() {
@@ -851,6 +853,10 @@ function dayCopy(index) {
   return { short, title, subtitle };
 }
 
+function todayIndex() {
+  return new Date().getDay();
+}
+
 function exerciseCopy(exercise) {
   if (state.language !== "en" || !exercise) return exercise;
   return { ...exercise, ...(EXERCISE_EN[exercise.name] || {}) };
@@ -862,7 +868,7 @@ function isBirthdayToday(date = new Date()) {
 
 function dailyFact(date = new Date()) {
   const facts = t("facts");
-  const daySeed = Math.floor(date.getTime() / 86400000);
+  const daySeed = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
   return facts[daySeed % facts.length];
 }
 
@@ -886,7 +892,22 @@ function saveStats(stats) {
 }
 
 function localDateKey(date = new Date()) {
-  return date.toLocaleDateString("en-CA");
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function scheduleDailyRefresh() {
+  clearTimeout(state.dailyRefreshId);
+  const now = new Date();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 1);
+  state.dailyRefreshId = window.setTimeout(() => {
+    state.selectedDay = todayIndex();
+    updateHome();
+    renderPlan();
+    scheduleDailyRefresh();
+  }, nextMidnight.getTime() - now.getTime());
 }
 
 function showView(id) {
@@ -1050,12 +1071,12 @@ function renderDayStrip() {
     button.className = "day-button";
     button.textContent = copy.short;
     button.setAttribute("aria-pressed", String(index === state.selectedDay));
-    button.classList.toggle("is-today", index === TODAY_INDEX);
-    button.classList.toggle("is-locked", index !== TODAY_INDEX && !state.unlockedDays.has(index));
+    button.classList.toggle("is-today", index === todayIndex());
+    button.classList.toggle("is-locked", index !== todayIndex() && !state.unlockedDays.has(index));
     button.setAttribute(
       "aria-label",
       `${copy.title}. ${
-        index === TODAY_INDEX
+        index === todayIndex()
           ? t("todayAuto")
           : state.unlockedDays.has(index)
             ? t("selectedOverride")
@@ -1188,8 +1209,8 @@ function startStep() {
   }
 
   if (state.phase === "prep") {
-    state.remaining = 5;
-    state.stepTotal = 5;
+    state.remaining = PREP_SECONDS;
+    state.stepTotal = PREP_SECONDS;
     els.modeLabel.textContent = t("getReady");
     els.exerciseName.textContent = displayExercise.name;
     els.exerciseTarget.textContent = `${t("startTarget")}: ${displayExercise.target}`;
@@ -1332,16 +1353,21 @@ function cancelWorkout() {
 }
 
 function launchCelebration() {
-  const colors = ["#2f7d62", "#d59b2d", "#386fa4", "#14342b"];
+  const colors = ["#2f7d62", "#d59b2d", "#386fa4", "#f4d35e", "#f45b69", "#f7fff7"];
   els.celebration.innerHTML = "";
-  for (let index = 0; index < 24; index += 1) {
+  els.finishView.classList.add("is-celebrating");
+  window.setTimeout(() => els.finishView.classList.remove("is-celebrating"), 2800);
+  for (let index = 0; index < 76; index += 1) {
     const piece = document.createElement("span");
     piece.className = "confetti";
     piece.style.background = colors[index % colors.length];
-    piece.style.setProperty("--x", `${Math.random() * 260 - 130}px`);
-    piece.style.setProperty("--y", `${Math.random() * 220 + 100}px`);
-    piece.style.setProperty("--r", `${Math.random() * 540 - 270}deg`);
-    piece.style.animationDelay = `${index * 16}ms`;
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.width = `${Math.random() * 7 + 6}px`;
+    piece.style.height = `${Math.random() * 12 + 10}px`;
+    piece.style.setProperty("--drift", `${Math.random() * 180 - 90}px`);
+    piece.style.setProperty("--r", `${Math.random() * 900 - 450}deg`);
+    piece.style.animationDelay = `${Math.random() * 520}ms`;
+    piece.style.animationDuration = `${Math.random() * 900 + 1900}ms`;
     els.celebration.appendChild(piece);
   }
 }
@@ -1439,3 +1465,4 @@ if ("serviceWorker" in navigator) {
 document.documentElement.dataset.theme = state.theme;
 updateHome();
 renderPlan();
+scheduleDailyRefresh();
