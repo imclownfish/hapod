@@ -1,7 +1,7 @@
 {
   "name": "HAPOD",
   "short_name": "HAPOD",
-  "description": "Hardworking Andrii's Plan of the Day",
+  "description": "HAPOD - a focused daily workout companion.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#fbfaf5",

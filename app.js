@@ -339,8 +339,6 @@ const weeklyPlan = [
 ];
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
-const BIRTHDAY_MONTH = 8;
-const BIRTHDAY_DAY = 26;
 const PREP_SECONDS = 20;
 const ICONS = {
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" /></svg>',
@@ -565,10 +563,56 @@ const EXERCISE_EN = {
   },
 };
 
+const FACT_SOURCES = {
+  WHO: "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+  CDC_ACTIVITY: "https://www.cdc.gov/physical-activity-basics/benefits/",
+  CDC_SLEEP: "https://www.cdc.gov/sleep/about/index.html",
+  ODPHP: "https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines/current-guidelines/top-10-things-know",
+  ISSN: "https://pubmed.ncbi.nlm.nih.gov/28642676/",
+};
+
+// Kept locally so HAPOD remains useful offline. Each entry has a public-health or research source.
+const DAILY_FACTS = [
+  { uk: "Факт: ВООЗ радить дорослим 150-300 хвилин помірної аеробної активності на тиждень.", en: "Fact: WHO recommends 150-300 minutes of moderate aerobic activity per week for adults.", source: "WHO" },
+  { uk: "Факт: Альтернатива від ВООЗ - 75-150 хвилин інтенсивної аеробної активності на тиждень.", en: "Fact: WHO's vigorous alternative is 75-150 minutes of aerobic activity per week.", source: "WHO" },
+  { uk: "Факт: ВООЗ повідомляє, що 31% дорослих у світі не досягли рекомендованого рівня активності у 2022 році.", en: "Fact: WHO reports that 31% of adults worldwide did not meet activity recommendations in 2022.", source: "WHO" },
+  { uk: "Факт: Це приблизно 1.8 мільярда дорослих людей з недостатньою активністю у 2022 році.", en: "Fact: That was about 1.8 billion insufficiently active adults in 2022.", source: "WHO" },
+  { uk: "Факт: Якщо глобальна тенденція не зміниться, ВООЗ прогнозує 35% недостатньої активності серед дорослих до 2030 року.", en: "Fact: If the global trend continues, WHO projects adult inactivity could reach 35% by 2030.", source: "WHO" },
+  { uk: "Факт: ВООЗ оцінює витрати систем охорони здоров'я від недостатньої активності у $300 млрд за 2020-2030 роки.", en: "Fact: WHO estimates physical inactivity could cost health systems about $300 billion from 2020 to 2030.", source: "WHO" },
+  { uk: "Факт: 81% підлітків віком 11-17 років у світі не досягають рекомендацій ВООЗ щодо активності.", en: "Fact: 81% of adolescents aged 11-17 worldwide do not meet WHO activity recommendations.", source: "WHO" },
+  { uk: "Факт: ВООЗ прагне зменшити недостатню активність на 15% до 2030 року відносно рівня 2010 року.", en: "Fact: WHO's global target is a 15% relative reduction in inactivity by 2030 versus 2010.", source: "WHO" },
+  { uk: "Факт: У дорослих регулярна активність пов'язана зі зниженням ризику 8 видів раку за даними CDC.", en: "Fact: CDC says regular physical activity is linked to lower risk of 8 types of cancer in adults.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: За даними CDC, у дорослих до 60 років зниження ризику передчасної смерті вирівнювалося приблизно біля 8-10 тисяч кроків на день.", en: "Fact: CDC reports that, for adults under 60, premature-death risk leveled off around 8,000-10,000 steps per day.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: Для дорослих від 60 років цей показник у дослідженні CDC був приблизно 6-8 тисяч кроків на день.", en: "Fact: For adults 60 and older, the CDC-cited study found that level around 6,000-8,000 steps per day.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: CDC зазначає, що одна сесія помірної або інтенсивної активності може дати негайну користь для здоров'я.", en: "Fact: CDC says one session of moderate-to-vigorous activity can provide immediate health benefits.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: CDC вказує, що навіть деяка кількість помірної чи інтенсивної активності дає дорослим користь для здоров'я.", en: "Fact: CDC says adults gain some health benefits from any amount of moderate-to-vigorous activity.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: У 2024 році 26.4% дорослих США виконували і аеробні, і силові рекомендації у вільний час.", en: "Fact: In 2024, 26.4% of U.S. adults met both aerobic and muscle-strengthening guidelines in leisure time.", source: "ODPHP" },
+  { uk: "Факт: Ціль Healthy People 2030 для цього показника - 29.7% дорослих.", en: "Fact: The Healthy People 2030 target for that measure is 29.7% of adults.", source: "ODPHP" },
+  { uk: "Факт: У рекомендаціях США силові вправи для основних груп м'язів радять виконувати щонайменше 2 дні на тиждень.", en: "Fact: U.S. guidelines recommend muscle-strengthening work for major muscle groups on at least 2 days each week.", source: "ODPHP" },
+  { uk: "Факт: У шкалі навантаження 0-10 помірна активність зазвичай відповідає 5-6 балам.", en: "Fact: On a 0-10 effort scale, moderate activity is usually a 5 or 6.", source: "ODPHP" },
+  { uk: "Факт: У тій самій шкалі інтенсивна активність починається приблизно з 7-8 балів із 10.", en: "Fact: On the same scale, vigorous activity begins around 7 or 8 out of 10.", source: "ODPHP" },
+  { uk: "Факт: У рекомендаціях США 2 хвилини помірної активності приблизно дорівнюють 1 хвилині інтенсивної.", en: "Fact: U.S. guidelines use roughly 2 minutes of moderate activity as equivalent to 1 minute of vigorous activity.", source: "ODPHP" },
+  { uk: "Факт: Активність, що зміцнює м'язи, працює саме для м'язів, які ти навантажуєш - тому важлива різноманітність рухів.", en: "Fact: Muscle-strengthening adaptations are specific to the muscles used, which is why movement variety matters.", source: "ODPHP" },
+  { uk: "Факт: CDC радить людям 18-60 років спати 7 або більше годин на добу.", en: "Fact: CDC recommends 7 or more hours of sleep per day for adults aged 18-60.", source: "CDC_SLEEP" },
+  { uk: "Факт: CDC радить людям 61-64 років спати 7-9 годин на добу.", en: "Fact: CDC recommends 7-9 hours of sleep per day for adults aged 61-64.", source: "CDC_SLEEP" },
+  { uk: "Факт: CDC радить людям від 65 років спати 7-8 годин на добу.", en: "Fact: CDC recommends 7-8 hours of sleep per day for adults aged 65 and older.", source: "CDC_SLEEP" },
+  { uk: "Факт: У 2024 році 30.5% дорослих США в середньому спали менш ніж 7 годин на добу.", en: "Fact: In 2024, 30.5% of U.S. adults averaged less than 7 hours of sleep in a 24-hour period.", source: "CDC_SLEEP" },
+  { uk: "Факт: Позиція ISSN називає 1.4-2.0 г білка на кг маси тіла на добу достатнім діапазоном для більшості людей, які тренуються.", en: "Fact: The ISSN position stand lists 1.4-2.0 g of protein per kg of body weight per day as sufficient for most exercising people.", source: "ISSN" },
+  { uk: "Факт: Позиція ISSN наводить 20-40 г якісного білка як загальний абсолютний розмір порції після тренування.", en: "Fact: The ISSN position stand gives 20-40 g of high-quality protein as a general absolute serving range.", source: "ISSN" },
+  { uk: "Факт: Позиція ISSN описує рівномірний розподіл білка кожні 3-4 години як практичний підхід протягом дня.", en: "Fact: The ISSN position stand describes spreading protein about every 3-4 hours as a practical daily approach.", source: "ISSN" },
+  { uk: "Факт: У дослідженнях, оглянутих ISSN, анаболічний ефект тренування може тривати щонайменше 24 години.", en: "Fact: In research reviewed by ISSN, the anabolic effect of exercise can last at least 24 hours.", source: "ISSN" },
+  { uk: "Факт: Рекомендації ВООЗ включають у фізичну активність не лише спорт, а й ходьбу, велосипед, роботу та домашні справи.", en: "Fact: WHO includes walking, cycling, work, and household chores in physical activity, not only sport.", source: "WHO" },
+  { uk: "Факт: Для старших людей із поганою рухливістю ВООЗ радить вправи на баланс 3 або більше днів на тиждень.", en: "Fact: For older adults with poor mobility, WHO recommends balance-focused activity on 3 or more days per week.", source: "WHO" },
+  { uk: "Факт: ВООЗ зазначає, що активність підтримує профілактику й контроль серцево-судинних хвороб, діабету та деяких видів раку.", en: "Fact: WHO says activity supports prevention and management of cardiovascular disease, diabetes, and some cancers.", source: "WHO" },
+  { uk: "Факт: CDC пов'язує регулярну активність зі зниженням ризику деменції, депресії, хвороб серця, інсульту та діабету 2 типу.", en: "Fact: CDC links regular activity with lower risk of dementia, depression, heart disease, stroke, and type 2 diabetes.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: CDC називає кращу якість сну, менше тривоги та нижчий тиск серед негайних переваг однієї сесії активності.", en: "Fact: CDC lists better sleep quality, less anxiety, and lower blood pressure among immediate benefits of activity.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: За даними ВООЗ, недостатня активність частіше зростає після 60 років.", en: "Fact: WHO reports that physical inactivity generally rises after age 60.", source: "WHO" },
+  { uk: "Факт: ВООЗ повідомляє, що у світі жінки менш активні за чоловіків у середньому на 5 відсоткових пунктів.", en: "Fact: WHO reports that women are less active than men worldwide by an average of 5 percentage points.", source: "WHO" },
+];
+
 const TEXT = {
   uk: {
-    appIntro:
-      "ТВІЙ ТИЖНЕВИЙ ПЛАН ВЖЕ РОЗКЛАДЕНИЙ ПО СЕКУНДАХ 🙂",
+    appTagline: "Твій щоденний помічник для тренувань",
     streak: "днів серія",
     moves: "рухів",
     minutes: "хвилин",
@@ -580,18 +624,9 @@ const TEXT = {
     todayAuto: "Сьогоднішній день обрано автоматично",
     lockedDay: "Цей день заблоковано, бо сьогодні інший план",
     selectedOverride: "День розблоковано вручну",
-    birthdayTitle: "З днем народження, тату.",
-    normalTitle: "План на сьогодні",
+    homeTitle: "План на сьогодні",
+    factSource: "Джерело",
     warmup: "Useful tip: почни з 5 хв легкої розминки, щоб суглоби і пульс встигли підготуватися.",
-    facts: [
-      "Fun fact, у метааналізі 2022 року найбільше зниження ризику смертності було біля 8 000-10 000 кроків на день для дорослих до 60 років.",
-      "Useful tip: Міжнародне товариство спортивного харчування називає 1.4-2.0 г білка на кг маси тіла на день типовим діапазоном для активних людей.",
-      "Interesting fact, CDC радить дорослим спати щонайменше 7 годин за ніч.",
-      "Did you know, ВООЗ радить дорослим 150-300 хв помірної активності або 75-150 хв інтенсивної активності на тиждень.",
-      "Useful tip: темп 3 секунди вниз і 1 секунда вгору робить 10 повторів приблизно 40 секундами роботи м'язів.",
-      "Interesting fact, рекомендації ACSM часто ставлять 48 годин між важкими тренуваннями однієї групи м'язів.",
-      "Fun fact, 500 мл води важать приблизно 0.5 кг, тому навіть маленька пляшка має реальну вагу для легких вправ.",
-    ],
     completedToday: "Сьогоднішню сесію вже завершено.",
     getReady: "Приготуйся",
     startTarget: "Старт",
@@ -627,12 +662,12 @@ const TEXT = {
     trains: "Працює",
     benefitNow: "Користь зараз",
     benefitLater: "Користь з часом",
-    finishTitle: "Сесію завершено. Пишаюся тобою, тату.",
+    finishTitle: "Сесію завершено. Гарна робота.",
     home: "На головну",
     overrideEyebrow: "Заблокований день",
     overrideTitle: "Все одно зробити цей день?",
     overrideText:
-      "HAPOD обирає сьогоднішній план автоматично. Якщо ти спеціально хочеш інший день, можна розблокувати його для цієї сесії.",
+      "HAPOD обирає сьогоднішній план автоматично. Якщо ти спеціально хочеш інший день, можна розблокувати його лише для цієї сесії.",
     no: "Ні",
     yes: "Так",
     settingsEyebrow: "Додаток",
@@ -650,8 +685,7 @@ const TEXT = {
     optional: "опційно",
   },
   en: {
-    appIntro:
-      "YOUR WEEKLY PLAN IS NOW SCHEDULED DOWN TO THE SECONDS 🙂",
+    appTagline: "Your daily workout companion",
     streak: "day streak",
     moves: "moves",
     minutes: "minutes",
@@ -663,18 +697,9 @@ const TEXT = {
     todayAuto: "Today is selected automatically",
     lockedDay: "This day is locked because today has a different plan",
     selectedOverride: "Day unlocked manually",
-    birthdayTitle: "Happy Birthday, Dad.",
-    normalTitle: "Today's Plan",
+    homeTitle: "Today's Plan",
+    factSource: "Source",
     warmup: "Useful tip: start with 5 easy minutes so your joints and heart rate have time to wake up.",
-    facts: [
-      "Fun fact, a 2022 meta-analysis found the largest mortality-risk drop around 8,000-10,000 steps per day for adults under 60.",
-      "Useful tip: the International Society of Sports Nutrition lists 1.4-2.0 g of protein per kg of body weight per day as a common active-person range.",
-      "Interesting fact, the CDC recommends adults sleep at least 7 hours per night.",
-      "Did you know, the WHO recommends 150-300 minutes of moderate activity or 75-150 minutes of vigorous activity per week for adults.",
-      "Useful tip: a 3-second lower and 1-second lift makes 10 reps about 40 seconds of muscle work.",
-      "Interesting fact, ACSM guidance often uses 48 hours between hard sessions for the same muscle group.",
-      "Fun fact, 500 ml of water weighs about 0.5 kg, so even a small bottle has real load for light exercises.",
-    ],
     completedToday: "Today's session is already complete.",
     getReady: "Get ready",
     startTarget: "Start",
@@ -710,12 +735,12 @@ const TEXT = {
     trains: "Trains",
     benefitNow: "Benefit now",
     benefitLater: "Benefit over time",
-    finishTitle: "Session complete. Proud of you, Dad.",
+    finishTitle: "Session complete. Good work.",
     home: "Home",
     overrideEyebrow: "Locked day",
     overrideTitle: "Do this day anyway?",
     overrideText:
-      "HAPOD selects today's plan automatically. If you intentionally want another day, you can unlock it for this session.",
+      "HAPOD selects today's plan automatically. If you intentionally want another day, you can unlock it for this session only.",
     no: "No",
     yes: "Yes",
     settingsEyebrow: "App",
@@ -762,6 +787,8 @@ const els = {
   routineMinutes: document.querySelector("#routineMinutes"),
   completedCount: document.querySelector("#completedCount"),
   todayNote: document.querySelector("#todayNote"),
+  factSource: document.querySelector("#factSource"),
+  appTagline: document.querySelector("#appTagline"),
   soundToggle: document.querySelector("#soundToggle"),
   settingsOpen: document.querySelector("#settingsOpen"),
   settingsDialog: document.querySelector("#settingsDialog"),
@@ -862,14 +889,9 @@ function exerciseCopy(exercise) {
   return { ...exercise, ...(EXERCISE_EN[exercise.name] || {}) };
 }
 
-function isBirthdayToday(date = new Date()) {
-  return date.getMonth() === BIRTHDAY_MONTH && date.getDate() === BIRTHDAY_DAY;
-}
-
 function dailyFact(date = new Date()) {
-  const facts = t("facts");
   const daySeed = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
-  return facts[daySeed % facts.length];
+  return DAILY_FACTS[daySeed % DAILY_FACTS.length];
 }
 
 function currentPlan() {
@@ -972,6 +994,7 @@ function updateHome() {
     state.theme === "dark" ? "#081310" : "#14342b"
   );
   els.streakCount.textContent = stats.streak;
+  els.appTagline.textContent = t("appTagline");
   els.streakIcon.innerHTML = ICONS.flame;
   els.heroMark.innerHTML = ICONS.calendar;
   if (!els.settingsDialog.classList.contains("active")) {
@@ -993,9 +1016,11 @@ function updateHome() {
   els.completedCount.textContent = stats.completed;
   const selectedCopy = dayCopy(state.selectedDay);
   els.todayLabel.textContent = `${selectedCopy.title} - ${selectedCopy.subtitle}`;
-  els.homeTitle.textContent =
-    isBirthdayToday() ? t("birthdayTitle") : t("normalTitle");
-  els.todayNote.textContent = dailyFact();
+  els.homeTitle.textContent = t("homeTitle");
+  const fact = dailyFact();
+  els.todayNote.textContent = fact[state.language];
+  els.factSource.textContent = `${t("factSource")}: ${fact.source}`;
+  els.factSource.href = FACT_SOURCES[fact.source];
   els.lockStatus.textContent = isSelectedToday()
     ? t("todayAuto")
     : isSelectedUnlocked()

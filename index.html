@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta
       name="description"
-      content="Hardworking Andrii's Plan of the Day - a personal morning workout companion."
+      content="HAPOD - a focused daily workout companion."
     />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icon.svg" />
@@ -21,7 +21,7 @@
     <main class="app-shell">
       <section class="topbar" aria-label="App summary">
         <div>
-          <p class="eyebrow">Hardworking Andrii's Plan of the Day</p>
+          <p class="eyebrow" id="appTagline">A daily workout companion</p>
           <h1>HAPOD</h1>
         </div>
         <div class="top-actions">
@@ -38,7 +38,10 @@
           <div class="hero-mark" id="heroMark" aria-hidden="true">H</div>
           <p class="date-line" id="todayLabel"></p>
           <h2 id="homeTitle">План на сьогодні</h2>
-          <div class="today-note" id="todayNote"></div>
+        <div class="today-note">
+          <p id="todayNote"></p>
+          <a id="factSource" href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer"></a>
+        </div>
         </div>
 
         <div class="summary-grid">
@@ -139,7 +142,7 @@
         <div class="finish-card">
           <div class="celebration" id="celebration" aria-hidden="true"></div>
           <p class="eyebrow">Готово</p>
-          <h2 id="finishTitle">Сесію завершено. Пишаюся тобою, тату.</h2>
+          <h2 id="finishTitle">Сесію завершено. Гарна робота.</h2>
           <p id="finishStats"></p>
           <button class="primary-action" id="finishHome" type="button">На головну</button>
         </div>
