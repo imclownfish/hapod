@@ -18,12 +18,13 @@ Use this model instead:
 
 ## Recommended backend
 
-Use Supabase with GitHub Pages. Its free plan includes a Postgres database and
-email authentication, and its public browser key is designed to be used in a
-web app. The database still needs Row Level Security so each signed-in person
-can only read or change their own rows.
+Use Firebase Authentication and Cloud Firestore with GitHub Pages. Firebase
+supports email/password accounts and a document database while GitHub Pages
+continues to serve the PWA. Firebase's web configuration is public by design;
+security comes from Firestore Security Rules, not from hiding the configuration.
 
-Do not ship a Supabase service-role key to this repository or to the browser.
+Do not put an Admin SDK credential, service-account JSON file, or any server
+secret in this repository or in the browser.
 
 ## First release scope
 
@@ -37,36 +38,27 @@ This is intentionally smaller than a social fitness platform. It proves that
 sync works before we take on social feeds, friends, challenges, notifications,
 or user-created plans.
 
-## Database sketch
+## Firestore data sketch
 
-```sql
-create table public.user_stats (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  completed integer not null default 0 check (completed >= 0),
-  streak integer not null default 0 check (streak >= 0),
-  last_completed_date date,
-  updated_at timestamptz not null default now()
-);
+```
+users/{uid}
+  completed: number
+  streak: number
+  lastCompletedDate: "YYYY-MM-DD"
+  updatedAt: server timestamp
+```
 
-alter table public.user_stats enable row level security;
-
-create policy "Users read their own stats"
-on public.user_stats for select to authenticated
-using (auth.uid() = user_id);
-
-create policy "Users insert their own stats"
-on public.user_stats for insert to authenticated
-with check (auth.uid() = user_id);
-
-create policy "Users update their own stats"
-on public.user_stats for update to authenticated
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
+```text
+match /users/{userId} {
+  allow read, create, update: if request.auth != null
+    && request.auth.uid == userId;
+}
 ```
 
 Community totals should be calculated by a server-side function from accepted
 session events. The browser must not be allowed to write an arbitrary global
-total, or one person can inflate it with a request loop.
+total, or one person can inflate it with a request loop. Cloudflare Turnstile
+should protect public sign-up and event endpoints from automated abuse.
 
 ## Privacy copy needed before launch
 

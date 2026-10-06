@@ -672,6 +672,7 @@ const TEXT = {
     yes: "Так",
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
+    privacy: "Приватність",
     closeSettings: "Закрити налаштування",
     soundCues: "Звуки",
     soundText: "Біп на старті, під час відпочинку і на останніх секундах.",
@@ -745,6 +746,7 @@ const TEXT = {
     yes: "Yes",
     settingsEyebrow: "App",
     settings: "Settings",
+    privacy: "Privacy",
     closeSettings: "Close settings",
     soundCues: "Sound cues",
     soundText: "Beeps at start, rest, and final seconds.",
@@ -793,6 +795,7 @@ const els = {
   settingsOpen: document.querySelector("#settingsOpen"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsClose: document.querySelector("#settingsClose"),
+  privacyLink: document.querySelector("#privacyLink"),
   overrideDialog: document.querySelector("#overrideDialog"),
   overrideNo: document.querySelector("#overrideNo"),
   overrideYes: document.querySelector("#overrideYes"),
@@ -1045,6 +1048,7 @@ function updateHome() {
   setButton(els.overrideYes, t("yes"), "check");
   els.settingsEyebrow.textContent = t("settingsEyebrow");
   els.settingsTitle.textContent = t("settings");
+  els.privacyLink.textContent = t("privacy");
   els.soundSettingTitle.textContent = t("soundCues");
   els.soundSettingText.textContent = t("soundText");
   els.languageSettingTitle.textContent = t("language");
