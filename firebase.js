@@ -134,3 +134,15 @@ window.addEventListener("hapod:complete-day", async (event) => {
     emit("hapod:firebase-error");
   }
 });
+
+window.addEventListener("hapod:restart-progress", async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const stats = { completed: 0, streak: 0, lastCompletedDate: null };
+  try {
+    await setDoc(statsRef(user), { ...stats, updatedAt: serverTimestamp() });
+    emit("hapod:remote-stats", { stats });
+  } catch {
+    emit("hapod:firebase-error");
+  }
+});

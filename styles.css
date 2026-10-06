@@ -201,6 +201,12 @@ h4 {
   gap: 8px;
 }
 
+.top-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .settings-button,
 .account-button {
   display: grid;
@@ -883,7 +889,6 @@ h4 {
 }
 
 .account-card #accountGuest > p,
-.account-card #accountSyncChoice > p,
 .account-card #accountMember > p {
   margin: 0;
   color: var(--muted);
@@ -897,9 +902,26 @@ h4 {
 }
 
 .account-card .account-actions .primary-action,
-.account-card .account-actions .secondary-action {
+.account-card .account-actions .secondary-action,
+.account-card .account-actions .danger-action {
   width: auto;
   margin-top: 0;
+}
+
+.danger-action {
+  color: #ffffff;
+  background: var(--danger);
+}
+
+.danger-action:hover {
+  filter: brightness(1.06);
+}
+
+.settings-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .account-error {

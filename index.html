@@ -25,8 +25,10 @@
           <h1>HAPOD</h1>
         </div>
         <div class="top-actions">
-          <button class="account-button" id="accountOpen" type="button" aria-label="Account"></button>
-          <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings"></button>
+          <div class="top-action-buttons">
+            <button class="account-button" id="accountOpen" type="button" aria-label="Account"></button>
+            <button class="settings-button" id="settingsOpen" type="button" aria-label="Settings"></button>
+          </div>
           <div class="streak-pill" aria-label="Current streak">
             <span class="streak-main"><span id="streakIcon"></span><span id="streakCount">0</span></span>
             <small id="streakLabel">day streak</small>
@@ -195,7 +197,10 @@
             </div>
           </div>
 
-          <a class="settings-privacy" id="privacyLink" href="privacy.html">Privacy</a>
+          <div class="settings-links">
+            <a class="settings-privacy" id="privacyLink" href="privacy.html">Privacy</a>
+            <a class="settings-privacy" id="termsLink" href="terms.html">Terms</a>
+          </div>
         </div>
       </section>
 
@@ -214,21 +219,31 @@
             <button class="primary-action" id="googleSignIn" type="button">Continue with Google</button>
           </div>
 
-          <div id="accountSyncChoice" hidden>
-            <p id="accountSyncText"></p>
+          <div id="accountMember" hidden>
+            <p id="accountMemberText"></p>
             <div class="dialog-actions account-actions">
-              <button class="secondary-action" id="startFresh" type="button">Start fresh</button>
-              <button class="primary-action" id="importStats" type="button">Import progress</button>
+              <button class="secondary-action" id="signOut" type="button">Sign out</button>
+              <button class="danger-action" id="restartProgress" type="button">Restart progress</button>
             </div>
           </div>
 
-          <div id="accountMember" hidden>
-            <p id="accountMemberText"></p>
-            <button class="secondary-action" id="signOut" type="button">Sign out</button>
-          </div>
-
           <p class="account-error" id="accountError" role="alert" hidden></p>
-          <a class="settings-privacy" id="accountPrivacyLink" href="privacy.html">Privacy</a>
+          <div class="settings-links">
+            <a class="settings-privacy" id="accountPrivacyLink" href="privacy.html">Privacy</a>
+            <a class="settings-privacy" id="accountTermsLink" href="terms.html">Terms</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="restartDialog" aria-hidden="true">
+        <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="restartTitle">
+          <p class="eyebrow" id="restartEyebrow">Progress</p>
+          <h2 id="restartTitle">Restart your progress?</h2>
+          <p id="restartText"></p>
+          <div class="dialog-actions">
+            <button class="secondary-action" id="restartNo" type="button">Cancel</button>
+            <button class="danger-action" id="restartYes" type="button">Restart</button>
+          </div>
         </div>
       </section>
     </main>

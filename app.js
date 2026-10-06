@@ -674,16 +674,19 @@ const TEXT = {
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
     privacy: "Приватність",
+    terms: "Умови",
     account: "Акаунт",
     accountTitle: "Збережи свій прогрес",
     accountGuest: "Увійди через Google, щоб зберігати серію та завершені сесії між пристроями.",
     continueGoogle: "Продовжити з Google",
     accountLoading: "Завантажуємо твій прогрес...",
-    accountImport: "На цьому пристрої є локальний прогрес. Додати його до нового акаунта?",
-    importProgress: "Імпортувати прогрес",
-    startFresh: "Почати з нуля",
     accountSynced: "Твій прогрес синхронізовано.",
     signOut: "Вийти",
+    restartProgress: "Почати прогрес заново",
+    restartEyebrow: "Прогрес",
+    restartTitle: "Почати прогрес заново?",
+    restartText: "Це скине завершені сесії та поточну серію до нуля на всіх пристроях. Акаунт залишиться.",
+    restart: "Почати заново",
     accountError: "Не вдалося підключити акаунт. Спробуй ще раз.",
     closeSettings: "Закрити налаштування",
     soundCues: "Звуки",
@@ -759,16 +762,19 @@ const TEXT = {
     settingsEyebrow: "App",
     settings: "Settings",
     privacy: "Privacy",
+    terms: "Terms",
     account: "Account",
     accountTitle: "Save your progress",
     accountGuest: "Sign in with Google to keep your streak and completed sessions in sync across devices.",
     continueGoogle: "Continue with Google",
     accountLoading: "Loading your progress...",
-    accountImport: "This device has local progress. Add it to your new account?",
-    importProgress: "Import progress",
-    startFresh: "Start fresh",
     accountSynced: "Your progress is synced.",
     signOut: "Sign out",
+    restartProgress: "Restart progress",
+    restartEyebrow: "Progress",
+    restartTitle: "Restart your progress?",
+    restartText: "This resets completed sessions and your current streak to zero on every device. Your account stays active.",
+    restart: "Restart",
     accountError: "We could not connect your account. Please try again.",
     closeSettings: "Close settings",
     soundCues: "Sound cues",
@@ -802,7 +808,6 @@ const state = {
   dailyRefreshId: null,
   account: null,
   accountLoading: false,
-  accountNeedsImport: false,
   syncReady: false,
   accountError: "",
 };
@@ -825,22 +830,27 @@ const els = {
   accountDialog: document.querySelector("#accountDialog"),
   accountClose: document.querySelector("#accountClose"),
   accountGuest: document.querySelector("#accountGuest"),
-  accountSyncChoice: document.querySelector("#accountSyncChoice"),
   accountMember: document.querySelector("#accountMember"),
   accountGuestText: document.querySelector("#accountGuestText"),
-  accountSyncText: document.querySelector("#accountSyncText"),
   accountMemberText: document.querySelector("#accountMemberText"),
   accountError: document.querySelector("#accountError"),
   accountEyebrow: document.querySelector("#accountEyebrow"),
   accountTitle: document.querySelector("#accountTitle"),
   googleSignIn: document.querySelector("#googleSignIn"),
-  importStats: document.querySelector("#importStats"),
-  startFresh: document.querySelector("#startFresh"),
   signOut: document.querySelector("#signOut"),
+  restartProgress: document.querySelector("#restartProgress"),
   accountPrivacyLink: document.querySelector("#accountPrivacyLink"),
+  accountTermsLink: document.querySelector("#accountTermsLink"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsClose: document.querySelector("#settingsClose"),
   privacyLink: document.querySelector("#privacyLink"),
+  termsLink: document.querySelector("#termsLink"),
+  restartDialog: document.querySelector("#restartDialog"),
+  restartEyebrow: document.querySelector("#restartEyebrow"),
+  restartTitle: document.querySelector("#restartTitle"),
+  restartText: document.querySelector("#restartText"),
+  restartNo: document.querySelector("#restartNo"),
+  restartYes: document.querySelector("#restartYes"),
   overrideDialog: document.querySelector("#overrideDialog"),
   overrideNo: document.querySelector("#overrideNo"),
   overrideYes: document.querySelector("#overrideYes"),
@@ -963,10 +973,6 @@ function saveStats(stats) {
 
 function sendFirebaseEvent(name, detail = {}) {
   window.dispatchEvent(new CustomEvent(name, { detail }));
-}
-
-function hasLocalProgress(stats = getStats()) {
-  return stats.completed > 0 || stats.streak > 0 || Boolean(stats.lastCompletedDate);
 }
 
 function localDateKey(date = new Date()) {
@@ -1104,6 +1110,7 @@ function updateHome() {
   els.settingsEyebrow.textContent = t("settingsEyebrow");
   els.settingsTitle.textContent = t("settings");
   els.privacyLink.textContent = t("privacy");
+  els.termsLink.textContent = t("terms");
   els.soundSettingTitle.textContent = t("soundCues");
   els.soundSettingText.textContent = t("soundText");
   els.languageSettingTitle.textContent = t("language");
@@ -1119,20 +1126,23 @@ function updateAccountUI() {
   els.accountEyebrow.textContent = t("account");
   els.accountTitle.textContent = t("accountTitle");
   els.accountGuestText.textContent = t("accountGuest");
-  els.accountSyncText.textContent = t("accountImport");
   els.accountMemberText.textContent = state.accountLoading
     ? t("accountLoading")
     : state.account
       ? `${t("accountSynced")} ${state.account.displayName || state.account.email || ""}`.trim()
       : "";
   setButton(els.googleSignIn, t("continueGoogle"), "user");
-  setButton(els.importStats, t("importProgress"), "check");
-  setButton(els.startFresh, t("startFresh"), "play");
   setButton(els.signOut, t("signOut"), "cancel");
+  setButton(els.restartProgress, t("restartProgress"), "cancel");
   els.accountPrivacyLink.textContent = t("privacy");
+  els.accountTermsLink.textContent = t("terms");
+  els.restartEyebrow.textContent = t("restartEyebrow");
+  els.restartTitle.textContent = t("restartTitle");
+  els.restartText.textContent = t("restartText");
+  setButton(els.restartNo, t("no"), "cancel");
+  els.restartYes.textContent = t("restart");
   els.accountGuest.hidden = Boolean(state.account);
-  els.accountSyncChoice.hidden = !state.accountNeedsImport;
-  els.accountMember.hidden = !state.account || state.accountNeedsImport;
+  els.accountMember.hidden = !state.account;
   els.googleSignIn.disabled = state.accountLoading;
   els.accountError.hidden = !state.accountError;
   els.accountError.textContent = state.accountError ? t("accountError") : "";
@@ -1521,21 +1531,16 @@ els.googleSignIn.addEventListener("click", () => {
   updateAccountUI();
   sendFirebaseEvent("hapod:sign-in");
 });
-els.importStats.addEventListener("click", () => {
-  state.accountNeedsImport = false;
-  state.syncReady = true;
-  sendFirebaseEvent("hapod:initialize-account", { stats: getStats() });
-  updateAccountUI();
-});
-els.startFresh.addEventListener("click", () => {
-  const emptyStats = { completed: 0, streak: 0, lastCompletedDate: null };
-  saveStats(emptyStats);
-  state.accountNeedsImport = false;
-  state.syncReady = true;
-  sendFirebaseEvent("hapod:initialize-account", { stats: emptyStats });
-  updateHome();
-});
 els.signOut.addEventListener("click", () => sendFirebaseEvent("hapod:sign-out"));
+els.restartProgress.addEventListener("click", () => showDialog(els.restartDialog));
+els.restartNo.addEventListener("click", () => hideDialog(els.restartDialog));
+els.restartYes.addEventListener("click", () => {
+  hideDialog(els.restartDialog);
+  sendFirebaseEvent("hapod:restart-progress");
+});
+els.restartDialog.addEventListener("click", (event) => {
+  if (event.target === els.restartDialog) hideDialog(els.restartDialog);
+});
 els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
 els.settingsDialog.addEventListener("click", (event) => {
   if (event.target === els.settingsDialog) {
@@ -1597,7 +1602,6 @@ window.addEventListener("hapod:auth-state", (event) => {
   state.account = event.detail.user;
   state.accountLoading = Boolean(event.detail.user);
   state.syncReady = false;
-  state.accountNeedsImport = false;
   state.accountError = "";
   updateHome();
 });
@@ -1610,13 +1614,11 @@ window.addEventListener("hapod:account-ready", (event) => {
   if (stats) {
     saveStats(stats);
     state.syncReady = true;
-    state.accountNeedsImport = false;
   } else {
-    state.syncReady = false;
-    state.accountNeedsImport = hasLocalProgress();
+    state.syncReady = true;
+    sendFirebaseEvent("hapod:initialize-account", { stats: getStats() });
   }
   updateHome();
-  if (!stats && state.accountNeedsImport) showDialog(els.accountDialog);
 });
 
 window.addEventListener("hapod:remote-stats", (event) => {
