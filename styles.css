@@ -423,6 +423,22 @@ h4 {
   color: var(--leaf-light);
 }
 
+.legal-uk {
+  display: none;
+}
+
+html[lang="uk"] .legal-en {
+  display: none;
+}
+
+html[lang="uk"] .legal-uk {
+  display: block;
+}
+
+html[lang="uk"] .legal-nav .legal-uk {
+  display: inline;
+}
+
 [data-theme="light"] .today-note a {
   color: var(--leaf-dark);
 }
@@ -917,6 +933,11 @@ h4 {
   filter: brightness(1.06);
 }
 
+.danger-setting .danger-action {
+  min-height: 42px;
+  padding-inline: 12px;
+}
+
 .settings-links {
   display: flex;
   flex-wrap: wrap;
@@ -930,6 +951,48 @@ h4 {
   font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.4;
+}
+
+.whats-new-card .primary-action {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.release-list {
+  display: grid;
+  gap: 12px;
+}
+
+.release-entry {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft-panel);
+}
+
+.release-entry h3,
+.release-entry p {
+  margin: 0;
+  padding-inline: 14px;
+}
+
+.release-entry h3 {
+  padding-top: 14px;
+  color: var(--deep);
+  font-size: 1rem;
+}
+
+.release-entry p {
+  padding-block: 6px 14px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.release-entry img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
 }
 
 .compact-heading {

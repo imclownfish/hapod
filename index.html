@@ -189,6 +189,14 @@
             </div>
           </div>
 
+          <div class="setting-row danger-setting">
+            <div>
+              <strong id="restartSettingTitle">Restart progress</strong>
+              <p id="restartSettingText">Reset sessions and streaks to zero.</p>
+            </div>
+            <button class="danger-action" id="resetProgress" type="button">Restart</button>
+          </div>
+
           <div class="setting-group">
             <strong id="themeSettingTitle">Theme</strong>
             <div class="segmented" role="group" aria-label="Theme">
@@ -223,7 +231,6 @@
             <p id="accountMemberText"></p>
             <div class="dialog-actions account-actions">
               <button class="secondary-action" id="signOut" type="button">Sign out</button>
-              <button class="danger-action" id="restartProgress" type="button">Restart progress</button>
             </div>
           </div>
 
@@ -244,6 +251,15 @@
             <button class="secondary-action" id="restartNo" type="button">Cancel</button>
             <button class="danger-action" id="restartYes" type="button">Restart</button>
           </div>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="whatsNewDialog" aria-hidden="true">
+        <div class="dialog-card whats-new-card" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle">
+          <p class="eyebrow" id="whatsNewEyebrow">Update</p>
+          <h2 id="whatsNewTitle">What's new</h2>
+          <div class="release-list" id="releaseList"></div>
+          <button class="primary-action" id="whatsNewClose" type="button">Got it</button>
         </div>
       </section>
     </main>

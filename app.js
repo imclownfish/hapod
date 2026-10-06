@@ -340,6 +340,9 @@ const weeklyPlan = [
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
+// Add releases here when a change is ready to announce. Empty means no popup is shown.
+const RELEASE_NOTES = [];
+const RELEASE_NOTES_VERSION = "";
 const ICONS = {
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" /></svg>',
   x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
@@ -682,11 +685,15 @@ const TEXT = {
     accountLoading: "Завантажуємо твій прогрес...",
     accountSynced: "Твій прогрес синхронізовано.",
     signOut: "Вийти",
-    restartProgress: "Почати прогрес заново",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
     restartText: "Це скине завершені сесії та поточну серію до нуля на всіх пристроях. Акаунт залишиться.",
     restart: "Почати заново",
+    restartSettingTitle: "Почати прогрес заново",
+    restartSettingText: "Скинути завершені сесії та серію до нуля.",
+    whatsNewEyebrow: "Оновлення",
+    whatsNewTitle: "Що нового",
+    whatsNewClose: "Зрозуміло",
     accountError: "Не вдалося підключити акаунт. Спробуй ще раз.",
     closeSettings: "Закрити налаштування",
     soundCues: "Звуки",
@@ -770,11 +777,15 @@ const TEXT = {
     accountLoading: "Loading your progress...",
     accountSynced: "Your progress is synced.",
     signOut: "Sign out",
-    restartProgress: "Restart progress",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
     restartText: "This resets completed sessions and your current streak to zero on every device. Your account stays active.",
     restart: "Restart",
+    restartSettingTitle: "Restart progress",
+    restartSettingText: "Reset completed sessions and streaks to zero.",
+    whatsNewEyebrow: "Update",
+    whatsNewTitle: "What's new",
+    whatsNewClose: "Got it",
     accountError: "We could not connect your account. Please try again.",
     closeSettings: "Close settings",
     soundCues: "Sound cues",
@@ -838,19 +849,26 @@ const els = {
   accountTitle: document.querySelector("#accountTitle"),
   googleSignIn: document.querySelector("#googleSignIn"),
   signOut: document.querySelector("#signOut"),
-  restartProgress: document.querySelector("#restartProgress"),
   accountPrivacyLink: document.querySelector("#accountPrivacyLink"),
   accountTermsLink: document.querySelector("#accountTermsLink"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsClose: document.querySelector("#settingsClose"),
   privacyLink: document.querySelector("#privacyLink"),
   termsLink: document.querySelector("#termsLink"),
+  restartSettingTitle: document.querySelector("#restartSettingTitle"),
+  restartSettingText: document.querySelector("#restartSettingText"),
+  resetProgress: document.querySelector("#resetProgress"),
   restartDialog: document.querySelector("#restartDialog"),
   restartEyebrow: document.querySelector("#restartEyebrow"),
   restartTitle: document.querySelector("#restartTitle"),
   restartText: document.querySelector("#restartText"),
   restartNo: document.querySelector("#restartNo"),
   restartYes: document.querySelector("#restartYes"),
+  whatsNewDialog: document.querySelector("#whatsNewDialog"),
+  whatsNewEyebrow: document.querySelector("#whatsNewEyebrow"),
+  whatsNewTitle: document.querySelector("#whatsNewTitle"),
+  whatsNewClose: document.querySelector("#whatsNewClose"),
+  releaseList: document.querySelector("#releaseList"),
   overrideDialog: document.querySelector("#overrideDialog"),
   overrideNo: document.querySelector("#overrideNo"),
   overrideYes: document.querySelector("#overrideYes"),
@@ -969,6 +987,17 @@ function getStats() {
 
 function saveStats(stats) {
   localStorage.setItem("hapodStats", JSON.stringify(stats));
+}
+
+function resetLocalProgress() {
+  clearInterval(state.timerId);
+  state.paused = false;
+  state.remaining = 0;
+  state.stepTotal = 0;
+  state.unlockedDays.clear();
+  saveUnlockedDays();
+  saveStats({ completed: 0, streak: 0, lastCompletedDate: null });
+  state.selectedDay = todayIndex();
 }
 
 function sendFirebaseEvent(name, detail = {}) {
@@ -1117,7 +1146,11 @@ function updateHome() {
   els.themeSettingTitle.textContent = t("theme");
   els.themeDark.textContent = t("dark");
   els.themeLight.textContent = t("light");
+  els.restartSettingTitle.textContent = t("restartSettingTitle");
+  els.restartSettingText.textContent = t("restartSettingText");
+  els.resetProgress.textContent = t("restart");
   updateAccountUI();
+  if (els.whatsNewDialog.classList.contains("active")) renderWhatsNew();
   refreshWorkoutText();
   renderDayStrip();
 }
@@ -1133,7 +1166,6 @@ function updateAccountUI() {
       : "";
   setButton(els.googleSignIn, t("continueGoogle"), "user");
   setButton(els.signOut, t("signOut"), "cancel");
-  setButton(els.restartProgress, t("restartProgress"), "cancel");
   els.accountPrivacyLink.textContent = t("privacy");
   els.accountTermsLink.textContent = t("terms");
   els.restartEyebrow.textContent = t("restartEyebrow");
@@ -1146,6 +1178,33 @@ function updateAccountUI() {
   els.googleSignIn.disabled = state.accountLoading;
   els.accountError.hidden = !state.accountError;
   els.accountError.textContent = state.accountError ? t("accountError") : "";
+}
+
+function renderWhatsNew() {
+  els.releaseList.innerHTML = "";
+  RELEASE_NOTES.forEach((note) => {
+    const entry = document.createElement("article");
+    entry.className = "release-entry";
+    const title = document.createElement("h3");
+    title.textContent = note[`${state.language}Title`] || note.title || "";
+    const body = document.createElement("p");
+    body.textContent = note[`${state.language}Body`] || note.body || "";
+    entry.append(title, body);
+    if (note.image) {
+      const image = document.createElement("img");
+      image.src = note.image;
+      image.alt = note[`${state.language}ImageAlt`] || note.imageAlt || "";
+      entry.append(image);
+    }
+    els.releaseList.append(entry);
+  });
+}
+
+function openWhatsNewIfNeeded() {
+  if (!RELEASE_NOTES_VERSION || RELEASE_NOTES.length === 0) return;
+  if (localStorage.getItem("hapodSeenRelease") === RELEASE_NOTES_VERSION) return;
+  renderWhatsNew();
+  showDialog(els.whatsNewDialog);
 }
 
 function refreshWorkoutText() {
@@ -1532,11 +1591,25 @@ els.googleSignIn.addEventListener("click", () => {
   sendFirebaseEvent("hapod:sign-in");
 });
 els.signOut.addEventListener("click", () => sendFirebaseEvent("hapod:sign-out"));
-els.restartProgress.addEventListener("click", () => showDialog(els.restartDialog));
+els.resetProgress.addEventListener("click", () => showDialog(els.restartDialog));
 els.restartNo.addEventListener("click", () => hideDialog(els.restartDialog));
 els.restartYes.addEventListener("click", () => {
   hideDialog(els.restartDialog);
-  sendFirebaseEvent("hapod:restart-progress");
+  resetLocalProgress();
+  if (state.account) sendFirebaseEvent("hapod:restart-progress");
+  updateHome();
+  renderPlan();
+  showView("homeView");
+});
+els.whatsNewClose.addEventListener("click", () => {
+  localStorage.setItem("hapodSeenRelease", RELEASE_NOTES_VERSION);
+  hideDialog(els.whatsNewDialog);
+});
+els.whatsNewDialog.addEventListener("click", (event) => {
+  if (event.target === els.whatsNewDialog) {
+    localStorage.setItem("hapodSeenRelease", RELEASE_NOTES_VERSION);
+    hideDialog(els.whatsNewDialog);
+  }
 });
 els.restartDialog.addEventListener("click", (event) => {
   if (event.target === els.restartDialog) hideDialog(els.restartDialog);
@@ -1643,3 +1716,4 @@ document.documentElement.dataset.theme = state.theme;
 updateHome();
 renderPlan();
 scheduleDailyRefresh();
+openWhatsNewIfNeeded();
