@@ -15,9 +15,10 @@ Each exercise can be either:
 - `type: "time"` with `seconds`
 - `type: "reps"` with `reps`
 
-The app currently saves completion count, streaks, and settings only on the
-device with `localStorage`. It does not fingerprint people or send their data
-to a server.
+HAPOD works without an account and keeps completion count, streaks, and
+settings on the device with `localStorage`. Google sign-in is optional. Signed
+in users securely sync completion count, streak, and last completed date to
+Cloud Firestore.
 
 ## Daily Facts
 
@@ -28,9 +29,9 @@ and rotates from the user's local calendar date.
 
 ## Accounts And Community Data
 
-Cross-device accounts and aggregate community stats need a real backend; they
-cannot be implemented safely with GitHub Pages alone. The proposed privacy-safe
-approach and database design live in `DATA_AND_ACCOUNTS.md`.
+Cross-device accounts use Firebase Authentication and Cloud Firestore. The
+privacy model, deployed Firestore rules, and future aggregate-stat approach
+live in `DATA_AND_ACCOUNTS.md` and `firestore.rules`.
 
 ## iPhone Use
 

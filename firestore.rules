@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validStats() {
+      return request.resource.data.keys().hasOnly([
+          'completed', 'streak', 'lastCompletedDate', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'completed', 'streak', 'lastCompletedDate', 'updatedAt'
+        ])
+        && request.resource.data.completed is int
+        && request.resource.data.completed >= 0
+        && request.resource.data.streak is int
+        && request.resource.data.streak >= 0
+        && (request.resource.data.lastCompletedDate is string
+          || request.resource.data.lastCompletedDate == null);
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create, update: if isOwner(userId) && validStats();
+      allow delete: if isOwner(userId);
+    }
+  }
+}

@@ -354,6 +354,7 @@ const ICONS = {
   cancel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
   home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" /></svg>',
+  user: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></svg>',
 };
 const DAY_COPY = {
   uk: {
@@ -673,6 +674,17 @@ const TEXT = {
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
     privacy: "Приватність",
+    account: "Акаунт",
+    accountTitle: "Збережи свій прогрес",
+    accountGuest: "Увійди через Google, щоб зберігати серію та завершені сесії між пристроями.",
+    continueGoogle: "Продовжити з Google",
+    accountLoading: "Завантажуємо твій прогрес...",
+    accountImport: "На цьому пристрої є локальний прогрес. Додати його до нового акаунта?",
+    importProgress: "Імпортувати прогрес",
+    startFresh: "Почати з нуля",
+    accountSynced: "Твій прогрес синхронізовано.",
+    signOut: "Вийти",
+    accountError: "Не вдалося підключити акаунт. Спробуй ще раз.",
     closeSettings: "Закрити налаштування",
     soundCues: "Звуки",
     soundText: "Біп на старті, під час відпочинку і на останніх секундах.",
@@ -747,6 +759,17 @@ const TEXT = {
     settingsEyebrow: "App",
     settings: "Settings",
     privacy: "Privacy",
+    account: "Account",
+    accountTitle: "Save your progress",
+    accountGuest: "Sign in with Google to keep your streak and completed sessions in sync across devices.",
+    continueGoogle: "Continue with Google",
+    accountLoading: "Loading your progress...",
+    accountImport: "This device has local progress. Add it to your new account?",
+    importProgress: "Import progress",
+    startFresh: "Start fresh",
+    accountSynced: "Your progress is synced.",
+    signOut: "Sign out",
+    accountError: "We could not connect your account. Please try again.",
     closeSettings: "Close settings",
     soundCues: "Sound cues",
     soundText: "Beeps at start, rest, and final seconds.",
@@ -777,6 +800,11 @@ const state = {
   unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
   audioContext: null,
   dailyRefreshId: null,
+  account: null,
+  accountLoading: false,
+  accountNeedsImport: false,
+  syncReady: false,
+  accountError: "",
 };
 
 const els = {
@@ -793,6 +821,23 @@ const els = {
   appTagline: document.querySelector("#appTagline"),
   soundToggle: document.querySelector("#soundToggle"),
   settingsOpen: document.querySelector("#settingsOpen"),
+  accountOpen: document.querySelector("#accountOpen"),
+  accountDialog: document.querySelector("#accountDialog"),
+  accountClose: document.querySelector("#accountClose"),
+  accountGuest: document.querySelector("#accountGuest"),
+  accountSyncChoice: document.querySelector("#accountSyncChoice"),
+  accountMember: document.querySelector("#accountMember"),
+  accountGuestText: document.querySelector("#accountGuestText"),
+  accountSyncText: document.querySelector("#accountSyncText"),
+  accountMemberText: document.querySelector("#accountMemberText"),
+  accountError: document.querySelector("#accountError"),
+  accountEyebrow: document.querySelector("#accountEyebrow"),
+  accountTitle: document.querySelector("#accountTitle"),
+  googleSignIn: document.querySelector("#googleSignIn"),
+  importStats: document.querySelector("#importStats"),
+  startFresh: document.querySelector("#startFresh"),
+  signOut: document.querySelector("#signOut"),
+  accountPrivacyLink: document.querySelector("#accountPrivacyLink"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsClose: document.querySelector("#settingsClose"),
   privacyLink: document.querySelector("#privacyLink"),
@@ -916,6 +961,14 @@ function saveStats(stats) {
   localStorage.setItem("hapodStats", JSON.stringify(stats));
 }
 
+function sendFirebaseEvent(name, detail = {}) {
+  window.dispatchEvent(new CustomEvent(name, { detail }));
+}
+
+function hasLocalProgress(stats = getStats()) {
+  return stats.completed > 0 || stats.streak > 0 || Boolean(stats.lastCompletedDate);
+}
+
 function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -997,6 +1050,8 @@ function updateHome() {
     state.theme === "dark" ? "#081310" : "#14342b"
   );
   els.streakCount.textContent = stats.streak;
+  els.accountOpen.innerHTML = ICONS.user;
+  els.accountOpen.setAttribute("aria-label", state.account ? `${t("account")}: ${state.account.displayName || state.account.email || ""}` : t("account"));
   els.appTagline.textContent = t("appTagline");
   els.streakIcon.innerHTML = ICONS.flame;
   els.heroMark.innerHTML = ICONS.calendar;
@@ -1055,8 +1110,32 @@ function updateHome() {
   els.themeSettingTitle.textContent = t("theme");
   els.themeDark.textContent = t("dark");
   els.themeLight.textContent = t("light");
+  updateAccountUI();
   refreshWorkoutText();
   renderDayStrip();
+}
+
+function updateAccountUI() {
+  els.accountEyebrow.textContent = t("account");
+  els.accountTitle.textContent = t("accountTitle");
+  els.accountGuestText.textContent = t("accountGuest");
+  els.accountSyncText.textContent = t("accountImport");
+  els.accountMemberText.textContent = state.accountLoading
+    ? t("accountLoading")
+    : state.account
+      ? `${t("accountSynced")} ${state.account.displayName || state.account.email || ""}`.trim()
+      : "";
+  setButton(els.googleSignIn, t("continueGoogle"), "user");
+  setButton(els.importStats, t("importProgress"), "check");
+  setButton(els.startFresh, t("startFresh"), "play");
+  setButton(els.signOut, t("signOut"), "cancel");
+  els.accountPrivacyLink.textContent = t("privacy");
+  els.accountGuest.hidden = Boolean(state.account);
+  els.accountSyncChoice.hidden = !state.accountNeedsImport;
+  els.accountMember.hidden = !state.account || state.accountNeedsImport;
+  els.googleSignIn.disabled = state.accountLoading;
+  els.accountError.hidden = !state.accountError;
+  els.accountError.textContent = state.accountError ? t("accountError") : "";
 }
 
 function refreshWorkoutText() {
@@ -1193,6 +1272,9 @@ function markDayComplete() {
     stats.completed += 1;
     stats.lastCompletedDate = today;
     saveStats(stats);
+    if (state.account && state.syncReady) {
+      sendFirebaseEvent("hapod:complete-day", { date: today });
+    }
   }
   return stats;
 }
@@ -1428,6 +1510,32 @@ els.settingsOpen.addEventListener("click", () => {
     showDialog(els.settingsDialog);
   }
 });
+els.accountOpen.addEventListener("click", () => showDialog(els.accountDialog));
+els.accountClose.addEventListener("click", () => hideDialog(els.accountDialog));
+els.accountDialog.addEventListener("click", (event) => {
+  if (event.target === els.accountDialog) hideDialog(els.accountDialog);
+});
+els.googleSignIn.addEventListener("click", () => {
+  state.accountError = "";
+  state.accountLoading = true;
+  updateAccountUI();
+  sendFirebaseEvent("hapod:sign-in");
+});
+els.importStats.addEventListener("click", () => {
+  state.accountNeedsImport = false;
+  state.syncReady = true;
+  sendFirebaseEvent("hapod:initialize-account", { stats: getStats() });
+  updateAccountUI();
+});
+els.startFresh.addEventListener("click", () => {
+  const emptyStats = { completed: 0, streak: 0, lastCompletedDate: null };
+  saveStats(emptyStats);
+  state.accountNeedsImport = false;
+  state.syncReady = true;
+  sendFirebaseEvent("hapod:initialize-account", { stats: emptyStats });
+  updateHome();
+});
+els.signOut.addEventListener("click", () => sendFirebaseEvent("hapod:sign-out"));
 els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
 els.settingsDialog.addEventListener("click", (event) => {
   if (event.target === els.settingsDialog) {
@@ -1483,6 +1591,44 @@ els.themeLight.addEventListener("click", () => {
 els.pauseResume.addEventListener("click", () => {
   state.paused = !state.paused;
   setButton(els.pauseResume, state.paused ? t("resume") : t("pause"), state.paused ? "resume" : "pause");
+});
+
+window.addEventListener("hapod:auth-state", (event) => {
+  state.account = event.detail.user;
+  state.accountLoading = Boolean(event.detail.user);
+  state.syncReady = false;
+  state.accountNeedsImport = false;
+  state.accountError = "";
+  updateHome();
+});
+
+window.addEventListener("hapod:account-ready", (event) => {
+  const { user, stats } = event.detail;
+  state.account = user;
+  state.accountLoading = false;
+  state.accountError = "";
+  if (stats) {
+    saveStats(stats);
+    state.syncReady = true;
+    state.accountNeedsImport = false;
+  } else {
+    state.syncReady = false;
+    state.accountNeedsImport = hasLocalProgress();
+  }
+  updateHome();
+  if (!stats && state.accountNeedsImport) showDialog(els.accountDialog);
+});
+
+window.addEventListener("hapod:remote-stats", (event) => {
+  saveStats(event.detail.stats);
+  state.syncReady = true;
+  updateHome();
+});
+
+window.addEventListener("hapod:firebase-error", () => {
+  state.accountLoading = false;
+  state.accountError = "firebase";
+  updateHome();
 });
 
 if ("serviceWorker" in navigator) {

@@ -201,7 +201,8 @@ h4 {
   gap: 8px;
 }
 
-.settings-button {
+.settings-button,
+.account-button {
   display: grid;
   width: 42px;
   height: 42px;
@@ -216,6 +217,21 @@ h4 {
     transform 220ms ease,
     background 160ms ease,
     border-color 160ms ease;
+}
+
+.account-button {
+  color: var(--leaf);
+}
+
+.settings-button svg,
+.account-button svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
 }
 
 .settings-button.is-hidden {
@@ -864,6 +880,34 @@ h4 {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 16px;
+}
+
+.account-card #accountGuest > p,
+.account-card #accountSyncChoice > p,
+.account-card #accountMember > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.account-card .primary-action,
+.account-card #signOut {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.account-card .account-actions .primary-action,
+.account-card .account-actions .secondary-action {
+  width: auto;
+  margin-top: 0;
+}
+
+.account-error {
+  margin: 14px 0 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .compact-heading {
