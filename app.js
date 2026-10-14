@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.8";
+const APP_VERSION = "0.8.9";
 
 const weeklyPlan = [
   {
@@ -1167,7 +1167,7 @@ function updateHome() {
     : "";
   els.daySectionCopy.classList.toggle("has-status", hasDayStatus);
   setButton(els.startWorkout, plan.restDay ? t("markDay") : t("start"), plan.restDay ? "check" : "play");
-  setButton(els.viewPlan, t("plan"), "list");
+  setButton(els.viewPlan, t("homeTitle"), "list");
   setButton(els.cancelWorkout, t("cancel"), "cancel");
   document.querySelector("#infoTitle").textContent = t("details");
   document.querySelector("#planView .eyebrow").textContent = t("planDay");
