@@ -1,14 +1,14 @@
-const CACHE_NAME = "hapod-v22";
+const CACHE_NAME = "hapod-v23";
 const ASSETS = [
   "./",
   "./index.html",
   "./privacy.html",
   "./terms.html",
-  "./legal.js?v=0.8.3",
-  "./styles.css?v=0.8.3",
-  "./app.js?v=0.8.3",
-  "./firebase.js?v=0.8.3",
-  "./manifest.webmanifest?v=0.8.3",
+  "./legal.js?v=0.8.4",
+  "./styles.css?v=0.8.4",
+  "./app.js?v=0.8.4",
+  "./firebase.js?v=0.8.4",
+  "./manifest.webmanifest?v=0.8.4",
   "./icon.svg",
 ];
 

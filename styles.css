@@ -19,6 +19,7 @@
   --safe-top: max(72px, calc(env(safe-area-inset-top) + 24px));
   --safe-bottom: max(28px, calc(env(safe-area-inset-bottom) + 16px));
   --dialog-safe-top: max(92px, calc(env(safe-area-inset-top) + 34px));
+  --drawer-width: min(390px, 88vw);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -896,11 +897,12 @@ html[lang="uk"] .legal-nav .legal-uk {
 }
 
 #settingsDialog .dialog-card {
-  width: 100%;
+  width: var(--drawer-width);
   min-height: 100dvh;
-  padding: var(--dialog-safe-top) clamp(18px, 5vw, 34px) var(--safe-bottom);
-  border: 0;
-  border-radius: 0;
+  padding: var(--safe-top) clamp(18px, 4vw, 28px) var(--safe-bottom);
+  border-block: 0;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
   transform: translateX(100%);
   animation: drawer-in 340ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
@@ -920,6 +922,23 @@ html[lang="uk"] .legal-nav .legal-uk {
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   animation: view-in 220ms ease both;
+}
+
+.settings-card .compact-heading {
+  margin-bottom: 12px;
+}
+
+.settings-card .setting-row,
+.settings-card .setting-group {
+  padding-block: 12px;
+}
+
+.settings-card .settings-links {
+  margin-top: 8px;
+}
+
+.settings-card .settings-version {
+  margin-top: 12px;
 }
 
 .dialog-card h2 {
@@ -1308,16 +1327,12 @@ html[lang="uk"] .legal-nav .legal-uk {
     align-items: flex-end;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 82px;
+    margin-bottom: 14px;
   }
 
   .top-actions {
-    position: absolute;
-    right: 0;
-    bottom: -62px;
     display: block;
     width: auto;
-    z-index: 5;
   }
 
   h1 {
@@ -1368,7 +1383,28 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
 
   #settingsDialog .dialog-card {
-    padding-inline: 18px;
+    width: 100%;
+    min-height: 100dvh;
+    padding: var(--dialog-safe-top) 18px var(--safe-bottom);
+    border: 0;
+    border-radius: 0;
+  }
+
+  .settings-card .setting-row,
+  .settings-card .setting-group {
+    padding-block: 10px;
+  }
+
+  .settings-card .setting-row p {
+    font-size: 0.85rem;
+  }
+
+  .settings-card .settings-links {
+    margin-top: 6px;
+  }
+
+  .settings-card .settings-version {
+    margin-top: 10px;
   }
 }
 
