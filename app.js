@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.1";
+const APP_VERSION = "0.8.2";
 
 const weeklyPlan = [
   {
@@ -1053,6 +1053,16 @@ function openSettingsDrawer() {
   els.settingsOpen.setAttribute("aria-hidden", "true");
 }
 
+function openSettings() {
+  if (!els.settingsDialog.classList.contains("active")) showDialog(els.settingsDialog);
+}
+
+function openAccount() {
+  showDialog(els.accountDialog);
+}
+
+window.HAPOD = { openSettings, openAccount };
+
 function hideDialog(dialog) {
   if (dialog === els.settingsDialog) {
     closeSettingsDrawer();
@@ -1620,14 +1630,8 @@ els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
 els.cancelWorkout.addEventListener("click", cancelWorkout);
 els.finishHome.addEventListener("click", () => showView("homeView"));
-els.settingsOpen.addEventListener("click", () => {
-  if (els.settingsDialog.classList.contains("active")) {
-    hideDialog(els.settingsDialog);
-  } else {
-    showDialog(els.settingsDialog);
-  }
-});
-els.accountOpen.addEventListener("click", () => showDialog(els.accountDialog));
+els.settingsOpen.addEventListener("click", openSettings);
+els.accountOpen.addEventListener("click", openAccount);
 els.accountClose.addEventListener("click", () => hideDialog(els.accountDialog));
 els.accountDialog.addEventListener("click", (event) => {
   if (event.target === els.accountDialog) hideDialog(els.accountDialog);
