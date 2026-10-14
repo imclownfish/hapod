@@ -50,11 +50,18 @@
 
 html {
   min-height: 100%;
-  background: var(--paper);
+  background:
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--gold) 20%, transparent), transparent 26rem),
+    radial-gradient(circle at 86% 3%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 24rem),
+    linear-gradient(150deg, color-mix(in srgb, var(--leaf) 14%, transparent), transparent 42%),
+    linear-gradient(180deg, transparent 44%, color-mix(in srgb, var(--leaf) 8%, transparent) 80%, color-mix(in srgb, var(--blue) 10%, transparent) 100%),
+    var(--paper);
+  background-size: 120% 120%, 130% 130%, 100% 100%, 100% 100%, auto;
+  background-repeat: no-repeat;
 }
 
 body {
-  min-height: 100%;
+  min-height: 100dvh;
   margin: 0;
   color: var(--ink);
   background:
@@ -64,7 +71,21 @@ body {
     linear-gradient(180deg, transparent 44%, color-mix(in srgb, var(--leaf) 8%, transparent) 80%, color-mix(in srgb, var(--blue) 10%, transparent) 100%),
     var(--paper);
   background-size: 120% 120%, 130% 130%, 100% 100%, 100% 100%, auto;
+  background-repeat: no-repeat;
   animation: ambient-bg 18s ease-in-out infinite alternate;
+}
+
+html.dialog-open,
+body.dialog-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body.dialog-open {
+  position: fixed;
+  right: 0;
+  left: 0;
+  width: 100%;
 }
 
 button {
@@ -870,6 +891,7 @@ html[lang="uk"] .legal-nav .legal-uk {
   background: rgba(0, 0, 0, 0);
   opacity: 0;
   pointer-events: none;
+  overscroll-behavior: contain;
   backdrop-filter: blur(0);
   transition:
     opacity 320ms ease,
@@ -922,6 +944,8 @@ html[lang="uk"] .legal-nav .legal-uk {
   width: min(520px, 100%);
   max-height: calc(100dvh - var(--dialog-safe-top) - var(--safe-bottom));
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;

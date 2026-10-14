@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.6";
+const APP_VERSION = "0.8.7";
 
 const weeklyPlan = [
   {
@@ -1036,6 +1036,31 @@ function showView(id) {
   els.views.forEach((view) => view.classList.toggle("active", view.id === id));
 }
 
+const dialogScroll = { locked: false, y: 0 };
+
+function lockDocumentScroll() {
+  if (dialogScroll.locked) return;
+  dialogScroll.y = window.scrollY;
+  dialogScroll.locked = true;
+  document.documentElement.classList.add("dialog-open");
+  document.body.classList.add("dialog-open");
+  document.body.style.top = `-${dialogScroll.y}px`;
+}
+
+function syncDialogScrollLock() {
+  const hasOpenDialog = document.querySelector(".dialog-layer.active");
+  if (hasOpenDialog) {
+    lockDocumentScroll();
+    return;
+  }
+  if (!dialogScroll.locked) return;
+  document.documentElement.classList.remove("dialog-open");
+  document.body.classList.remove("dialog-open");
+  document.body.style.top = "";
+  window.scrollTo(0, dialogScroll.y);
+  dialogScroll.locked = false;
+}
+
 function showDialog(dialog) {
   if (dialog === els.settingsDialog) {
     openSettingsDrawer();
@@ -1043,6 +1068,7 @@ function showDialog(dialog) {
   }
   dialog.classList.add("active");
   dialog.setAttribute("aria-hidden", "false");
+  syncDialogScrollLock();
 }
 
 function openSettingsDrawer() {
@@ -1051,6 +1077,7 @@ function openSettingsDrawer() {
   els.settingsDialog.setAttribute("aria-hidden", "false");
   els.settingsOpen.classList.add("is-hidden");
   els.settingsOpen.setAttribute("aria-hidden", "true");
+  syncDialogScrollLock();
 }
 
 function openSettings() {
@@ -1070,6 +1097,7 @@ function hideDialog(dialog) {
   }
   dialog.classList.remove("active");
   dialog.setAttribute("aria-hidden", "true");
+  syncDialogScrollLock();
 }
 
 function closeSettingsDrawer() {
@@ -1080,6 +1108,7 @@ function closeSettingsDrawer() {
     els.settingsOpen.classList.remove("is-hidden");
     els.settingsOpen.removeAttribute("aria-hidden");
     els.settingsOpen.setAttribute("aria-label", t("settings"));
+    syncDialogScrollLock();
   }, 360);
 }
 
