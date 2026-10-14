@@ -1,4 +1,4 @@
-const CACHE_NAME = "hapod-v19";
+const CACHE_NAME = "hapod-v20";
 const ASSETS = [
   "./",
   "./index.html",
@@ -31,11 +31,12 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request).catch(() => caches.match("./index.html"))
-      );
-    })
+    fetch(event.request)
+      .then((response) => response)
+      .catch(() =>
+        caches.match(event.request).then(
+          (cached) => cached || (event.request.mode === "navigate" ? caches.match("./index.html") : Response.error())
+        )
+      )
   );
 });

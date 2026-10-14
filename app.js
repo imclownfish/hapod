@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.0";
+const APP_VERSION = "0.8.1";
 
 const weeklyPlan = [
   {
@@ -1774,7 +1774,9 @@ window.addEventListener("hapod:firebase-error", () => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
+    navigator.serviceWorker
+      .register(`sw.js?v=${APP_VERSION}`, { updateViaCache: "none" })
+      .then((registration) => registration.update());
   });
 }
 
