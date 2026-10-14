@@ -11,19 +11,15 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.7" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.8" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.7" />
+    <link rel="stylesheet" href="styles.css?v=0.8.8" />
     <title>HAPOD</title>
   </head>
   <body>
     <main class="app-shell">
       <section class="topbar" aria-label="App summary">
-        <div class="brand-lockup">
-          <p class="eyebrow" id="appTagline">A daily workout companion</p>
-          <h1>HAPOD</h1>
-        </div>
         <div class="top-actions">
           <div class="top-action-buttons">
             <button class="account-button" id="accountOpen" type="button" aria-label="Account" onclick="window.HAPOD?.openAccount()"></button>
@@ -34,19 +30,22 @@
 
       <section id="homeView" class="view active" aria-labelledby="homeTitle">
         <div class="hero">
-          <div class="hero-streak">
-            <div class="streak-pill" aria-label="Current streak">
-              <span class="streak-main"><span id="streakIcon"></span><span id="streakCount">0</span></span>
-              <small id="streakLabel">day streak</small>
+          <div class="hero-heading">
+            <p class="eyebrow" id="appTagline">A daily workout companion</p>
+            <div class="hero-title-row">
+              <h2 id="homeTitle">HAPOD</h2>
+              <div class="hero-streak">
+                <div class="streak-pill" aria-label="Current streak">
+                  <span class="streak-main"><span id="streakIcon"></span><span id="streakCount">0</span></span>
+                  <small id="streakLabel">day streak</small>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="hero-mark" id="heroMark" aria-hidden="true">H</div>
-          <p class="date-line" id="todayLabel"></p>
-          <h2 id="homeTitle">План на сьогодні</h2>
-        <div class="today-note">
-          <p id="todayNote"></p>
-          <a id="factSource" href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer"></a>
-        </div>
+          <div class="today-note">
+            <p id="todayNote"></p>
+            <a id="factSource" href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer"></a>
+          </div>
         </div>
 
         <div class="summary-grid">
@@ -71,7 +70,10 @@
 
         <div class="day-section">
           <div class="day-section-copy" id="daySectionCopy">
-            <p class="eyebrow" id="weekLabel">Тиждень</p>
+            <div class="week-heading">
+              <span class="week-icon" id="weekIcon" aria-hidden="true"></span>
+              <p class="eyebrow" id="weekLabel">Тиждень</p>
+            </div>
             <strong id="lockStatus">Сьогоднішній день обрано автоматично</strong>
           </div>
           <div class="day-strip" id="dayStrip" aria-label="Choose workout day"></div>
@@ -267,7 +269,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.7"></script>
-    <script type="module" src="firebase.js?v=0.8.7"></script>
+    <script src="app.js?v=0.8.8"></script>
+    <script type="module" src="firebase.js?v=0.8.8"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.7";
+const APP_VERSION = "0.8.8";
 
 const weeklyPlan = [
   {
@@ -833,8 +833,6 @@ const els = {
   views: document.querySelectorAll(".view"),
   streakCount: document.querySelector("#streakCount"),
   streakIcon: document.querySelector("#streakIcon"),
-  heroMark: document.querySelector("#heroMark"),
-  todayLabel: document.querySelector("#todayLabel"),
   exerciseTotal: document.querySelector("#exerciseTotal"),
   routineMinutes: document.querySelector("#routineMinutes"),
   completedCount: document.querySelector("#completedCount"),
@@ -884,6 +882,7 @@ const els = {
   sessionsLabel: document.querySelector("#sessionsLabel"),
   streakLabel: document.querySelector("#streakLabel"),
   weekLabel: document.querySelector("#weekLabel"),
+  weekIcon: document.querySelector("#weekIcon"),
   lockStatus: document.querySelector("#lockStatus"),
   daySectionCopy: document.querySelector("#daySectionCopy"),
   settingsEyebrow: document.querySelector("#settingsEyebrow"),
@@ -1137,7 +1136,6 @@ function updateHome() {
   els.accountOpen.setAttribute("aria-label", state.account ? `${t("account")}: ${state.account.displayName || state.account.email || ""}` : t("account"));
   els.appTagline.textContent = t("appTagline");
   els.streakIcon.innerHTML = ICONS.flame;
-  els.heroMark.innerHTML = ICONS.calendar;
   if (!els.settingsDialog.classList.contains("active")) {
     els.settingsOpen.innerHTML = ICONS.gear;
   }
@@ -1146,6 +1144,7 @@ function updateHome() {
   els.minutesLabel.textContent = t("minutes");
   els.sessionsLabel.textContent = t("sessions");
   els.weekLabel.textContent = t("week");
+  els.weekIcon.innerHTML = ICONS.calendar;
   els.soundToggle.textContent = state.soundOn ? t("on") : t("off");
   els.soundToggle.setAttribute("aria-pressed", String(state.soundOn));
   els.langUk.setAttribute("aria-pressed", String(state.language === "uk"));
@@ -1155,9 +1154,7 @@ function updateHome() {
   els.exerciseTotal.textContent = plan.restDay ? "0" : routine().length;
   els.routineMinutes.textContent = plan.minutes;
   els.completedCount.textContent = stats.completed;
-  const selectedCopy = dayCopy(state.selectedDay);
-  els.todayLabel.textContent = `${selectedCopy.title} - ${selectedCopy.subtitle}`;
-  els.homeTitle.textContent = t("homeTitle");
+  els.homeTitle.textContent = "HAPOD";
   const fact = dailyFact();
   els.todayNote.textContent = fact[state.language];
   els.factSource.textContent = `${t("factSource")}: ${fact.source}`;

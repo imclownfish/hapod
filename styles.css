@@ -135,14 +135,23 @@ button svg {
   padding: var(--safe-top) 16px var(--safe-bottom);
 }
 
+.app-shell:has(#homeView.active) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.view.active#homeView {
+  width: 100%;
+}
+
 .topbar {
   position: relative;
   z-index: 4;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 14px;
+  justify-content: flex-end;
+  min-height: 42px;
+  margin-bottom: 8px;
   animation: rise-in 520ms ease both;
 }
 
@@ -223,9 +232,7 @@ h4 {
 }
 
 .top-actions {
-  display: grid;
-  justify-items: end;
-  gap: 8px;
+  display: block;
   pointer-events: auto;
 }
 
@@ -311,18 +318,37 @@ h4 {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 24px 20px;
+  padding: 20px;
 }
 
-.hero-streak {
-  position: absolute;
-  top: 18px;
-  right: 20px;
+.hero-heading {
+  position: relative;
   z-index: 2;
 }
 
+.hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero-title-row h2 {
+  margin: 4px 0 0;
+  font-size: clamp(2.35rem, 8vw, 4.3rem);
+  line-height: 0.9;
+  white-space: nowrap;
+}
+
+.hero-streak {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
 .hero-streak .streak-pill {
-  min-width: 104px;
+  min-width: 96px;
+  padding: 8px 10px;
 }
 
 .hero::after {
@@ -334,26 +360,6 @@ h4 {
   border: 20px solid rgba(47, 125, 98, 0.1);
   border-radius: 50%;
   content: "";
-}
-
-.hero-mark {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  margin-bottom: 44px;
-  border-radius: 8px;
-  color: var(--action-text);
-  background: linear-gradient(135deg, var(--action-start), var(--action-end));
-  box-shadow: 0 14px 24px rgba(20, 52, 43, 0.18);
-  font-weight: 950;
-}
-
-.hero-mark svg {
-  width: 1.45rem;
-  height: 1.45rem;
-  fill: none;
-  stroke: currentColor;
 }
 
 .finish-card p {
@@ -507,6 +513,29 @@ html[lang="uk"] .legal-nav .legal-uk {
   text-align: left;
   transform: translateY(-5px);
   transition: max-height 240ms ease, opacity 180ms ease, transform 240ms ease;
+}
+
+.week-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.week-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--action-text);
+  background: linear-gradient(135deg, var(--action-start), var(--action-end));
+}
+
+.week-icon svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
 }
 
 .day-section-copy.has-status {
@@ -1369,41 +1398,38 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
 
   .topbar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: flex-end;
-    gap: 4px 12px;
-    margin-bottom: 14px;
+    display: flex;
+    justify-content: flex-end;
+    min-height: 42px;
+    margin-bottom: 8px;
   }
 
-  .brand-lockup {
-    display: contents;
+  .top-actions {
+    display: block;
+    width: auto;
   }
 
-  .topbar .eyebrow {
-    grid-column: 1 / -1;
-    grid-row: 1;
+  .hero {
+    padding: 18px 16px;
+  }
+
+  .hero #appTagline {
     overflow: visible;
     font-size: clamp(0.52rem, 2.8vw, 0.75rem);
     line-height: 1.2;
     white-space: nowrap;
   }
 
-  .topbar h1 {
-    grid-column: 1;
-    grid-row: 2;
+  .hero-title-row {
+    gap: 10px;
   }
 
-  .top-actions {
-    grid-column: 2;
-    grid-row: 2;
-    align-self: end;
-    display: block;
-    width: auto;
+  .hero-title-row h2 {
+    font-size: clamp(2.2rem, 12.5vw, 3.2rem);
   }
 
-  h1 {
-    font-size: clamp(2.2rem, 18vw, 3.5rem);
+  .hero-streak .streak-pill {
+    min-width: 92px;
   }
 
   h2 {
@@ -1412,15 +1438,6 @@ html[lang="uk"] .legal-nav .legal-uk {
 
   .hero {
     padding: 20px 16px;
-  }
-
-  .hero-streak {
-    top: 16px;
-    right: 16px;
-  }
-
-  .hero-mark {
-    margin-bottom: 48px;
   }
 
   .summary-grid {
