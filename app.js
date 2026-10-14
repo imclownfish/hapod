@@ -1,3 +1,5 @@
+const APP_VERSION = "0.8.0";
+
 const weeklyPlan = [
   {
     key: "sun",
@@ -676,6 +678,7 @@ const TEXT = {
     yes: "Так",
     settingsEyebrow: "Додаток",
     settings: "Налаштування",
+    version: "Версія",
     privacy: "Приватність",
     terms: "Умови",
     account: "Акаунт",
@@ -768,6 +771,7 @@ const TEXT = {
     yes: "Yes",
     settingsEyebrow: "App",
     settings: "Settings",
+    version: "Version",
     privacy: "Privacy",
     terms: "Terms",
     account: "Account",
@@ -881,7 +885,9 @@ const els = {
   streakLabel: document.querySelector("#streakLabel"),
   weekLabel: document.querySelector("#weekLabel"),
   lockStatus: document.querySelector("#lockStatus"),
+  daySectionCopy: document.querySelector("#daySectionCopy"),
   settingsEyebrow: document.querySelector("#settingsEyebrow"),
+  appVersion: document.querySelector("#appVersion"),
   settingsTitle: document.querySelector("#settingsTitle"),
   soundSettingTitle: document.querySelector("#soundSettingTitle"),
   soundSettingText: document.querySelector("#soundSettingText"),
@@ -1117,11 +1123,13 @@ function updateHome() {
   els.todayNote.textContent = fact[state.language];
   els.factSource.textContent = `${t("factSource")}: ${fact.source}`;
   els.factSource.href = FACT_SOURCES[fact.source];
-  els.lockStatus.textContent = isSelectedToday()
-    ? t("todayAuto")
-    : isSelectedUnlocked()
+  const hasDayStatus = !isSelectedToday();
+  els.lockStatus.textContent = hasDayStatus
+    ? isSelectedUnlocked()
       ? t("selectedOverride")
-      : t("lockedDay");
+      : t("lockedDay")
+    : "";
+  els.daySectionCopy.classList.toggle("has-status", hasDayStatus);
   setButton(els.startWorkout, plan.restDay ? t("markDay") : t("start"), plan.restDay ? "check" : "play");
   setButton(els.viewPlan, t("plan"), "list");
   setButton(els.cancelWorkout, t("cancel"), "cancel");
@@ -1141,6 +1149,7 @@ function updateHome() {
   setButton(els.overrideYes, t("yes"), "check");
   els.settingsEyebrow.textContent = t("settingsEyebrow");
   els.settingsTitle.textContent = t("settings");
+  els.appVersion.textContent = `${t("version")} ${APP_VERSION}`;
   els.privacyLink.textContent = t("privacy");
   els.termsLink.textContent = t("terms");
   els.soundSettingTitle.textContent = t("soundCues");
