@@ -61,8 +61,9 @@ body {
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--gold) 20%, transparent), transparent 26rem),
     radial-gradient(circle at 86% 3%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 24rem),
     linear-gradient(150deg, color-mix(in srgb, var(--leaf) 14%, transparent), transparent 42%),
+    linear-gradient(180deg, transparent 44%, color-mix(in srgb, var(--leaf) 8%, transparent) 80%, color-mix(in srgb, var(--blue) 10%, transparent) 100%),
     var(--paper);
-  background-size: 120% 120%, 130% 130%, 100% 100%, auto;
+  background-size: 120% 120%, 130% 130%, 100% 100%, 100% 100%, auto;
   animation: ambient-bg 18s ease-in-out infinite alternate;
 }
 
@@ -1317,6 +1318,21 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
 }
 
+@media (min-width: 720px) {
+  :root {
+    --drawer-width: min(560px, 90vw);
+  }
+
+  .settings-card .setting-row p,
+  .danger-setting .danger-action {
+    white-space: nowrap;
+  }
+
+  .danger-setting .danger-action {
+    min-width: 132px;
+  }
+}
+
 @media (max-width: 540px) {
   :root {
     --safe-top: max(76px, calc(env(safe-area-inset-top) + 24px));
@@ -1329,14 +1345,35 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
 
   .topbar {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: flex-end;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 4px 12px;
     margin-bottom: 14px;
   }
 
+  .brand-lockup {
+    display: contents;
+  }
+
+  .topbar .eyebrow {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    overflow: visible;
+    font-size: clamp(0.52rem, 2.8vw, 0.75rem);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .topbar h1 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
   .top-actions {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
     display: block;
     width: auto;
   }
