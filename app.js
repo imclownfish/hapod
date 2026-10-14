@@ -809,6 +809,8 @@ const state = {
   stepTotal: 0,
   paused: false,
   timerId: null,
+  deadlineAt: null,
+  wakeLock: null,
   workoutStartedAt: null,
   lastViewBeforeInfo: "workoutView",
   soundOn: localStorage.getItem("hapodSound") === "true",
@@ -990,7 +992,8 @@ function saveStats(stats) {
 }
 
 function resetLocalProgress() {
-  clearInterval(state.timerId);
+  stopCountdown();
+  releaseWakeLock();
   state.paused = false;
   state.remaining = 0;
   state.stepTotal = 0;
@@ -1292,11 +1295,50 @@ function renderPlan() {
 
 async function requestWakeLock() {
   try {
-    if ("wakeLock" in navigator) {
-      await navigator.wakeLock.request("screen");
+    if ("wakeLock" in navigator && !state.wakeLock) {
+      state.wakeLock = await navigator.wakeLock.request("screen");
+      state.wakeLock.addEventListener("release", () => {
+        state.wakeLock = null;
+      });
     }
   } catch {
     // The workout still works if iOS/browser refuses wake lock.
+  }
+}
+
+async function releaseWakeLock() {
+  if (!state.wakeLock) return;
+  try {
+    await state.wakeLock.release();
+  } catch {
+    // A browser can release this automatically when it is no longer visible.
+  } finally {
+    state.wakeLock = null;
+  }
+}
+
+function stopCountdown() {
+  clearInterval(state.timerId);
+  state.timerId = null;
+  state.deadlineAt = null;
+}
+
+function startCountdown() {
+  if (state.remaining <= 0) return;
+  state.deadlineAt = Date.now() + state.remaining * 1000;
+  state.timerId = window.setInterval(tick, 250);
+}
+
+function syncCountdown() {
+  if (state.paused || !state.deadlineAt) return;
+  const previousRemaining = state.remaining;
+  state.remaining = Math.max(0, Math.ceil((state.deadlineAt - Date.now()) / 1000));
+  if (state.remaining === previousRemaining) return;
+
+  updateWorkoutDisplay();
+  if (state.remaining <= 3 && state.remaining > 0) {
+    beep(620 + (4 - state.remaining) * 80, 0.055);
+    pulse(20);
   }
 }
 
@@ -1380,7 +1422,7 @@ function currentExercise() {
 }
 
 function startStep() {
-  clearInterval(state.timerId);
+  stopCountdown();
   const exercise = currentExercise();
   const displayExercise = exerciseCopy(exercise);
   if (!exercise) {
@@ -1428,18 +1470,13 @@ function startStep() {
   updateWorkoutDisplay();
 
   if (state.remaining > 0) {
-    state.timerId = setInterval(tick, 1000);
+    startCountdown();
   }
 }
 
 function tick() {
   if (state.paused) return;
-  state.remaining -= 1;
-  updateWorkoutDisplay();
-  if (state.remaining <= 3 && state.remaining > 0) {
-    beep(620 + (4 - state.remaining) * 80, 0.055);
-    pulse(20);
-  }
+  syncCountdown();
   if (state.remaining <= 0) {
     advanceStep();
   }
@@ -1494,7 +1531,7 @@ function updateNextUp() {
 }
 
 function advanceStep() {
-  clearInterval(state.timerId);
+  stopCountdown();
   const exercise = currentExercise();
   if (state.phase === "prep") {
     state.phase = "exercise";
@@ -1508,7 +1545,8 @@ function advanceStep() {
 }
 
 function finishWorkout() {
-  clearInterval(state.timerId);
+  stopCountdown();
+  releaseWakeLock();
   const stats = markDayComplete();
   const minutes = Math.max(1, Math.round((Date.now() - state.workoutStartedAt) / 60000));
   els.finishStats.textContent = `${dayCopy(state.selectedDay).title}: ${routine().length} ${t("workoutComplete")} ${minutes} ${t("minShort")}. ${t("currentStreak")} ${stats.streak}.`;
@@ -1522,7 +1560,8 @@ function finishWorkout() {
 }
 
 function cancelWorkout() {
-  clearInterval(state.timerId);
+  stopCountdown();
+  releaseWakeLock();
   state.paused = false;
   state.remaining = 0;
   state.stepTotal = 0;
@@ -1667,9 +1706,27 @@ els.themeLight.addEventListener("click", () => {
 });
 
 els.pauseResume.addEventListener("click", () => {
-  state.paused = !state.paused;
+  if (state.paused) {
+    state.paused = false;
+    startCountdown();
+  } else {
+    syncCountdown();
+    if (state.remaining <= 0) advanceStep();
+    state.paused = true;
+    stopCountdown();
+  }
   setButton(els.pauseResume, state.paused ? t("resume") : t("pause"), state.paused ? "resume" : "pause");
 });
+
+function reconcileWorkoutTimer() {
+  if (document.visibilityState !== "visible" || state.paused || !state.deadlineAt) return;
+  tick();
+  if (document.querySelector("#workoutView.active")) requestWakeLock();
+}
+
+document.addEventListener("visibilitychange", reconcileWorkoutTimer);
+window.addEventListener("focus", reconcileWorkoutTimer);
+window.addEventListener("pageshow", reconcileWorkoutTimer);
 
 window.addEventListener("hapod:auth-state", (event) => {
   state.account = event.detail.user;
