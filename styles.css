@@ -1399,6 +1399,7 @@ html[lang="uk"] .legal-nav .legal-uk {
   .hero-title-row h2 {
     margin: auto 0;
     font-size: clamp(3.1rem, 5vw, 4.8rem);
+    transform: translateY(22px);
   }
 
   .hero-streak {
@@ -1477,7 +1478,7 @@ html[lang="uk"] .legal-nav .legal-uk {
     font-size: clamp(0.52rem, 2.8vw, 0.75rem);
     line-height: 1.2;
     white-space: nowrap;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 
   .hero-title-row {
@@ -1554,7 +1555,8 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
 
   .settings-card .settings-version {
-    margin-top: 10px;
+    margin-top: auto;
+    padding-top: 10px;
   }
 }
 
