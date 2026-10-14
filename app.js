@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.10";
+const APP_VERSION = "0.8.11";
 
 const weeklyPlan = [
   {
@@ -1101,12 +1101,12 @@ function hideDialog(dialog) {
 
 function closeSettingsDrawer() {
   els.settingsDialog.classList.add("is-closing");
+  els.settingsOpen.classList.remove("is-hidden");
+  els.settingsOpen.removeAttribute("aria-hidden");
+  els.settingsOpen.setAttribute("aria-label", t("settings"));
   window.setTimeout(() => {
     els.settingsDialog.classList.remove("active", "is-closing");
     els.settingsDialog.setAttribute("aria-hidden", "true");
-    els.settingsOpen.classList.remove("is-hidden");
-    els.settingsOpen.removeAttribute("aria-hidden");
-    els.settingsOpen.setAttribute("aria-label", t("settings"));
     syncDialogScrollLock();
   }, 360);
 }
