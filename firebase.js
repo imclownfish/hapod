@@ -49,6 +49,8 @@ function statsFromSnapshot(snapshot) {
     completed: Number.isSafeInteger(data.completed) && data.completed >= 0 ? data.completed : 0,
     streak: Number.isSafeInteger(data.streak) && data.streak >= 0 ? data.streak : 0,
     lastCompletedDate: typeof data.lastCompletedDate === "string" ? data.lastCompletedDate : null,
+    bestStreak: Number.isSafeInteger(data.bestStreak) && data.bestStreak >= 0 ? data.bestStreak : 0,
+    bestStreakDate: typeof data.bestStreakDate === "string" ? data.bestStreakDate : null,
   };
 }
 
@@ -103,6 +105,8 @@ window.addEventListener("hapod:initialize-account", async (event) => {
       completed: stats.completed,
       streak: stats.streak,
       lastCompletedDate: stats.lastCompletedDate,
+      bestStreak: stats.bestStreak,
+      bestStreakDate: stats.bestStreakDate,
       updatedAt: serverTimestamp(),
     });
     emit("hapod:remote-stats", { stats });
@@ -122,6 +126,8 @@ window.addEventListener("hapod:normalize-stats", async (event) => {
         completed: stats.completed,
         streak: stats.streak,
         lastCompletedDate: stats.lastCompletedDate,
+        bestStreak: stats.bestStreak,
+        bestStreakDate: stats.bestStreakDate,
         updatedAt: serverTimestamp(),
       },
       { merge: true }
@@ -139,12 +145,22 @@ window.addEventListener("hapod:complete-day", async (event) => {
     const stats = await runTransaction(db, async (transaction) => {
       const ref = statsRef(user);
       const snapshot = await transaction.get(ref);
-      const current = statsFromSnapshot(snapshot) || { completed: 0, streak: 0, lastCompletedDate: null };
+      const current = statsFromSnapshot(snapshot) || {
+        completed: 0,
+        streak: 0,
+        lastCompletedDate: null,
+        bestStreak: 0,
+        bestStreakDate: null,
+      };
       if (current.lastCompletedDate === date) return current;
+      const streak = current.lastCompletedDate === previousDate(date) ? current.streak + 1 : 1;
+      const previousBest = Math.max(current.bestStreak, current.streak);
       const next = {
         completed: current.completed + 1,
-        streak: current.lastCompletedDate === previousDate(date) ? current.streak + 1 : 1,
+        streak,
         lastCompletedDate: date,
+        bestStreak: Math.max(previousBest, streak),
+        bestStreakDate: streak > previousBest || !current.bestStreakDate ? date : current.bestStreakDate,
       };
       transaction.set(ref, { ...next, updatedAt: serverTimestamp() }, { merge: true });
       return next;
@@ -158,7 +174,7 @@ window.addEventListener("hapod:complete-day", async (event) => {
 window.addEventListener("hapod:restart-progress", async () => {
   const user = auth.currentUser;
   if (!user) return;
-  const stats = { completed: 0, streak: 0, lastCompletedDate: null };
+  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null };
   try {
     await setDoc(statsRef(user), { ...stats, updatedAt: serverTimestamp() });
     emit("hapod:remote-stats", { stats });

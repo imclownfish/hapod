@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.17";
+const APP_VERSION = "0.8.18";
 
 const weeklyPlan = [
   {
@@ -699,7 +699,9 @@ const TEXT = {
     accountLoading: "Завантажуємо твій прогрес...",
     accountSynced: "Твій прогрес синхронізовано.",
     accountSessions: "Завершено сесій",
-    accountStreak: "Поточна серія",
+    accountBestStreak: "Найдовша серія",
+    accountRecordDate: "Встановлено",
+    accountNoRecord: "Ще без рекорду",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
@@ -799,7 +801,9 @@ const TEXT = {
     accountLoading: "Loading your progress...",
     accountSynced: "Your progress is synced.",
     accountSessions: "Sessions completed",
-    accountStreak: "Current streak",
+    accountBestStreak: "Longest streak",
+    accountRecordDate: "Set on",
+    accountNoRecord: "No record yet",
     signOut: "Sign out",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
@@ -874,9 +878,10 @@ const els = {
   accountGuestText: document.querySelector("#accountGuestText"),
   accountMemberText: document.querySelector("#accountMemberText"),
   accountSessions: document.querySelector("#accountSessions"),
-  accountStreak: document.querySelector("#accountStreak"),
+  accountBestStreak: document.querySelector("#accountBestStreak"),
   accountSessionsLabel: document.querySelector("#accountSessionsLabel"),
-  accountStreakLabel: document.querySelector("#accountStreakLabel"),
+  accountBestStreakLabel: document.querySelector("#accountBestStreakLabel"),
+  accountBestStreakDate: document.querySelector("#accountBestStreakDate"),
   accountError: document.querySelector("#accountError"),
   accountEyebrow: document.querySelector("#accountEyebrow"),
   accountTitle: document.querySelector("#accountTitle"),
@@ -1020,7 +1025,7 @@ function routine() {
   return currentPlan().exercises;
 }
 
-const EMPTY_STATS = { completed: 0, streak: 0, lastCompletedDate: null };
+const EMPTY_STATS = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null };
 
 function hasActiveStreak(lastCompletedDate) {
   if (!lastCompletedDate) return false;
@@ -1030,10 +1035,21 @@ function hasActiveStreak(lastCompletedDate) {
 }
 
 function normalizeStats(stats) {
+  const streak = Number.isSafeInteger(stats?.streak) && stats.streak >= 0 ? stats.streak : 0;
+  const lastCompletedDate = typeof stats?.lastCompletedDate === "string" ? stats.lastCompletedDate : null;
+  const savedBestStreak = Number.isSafeInteger(stats?.bestStreak) && stats.bestStreak >= 0 ? stats.bestStreak : 0;
+  const bestStreak = Math.max(savedBestStreak, streak);
   const normalized = {
     completed: Number.isSafeInteger(stats?.completed) && stats.completed >= 0 ? stats.completed : 0,
-    streak: Number.isSafeInteger(stats?.streak) && stats.streak >= 0 ? stats.streak : 0,
-    lastCompletedDate: typeof stats?.lastCompletedDate === "string" ? stats.lastCompletedDate : null,
+    streak,
+    lastCompletedDate,
+    bestStreak,
+    bestStreakDate:
+      bestStreak === 0
+        ? null
+        : typeof stats?.bestStreakDate === "string"
+          ? stats.bestStreakDate
+          : lastCompletedDate,
   };
 
   if (normalized.streak > 0 && !hasActiveStreak(normalized.lastCompletedDate)) {
@@ -1051,7 +1067,11 @@ function getStats() {
   }
   const rawStats = stored && typeof stored === "object" ? stored : EMPTY_STATS;
   const stats = normalizeStats(rawStats);
-  if (stats.streak !== rawStats.streak) {
+  if (
+    stats.streak !== rawStats.streak ||
+    stats.bestStreak !== rawStats.bestStreak ||
+    stats.bestStreakDate !== rawStats.bestStreakDate
+  ) {
     saveStats(stats);
     if (state.account && state.syncReady) {
       sendFirebaseEvent("hapod:normalize-stats", { stats });
@@ -1072,7 +1092,7 @@ function resetLocalProgress() {
   state.stepTotal = 0;
   state.unlockedDays.clear();
   saveUnlockedDays();
-  saveStats({ completed: 0, streak: 0, lastCompletedDate: null });
+  saveStats(EMPTY_STATS);
   state.selectedDay = todayIndex();
 }
 
@@ -1283,9 +1303,16 @@ function updateAccountUI() {
       : "";
   const stats = getStats();
   els.accountSessions.textContent = stats.completed;
-  els.accountStreak.textContent = stats.streak;
+  els.accountBestStreak.textContent = stats.bestStreak;
   els.accountSessionsLabel.textContent = t("accountSessions");
-  els.accountStreakLabel.textContent = t("accountStreak");
+  els.accountBestStreakLabel.textContent = t("accountBestStreak");
+  els.accountBestStreakDate.textContent = stats.bestStreakDate
+    ? `${t("accountRecordDate")} ${new Intl.DateTimeFormat(state.language === "uk" ? "uk-UA" : "en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(new Date(`${stats.bestStreakDate}T12:00:00`))}`
+    : t("accountNoRecord");
   setButton(els.googleSignIn, t("continueGoogle"), "user");
   setButton(els.signOut, t("signOut"), "cancel");
   els.accountPrivacyLink.textContent = t("privacy");
@@ -1506,6 +1533,10 @@ function markDayComplete() {
     stats.streak = stats.lastCompletedDate === localDateKey(yesterday) ? stats.streak + 1 : 1;
     stats.completed += 1;
     stats.lastCompletedDate = today;
+    if (stats.streak > stats.bestStreak || !stats.bestStreakDate) {
+      stats.bestStreak = stats.streak;
+      stats.bestStreakDate = today;
+    }
     saveStats(stats);
     if (state.account && state.syncReady) {
       sendFirebaseEvent("hapod:complete-day", { date: today });

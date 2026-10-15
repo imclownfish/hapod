@@ -1248,6 +1248,14 @@ html[lang="uk"] .legal-nav .legal-uk {
   line-height: 1.2;
 }
 
+.account-stats small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
 @keyframes account-stat-in {
   from {
     opacity: 0;
