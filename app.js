@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.12";
+const APP_VERSION = "0.8.13";
 
 const weeklyPlan = [
   {
