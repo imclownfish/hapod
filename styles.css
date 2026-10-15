@@ -828,6 +828,135 @@ html[lang="uk"] .legal-nav .legal-uk {
   margin-top: 12px;
 }
 
+/* The active session is a focused, single-screen control surface. */
+.app-shell:has(#workoutView.active) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 24px;
+}
+
+.app-shell:has(#workoutView.active) .topbar {
+  display: none;
+}
+
+#workoutView.active {
+  display: grid;
+  width: min(680px, 100%);
+  gap: 10px;
+  margin: 0 auto;
+}
+
+#workoutView .progress-block {
+  margin: 0;
+}
+
+#workoutView .exercise-card {
+  display: flex;
+  min-height: 0;
+  padding: 16px;
+  flex-direction: column;
+  align-items: center;
+}
+
+#workoutView .exercise-card::before {
+  inset: 10px;
+}
+
+#workoutView h2 {
+  margin: 4px 0 6px;
+  font-size: clamp(1.85rem, 7vw, 3.1rem);
+}
+
+#workoutView .target-line {
+  min-height: 0;
+  font-size: 0.95rem;
+}
+
+#workoutView .timer-face {
+  width: min(54vw, 250px);
+  margin: 16px auto 12px;
+  font-size: clamp(2.6rem, 13vw, 4.2rem);
+}
+
+#workoutView .timer-face.has-long-value #timerValue {
+  font-size: clamp(1.35rem, 7vw, 2.35rem);
+}
+
+#workoutView .coach-line {
+  min-height: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+#workoutView .next-up {
+  width: 100%;
+  min-height: 0;
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+}
+
+#workoutView .timer-controls {
+  gap: 8px;
+  margin-top: 0;
+}
+
+#workoutView .timer-controls button {
+  min-height: 48px;
+  padding: 0 10px;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 540px) and (max-height: 740px) {
+  .app-shell:has(#workoutView.active) {
+    justify-content: flex-start;
+    padding-top: max(64px, calc(env(safe-area-inset-top) + 12px));
+    padding-bottom: 16px;
+  }
+
+  #workoutView.active {
+    gap: 8px;
+  }
+
+  #workoutView .progress-block {
+    margin-bottom: 0;
+  }
+
+  #workoutView .exercise-card {
+    padding: 12px;
+  }
+
+  #workoutView .exercise-card::before {
+    inset: 8px;
+  }
+
+  #workoutView h2 {
+    margin: 2px 0 4px;
+    font-size: clamp(1.65rem, 7vw, 2.2rem);
+  }
+
+  #workoutView .timer-face {
+    width: min(44vw, 176px);
+    margin: 8px auto;
+  }
+
+  #workoutView .coach-line {
+    font-size: 0.8rem;
+  }
+
+  #workoutView .next-up {
+    margin-top: 6px;
+    padding: 6px 8px;
+    font-size: 0.76rem;
+  }
+
+  #workoutView .timer-controls button {
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+}
+
 #cancelWorkout {
   color: var(--danger);
   border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
