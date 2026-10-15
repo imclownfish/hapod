@@ -1055,6 +1055,24 @@ html[lang="uk"] .legal-nav .legal-uk {
   line-height: 1.5;
 }
 
+.exercise-demo {
+  display: grid;
+  min-height: 164px;
+  margin: 14px 0 16px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, var(--leaf) 30%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 82%, var(--leaf) 18%);
+}
+
+.exercise-demo img {
+  display: block;
+  width: 100%;
+  max-height: 270px;
+  object-fit: contain;
+}
+
 .detail-group {
   margin-top: 16px;
   padding-top: 16px;

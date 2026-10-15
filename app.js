@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.18";
+const APP_VERSION = "0.8.19";
 
 const weeklyPlan = [
   {
@@ -569,6 +569,34 @@ const EXERCISE_EN = {
   },
 };
 
+const EXERCISE_MEDIA = {
+  "Алмазні віджимання": {
+    src: "assets/exercises/diamond-push-ups.gif",
+    uk: "Анімація алмазних віджимань",
+    en: "Diamond push-up animation",
+  },
+  "Floor press гантелями": {
+    src: "assets/exercises/dumbbell-floor-press.gif",
+    uk: "Анімація жиму гантелей лежачи на підлозі",
+    en: "Dumbbell floor press animation",
+  },
+  "Щучі віджимання": {
+    src: "assets/exercises/pike-push-ups.gif",
+    uk: "Анімація щучих віджимань",
+    en: "Pike push-up animation",
+  },
+  "Планка на передпліччях": {
+    src: "assets/exercises/forearm-plank.gif",
+    uk: "Анімація планки на передпліччях",
+    en: "Forearm plank animation",
+  },
+  "Dead bug": {
+    src: "assets/exercises/dead-bug.gif",
+    uk: "Анімація вправи dead bug",
+    en: "Dead bug animation",
+  },
+};
+
 const FACT_SOURCES = {
   WHO: "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
   CDC_ACTIVITY: "https://www.cdc.gov/physical-activity-basics/benefits/",
@@ -960,6 +988,8 @@ const els = {
   backFromPlan: document.querySelector("#backFromPlan"),
   closeInfo: document.querySelector("#closeInfo"),
   infoExerciseName: document.querySelector("#infoExerciseName"),
+  exerciseDemo: document.querySelector("#exerciseDemo"),
+  exerciseDemoImage: document.querySelector("#exerciseDemoImage"),
   infoDescription: document.querySelector("#infoDescription"),
   infoBodyPart: document.querySelector("#infoBodyPart"),
   infoShortBenefit: document.querySelector("#infoShortBenefit"),
@@ -1769,8 +1799,17 @@ function launchCelebration() {
 function showExerciseInfo(index = state.currentIndex, backView = "workoutView") {
   const exercise = routine()[index] || currentExercise();
   const displayExercise = exerciseCopy(exercise);
+  const media = EXERCISE_MEDIA[exercise.name];
   state.lastViewBeforeInfo = backView;
   els.infoExerciseName.textContent = displayExercise.name;
+  els.exerciseDemo.hidden = !media;
+  if (media) {
+    els.exerciseDemoImage.src = media.src;
+    els.exerciseDemoImage.alt = media[state.language];
+  } else {
+    els.exerciseDemoImage.removeAttribute("src");
+    els.exerciseDemoImage.alt = "";
+  }
   els.infoDescription.textContent = displayExercise.description;
   els.infoBodyPart.textContent = displayExercise.bodyPart;
   els.infoShortBenefit.textContent = displayExercise.shortBenefit;
