@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.15";
+const APP_VERSION = "0.8.16";
 
 const weeklyPlan = [
   {
@@ -694,6 +694,11 @@ const TEXT = {
     restart: "Почати заново",
     restartSettingTitle: "Почати прогрес заново",
     restartSettingText: "Скинути завершені сесії та серію до нуля.",
+    cancelEyebrow: "Тренування",
+    cancelTitle: "Завершити тренування?",
+    cancelText: "Прогрес цієї сесії не буде збережено.",
+    keepWorkout: "Продовжити",
+    endWorkout: "Завершити",
     whatsNewEyebrow: "Оновлення",
     whatsNewTitle: "Що нового",
     whatsNewClose: "Зрозуміло",
@@ -787,6 +792,11 @@ const TEXT = {
     restart: "Restart",
     restartSettingTitle: "Restart progress",
     restartSettingText: "Reset completed sessions and streaks to zero.",
+    cancelEyebrow: "Workout",
+    cancelTitle: "End this workout?",
+    cancelText: "Progress from this session will not be saved.",
+    keepWorkout: "Keep going",
+    endWorkout: "End workout",
     whatsNewEyebrow: "Update",
     whatsNewTitle: "What's new",
     whatsNewClose: "Got it",
@@ -868,6 +878,12 @@ const els = {
   restartText: document.querySelector("#restartText"),
   restartNo: document.querySelector("#restartNo"),
   restartYes: document.querySelector("#restartYes"),
+  cancelDialog: document.querySelector("#cancelDialog"),
+  cancelEyebrow: document.querySelector("#cancelEyebrow"),
+  cancelTitle: document.querySelector("#cancelTitle"),
+  cancelText: document.querySelector("#cancelText"),
+  cancelNo: document.querySelector("#cancelNo"),
+  cancelYes: document.querySelector("#cancelYes"),
   whatsNewDialog: document.querySelector("#whatsNewDialog"),
   whatsNewEyebrow: document.querySelector("#whatsNewEyebrow"),
   whatsNewTitle: document.querySelector("#whatsNewTitle"),
@@ -1221,6 +1237,11 @@ function updateAccountUI() {
   els.restartText.textContent = t("restartText");
   setButton(els.restartNo, t("no"), "cancel");
   els.restartYes.textContent = t("restart");
+  els.cancelEyebrow.textContent = t("cancelEyebrow");
+  els.cancelTitle.textContent = t("cancelTitle");
+  els.cancelText.textContent = t("cancelText");
+  setButton(els.cancelNo, t("keepWorkout"), "resume");
+  setButton(els.cancelYes, t("endWorkout"), "cancel");
   els.accountGuest.hidden = Boolean(state.account);
   els.accountMember.hidden = !state.account;
   els.googleSignIn.disabled = state.accountLoading;
@@ -1458,8 +1479,8 @@ function startWorkout() {
   ensureAudio();
   pulse([25, 35, 25]);
   requestWakeLock();
-  startStep();
   showView("workoutView");
+  startStep();
 }
 
 function currentExercise() {
@@ -1509,14 +1530,23 @@ function startStep() {
   }
 
   state.paused = false;
+  document.querySelector("#workoutView").classList.remove("is-paused");
   setButton(els.pauseResume, t("pause"), "pause");
   setButton(els.showInfo, t("details"), "info");
   updateNextUp();
   updateWorkoutDisplay();
+  animateWorkoutStep();
 
   if (state.remaining > 0) {
     startCountdown();
   }
+}
+
+function animateWorkoutStep() {
+  const card = document.querySelector("#workoutView .exercise-card");
+  if (!card) return;
+  card.classList.remove("is-transitioning");
+  window.requestAnimationFrame(() => card.classList.add("is-transitioning"));
 }
 
 function tick() {
@@ -1616,6 +1646,17 @@ function cancelWorkout() {
   showView("homeView");
 }
 
+function openCancelDialog() {
+  if (!state.paused) {
+    syncCountdown();
+    state.paused = true;
+    stopCountdown();
+    setButton(els.pauseResume, t("resume"), "resume");
+    document.querySelector("#workoutView").classList.add("is-paused");
+  }
+  showDialog(els.cancelDialog);
+}
+
 function launchCelebration() {
   const colors = ["#2f7d62", "#d59b2d", "#386fa4", "#f4d35e", "#f45b69", "#f7fff7"];
   els.celebration.innerHTML = "";
@@ -1654,7 +1695,7 @@ els.backFromPlan.addEventListener("click", () => showView("homeView"));
 els.closeInfo.addEventListener("click", () => showView(state.lastViewBeforeInfo));
 els.showInfo.addEventListener("click", () => showExerciseInfo());
 els.skipStep.addEventListener("click", advanceStep);
-els.cancelWorkout.addEventListener("click", cancelWorkout);
+els.cancelWorkout.addEventListener("click", openCancelDialog);
 els.finishHome.addEventListener("click", () => showView("homeView"));
 els.settingsOpen.addEventListener("click", openSettings);
 els.accountOpen.addEventListener("click", openAccount);
@@ -1691,6 +1732,14 @@ els.whatsNewDialog.addEventListener("click", (event) => {
 });
 els.restartDialog.addEventListener("click", (event) => {
   if (event.target === els.restartDialog) hideDialog(els.restartDialog);
+});
+els.cancelNo.addEventListener("click", () => hideDialog(els.cancelDialog));
+els.cancelYes.addEventListener("click", () => {
+  hideDialog(els.cancelDialog);
+  cancelWorkout();
+});
+els.cancelDialog.addEventListener("click", (event) => {
+  if (event.target === els.cancelDialog) hideDialog(els.cancelDialog);
 });
 els.settingsClose.addEventListener("click", () => hideDialog(els.settingsDialog));
 els.settingsDialog.addEventListener("click", (event) => {
@@ -1754,6 +1803,7 @@ els.pauseResume.addEventListener("click", () => {
     state.paused = true;
     stopCountdown();
   }
+  document.querySelector("#workoutView").classList.toggle("is-paused", state.paused);
   setButton(els.pauseResume, state.paused ? t("resume") : t("pause"), state.paused ? "resume" : "pause");
 });
 

@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.15" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.16" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.15" />
+    <link rel="stylesheet" href="styles.css?v=0.8.16" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -259,6 +259,18 @@
         </div>
       </section>
 
+      <section class="dialog-layer" id="cancelDialog" aria-hidden="true">
+        <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="cancelTitle">
+          <p class="eyebrow" id="cancelEyebrow">Workout</p>
+          <h2 id="cancelTitle">End this workout?</h2>
+          <p id="cancelText"></p>
+          <div class="dialog-actions">
+            <button class="secondary-action" id="cancelNo" type="button">Keep going</button>
+            <button class="danger-action" id="cancelYes" type="button">End workout</button>
+          </div>
+        </div>
+      </section>
+
       <section class="dialog-layer" id="whatsNewDialog" aria-hidden="true">
         <div class="dialog-card whats-new-card" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle">
           <p class="eyebrow" id="whatsNewEyebrow">Update</p>
@@ -269,7 +281,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.15"></script>
-    <script type="module" src="firebase.js?v=0.8.15"></script>
+    <script src="app.js?v=0.8.16"></script>
+    <script type="module" src="firebase.js?v=0.8.16"></script>
   </body>
 </html>

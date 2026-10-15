@@ -908,6 +908,18 @@ html[lang="uk"] .legal-nav .legal-uk {
   font-size: 0.88rem;
 }
 
+#workoutView .exercise-card.is-transitioning {
+  animation: workout-step-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+#workoutView .exercise-card.is-transitioning .timer-face {
+  animation: timer-settle 440ms cubic-bezier(0.16, 0.84, 0.28, 1) both;
+}
+
+#workoutView.is-paused .timer-face {
+  animation: paused-breathe 2.1s ease-in-out infinite;
+}
+
 @media (max-width: 540px) and (max-height: 740px) {
   .app-shell:has(#workoutView.active) {
     justify-content: flex-start;
@@ -1441,6 +1453,40 @@ html[lang="uk"] .legal-nav .legal-uk {
   }
   50% {
     transform: scale(1.025);
+  }
+}
+
+@keyframes workout-step-in {
+  from {
+    opacity: 0.7;
+    transform: translateY(8px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes timer-settle {
+  from {
+    filter: brightness(1.16);
+    transform: scale(0.94);
+  }
+  to {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes paused-breathe {
+  0%,
+  100% {
+    filter: saturate(0.82);
+    transform: scale(0.985);
+  }
+  50% {
+    filter: saturate(1);
+    transform: scale(1);
   }
 }
 
