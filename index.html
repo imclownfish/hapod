@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.16" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.17" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.16" />
+    <link rel="stylesheet" href="styles.css?v=0.8.17" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -234,6 +234,16 @@
 
           <div id="accountMember" hidden>
             <p id="accountMemberText"></p>
+            <div class="account-stats" aria-label="Account statistics">
+              <article>
+                <strong id="accountSessions">0</strong>
+                <span id="accountSessionsLabel">Sessions</span>
+              </article>
+              <article>
+                <strong id="accountStreak">0</strong>
+                <span id="accountStreakLabel">Day streak</span>
+              </article>
+            </div>
             <div class="dialog-actions account-actions">
               <button class="secondary-action" id="signOut" type="button">Sign out</button>
             </div>
@@ -281,7 +291,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.16"></script>
-    <script type="module" src="firebase.js?v=0.8.16"></script>
+    <script src="app.js?v=0.8.17"></script>
+    <script type="module" src="firebase.js?v=0.8.17"></script>
   </body>
 </html>

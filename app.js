@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.16";
+const APP_VERSION = "0.8.17";
 
 const weeklyPlan = [
   {
@@ -614,6 +614,17 @@ const DAILY_FACTS = [
   { uk: "Факт: CDC називає кращу якість сну, менше тривоги та нижчий тиск серед негайних переваг однієї сесії активності.", en: "Fact: CDC lists better sleep quality, less anxiety, and lower blood pressure among immediate benefits of activity.", source: "CDC_ACTIVITY" },
   { uk: "Факт: За даними ВООЗ, недостатня активність частіше зростає після 60 років.", en: "Fact: WHO reports that physical inactivity generally rises after age 60.", source: "WHO" },
   { uk: "Факт: ВООЗ повідомляє, що у світі жінки менш активні за чоловіків у середньому на 5 відсоткових пунктів.", en: "Fact: WHO reports that women are less active than men worldwide by an average of 5 percentage points.", source: "WHO" },
+  { uk: "Факт: ВООЗ пов'язує недостатню активність із підвищенням ризику смерті на 20-30% порівняно з достатньою активністю.", en: "Fact: WHO links insufficient activity with a 20-30% higher risk of death compared with sufficient activity.", source: "WHO" },
+  { uk: "Факт: За даними ВООЗ, частка недостатньо активних дорослих зросла на 5 відсоткових пунктів між 2010 і 2022 роками.", en: "Fact: WHO reports adult inactivity rose by 5 percentage points between 2010 and 2022.", source: "WHO" },
+  { uk: "Факт: ВООЗ оцінила щорічну вартість недостатньої активності для систем охорони здоров'я приблизно у $27 млрд.", en: "Fact: WHO estimates the annual health-system cost of physical inactivity at about $27 billion.", source: "WHO" },
+  { uk: "Факт: Серед підлітків 11-17 років ВООЗ наводить 85% дівчат і 78% хлопців, які не виконують рекомендації щодо активності.", en: "Fact: For ages 11-17, WHO reports 85% of girls and 78% of boys do not meet activity recommendations.", source: "WHO" },
+  { uk: "Факт: CDC показує простий шлях до 150 хвилин на тиждень: 30 хвилин активності 5 днів на тиждень.", en: "Fact: CDC gives a simple route to 150 weekly minutes: 30 minutes of activity on 5 days each week.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: CDC оцінює, що в США приблизно 110 тисяч смертей на рік можна було б запобігти, якби люди від 40 років додали 10 хвилин активності на день.", en: "Fact: CDC estimates that about 110,000 U.S. deaths per year could be prevented if adults 40+ added 10 minutes of activity a day.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: У згаданому CDC дослідженні люди, які виконували і аеробні, і силові рекомендації, були приблизно вдвічі менш схильні померти від грипу або пневмонії, ніж ті, хто не виконував жодної.", en: "Fact: In a CDC-cited study, adults meeting both aerobic and strength guidelines were about half as likely to die from flu or pneumonia as adults meeting neither.", source: "CDC_ACTIVITY" },
+  { uk: "Факт: CDC радить вимикати електронні пристрої щонайменше за 30 хвилин до сну.", en: "Fact: CDC recommends turning off electronic devices at least 30 minutes before bedtime.", source: "CDC_SLEEP" },
+  { uk: "Факт: CDC називає однаковий час відходу до сну і підйому щодня звичкою, що може покращити сон.", en: "Fact: CDC lists going to bed and getting up at the same time every day as a habit that can improve sleep.", source: "CDC_SLEEP" },
+  { uk: "Факт: CDC зазначає, що достатній сон може покращити увагу й пам'ять для щоденних справ.", en: "Fact: CDC says getting enough sleep can improve attention and memory for daily activities.", source: "CDC_SLEEP" },
+  { uk: "Факт: ВООЗ наголошує: будь-яка кількість фізичної активності краща, ніж її відсутність.", en: "Fact: WHO emphasizes that any amount of physical activity is better than none.", source: "WHO" },
 ];
 
 const TEXT = {
@@ -687,6 +698,8 @@ const TEXT = {
     continueGoogle: "Продовжити з Google",
     accountLoading: "Завантажуємо твій прогрес...",
     accountSynced: "Твій прогрес синхронізовано.",
+    accountSessions: "Завершено сесій",
+    accountStreak: "Поточна серія",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
@@ -785,6 +798,8 @@ const TEXT = {
     continueGoogle: "Continue with Google",
     accountLoading: "Loading your progress...",
     accountSynced: "Your progress is synced.",
+    accountSessions: "Sessions completed",
+    accountStreak: "Current streak",
     signOut: "Sign out",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
@@ -858,6 +873,10 @@ const els = {
   accountMember: document.querySelector("#accountMember"),
   accountGuestText: document.querySelector("#accountGuestText"),
   accountMemberText: document.querySelector("#accountMemberText"),
+  accountSessions: document.querySelector("#accountSessions"),
+  accountStreak: document.querySelector("#accountStreak"),
+  accountSessionsLabel: document.querySelector("#accountSessionsLabel"),
+  accountStreakLabel: document.querySelector("#accountStreakLabel"),
   accountError: document.querySelector("#accountError"),
   accountEyebrow: document.querySelector("#accountEyebrow"),
   accountTitle: document.querySelector("#accountTitle"),
@@ -1001,11 +1020,44 @@ function routine() {
   return currentPlan().exercises;
 }
 
+const EMPTY_STATS = { completed: 0, streak: 0, lastCompletedDate: null };
+
+function hasActiveStreak(lastCompletedDate) {
+  if (!lastCompletedDate) return false;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return lastCompletedDate === localDateKey() || lastCompletedDate === localDateKey(yesterday);
+}
+
+function normalizeStats(stats) {
+  const normalized = {
+    completed: Number.isSafeInteger(stats?.completed) && stats.completed >= 0 ? stats.completed : 0,
+    streak: Number.isSafeInteger(stats?.streak) && stats.streak >= 0 ? stats.streak : 0,
+    lastCompletedDate: typeof stats?.lastCompletedDate === "string" ? stats.lastCompletedDate : null,
+  };
+
+  if (normalized.streak > 0 && !hasActiveStreak(normalized.lastCompletedDate)) {
+    normalized.streak = 0;
+  }
+  return normalized;
+}
+
 function getStats() {
-  return JSON.parse(
-    localStorage.getItem("hapodStats") ||
-      '{"completed":0,"streak":0,"lastCompletedDate":null}'
-  );
+  let stored = EMPTY_STATS;
+  try {
+    stored = JSON.parse(localStorage.getItem("hapodStats") || JSON.stringify(EMPTY_STATS));
+  } catch {
+    // A broken local value should never prevent the app from opening.
+  }
+  const rawStats = stored && typeof stored === "object" ? stored : EMPTY_STATS;
+  const stats = normalizeStats(rawStats);
+  if (stats.streak !== rawStats.streak) {
+    saveStats(stats);
+    if (state.account && state.syncReady) {
+      sendFirebaseEvent("hapod:normalize-stats", { stats });
+    }
+  }
+  return stats;
 }
 
 function saveStats(stats) {
@@ -1221,13 +1273,19 @@ function updateHome() {
 
 function updateAccountUI() {
   els.accountEyebrow.textContent = t("account");
-  els.accountTitle.textContent = t("accountTitle");
+  const accountName = state.account?.displayName?.trim() || state.account?.email?.split("@")[0];
+  els.accountTitle.textContent = accountName || t("accountTitle");
   els.accountGuestText.textContent = t("accountGuest");
   els.accountMemberText.textContent = state.accountLoading
     ? t("accountLoading")
     : state.account
       ? `${t("accountSynced")} ${state.account.displayName || state.account.email || ""}`.trim()
       : "";
+  const stats = getStats();
+  els.accountSessions.textContent = stats.completed;
+  els.accountStreak.textContent = stats.streak;
+  els.accountSessionsLabel.textContent = t("accountSessions");
+  els.accountStreakLabel.textContent = t("accountStreak");
   setButton(els.googleSignIn, t("continueGoogle"), "user");
   setButton(els.signOut, t("signOut"), "cancel");
   els.accountPrivacyLink.textContent = t("privacy");
@@ -1342,7 +1400,7 @@ function renderPlan() {
   const plan = currentPlan();
   const copy = dayCopy(state.selectedDay);
   els.exerciseList.innerHTML = "";
-  document.querySelector("#planTitle").textContent = `${copy.title}: ${copy.subtitle}`;
+  document.querySelector("#planTitle").textContent = copy.title;
   routine().forEach((exercise, index) => {
     const displayExercise = exerciseCopy(exercise);
     const item = document.createElement("article");

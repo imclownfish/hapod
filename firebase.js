@@ -111,6 +111,26 @@ window.addEventListener("hapod:initialize-account", async (event) => {
   }
 });
 
+window.addEventListener("hapod:normalize-stats", async (event) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const stats = event.detail.stats;
+  try {
+    await setDoc(
+      statsRef(user),
+      {
+        completed: stats.completed,
+        streak: stats.streak,
+        lastCompletedDate: stats.lastCompletedDate,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+  } catch {
+    // The local correction remains valid even if an offline sync has to wait.
+  }
+});
+
 window.addEventListener("hapod:complete-day", async (event) => {
   const user = auth.currentUser;
   if (!user) return;
