@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.22";
+const APP_VERSION = "0.8.23";
 
 const weeklyPlan = [
   {
@@ -596,7 +596,7 @@ const EXERCISE_MEDIA = {
     en: "Dead bug animation",
   },
   "Горизонтальна тяга під столом": {
-    src: "assets/exercises/under-table-rows.gif",
+    src: "assets/exercises/under-table-rows.gif?v=0.8.23",
     uk: "Анімація підтягувань під столом",
     en: "Under-table row animation",
   },
