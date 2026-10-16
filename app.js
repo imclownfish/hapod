@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.23";
+const APP_VERSION = "0.8.24";
 
 const weeklyPlan = [
   {
@@ -1119,6 +1119,39 @@ function saveStats(stats) {
   localStorage.setItem("hapodStats", JSON.stringify(stats));
 }
 
+function dateRank(dateKey) {
+  return typeof dateKey === "string" ? dateKey : "";
+}
+
+function mergeAccountStats(localStats, remoteStats) {
+  const local = normalizeStats(localStats);
+  const remote = normalizeStats(remoteStats);
+  const localIsNewer = dateRank(local.lastCompletedDate) > dateRank(remote.lastCompletedDate);
+  const remoteIsNewer = dateRank(remote.lastCompletedDate) > dateRank(local.lastCompletedDate);
+  const primary = remoteIsNewer ? remote : local;
+  const other = remoteIsNewer ? local : remote;
+  const localHasUnsyncedCompletion = localIsNewer || (
+    local.lastCompletedDate === remote.lastCompletedDate &&
+    (local.streak > remote.streak || local.completed > remote.completed)
+  );
+  const localHasBest = local.bestStreak > remote.bestStreak;
+
+  return {
+    stats: {
+      ...primary,
+      completed: Math.max(local.completed, remote.completed),
+      streak: localIsNewer || (!remoteIsNewer && local.streak > remote.streak)
+        ? local.streak
+        : primary.streak,
+      bestStreak: Math.max(local.bestStreak, remote.bestStreak),
+      bestStreakDate: localHasBest
+        ? local.bestStreakDate
+        : remote.bestStreakDate || primary.bestStreakDate || other.bestStreakDate,
+    },
+    shouldRepairRemote: localHasUnsyncedCompletion || localHasBest,
+  };
+}
+
 function resetLocalProgress() {
   stopCountdown();
   releaseWakeLock();
@@ -1964,8 +1997,12 @@ window.addEventListener("hapod:account-ready", (event) => {
   state.accountLoading = false;
   state.accountError = "";
   if (stats) {
-    saveStats(stats);
+    const merged = mergeAccountStats(getStats(), stats);
+    saveStats(merged.stats);
     state.syncReady = true;
+    if (merged.shouldRepairRemote) {
+      sendFirebaseEvent("hapod:reconcile-stats", { stats: merged.stats });
+    }
   } else {
     state.syncReady = true;
     sendFirebaseEvent("hapod:initialize-account", { stats: getStats() });

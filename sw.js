@@ -1,14 +1,14 @@
-const CACHE_NAME = "hapod-v42";
+const CACHE_NAME = "hapod-v43";
 const ASSETS = [
   "./",
   "./index.html",
   "./privacy.html",
   "./terms.html",
-  "./legal.js?v=0.8.23",
-  "./styles.css?v=0.8.23",
-  "./app.js?v=0.8.23",
-  "./firebase.js?v=0.8.23",
-  "./manifest.webmanifest?v=0.8.23",
+  "./legal.js?v=0.8.24",
+  "./styles.css?v=0.8.24",
+  "./app.js?v=0.8.24",
+  "./firebase.js?v=0.8.24",
+  "./manifest.webmanifest?v=0.8.24",
   "./assets/exercises/diamond-push-ups.gif",
   "./assets/exercises/dumbbell-floor-press.gif",
   "./assets/exercises/pike-push-ups.gif",

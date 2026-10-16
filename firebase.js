@@ -171,6 +171,45 @@ window.addEventListener("hapod:complete-day", async (event) => {
   }
 });
 
+window.addEventListener("hapod:reconcile-stats", async (event) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const local = event.detail.stats;
+  try {
+    const stats = await runTransaction(db, async (transaction) => {
+      const ref = statsRef(user);
+      const snapshot = await transaction.get(ref);
+      const current = statsFromSnapshot(snapshot) || {
+        completed: 0,
+        streak: 0,
+        lastCompletedDate: null,
+        bestStreak: 0,
+        bestStreakDate: null,
+      };
+      const localIsNewer = (local.lastCompletedDate || "") > (current.lastCompletedDate || "");
+      const currentIsNewer = (current.lastCompletedDate || "") > (local.lastCompletedDate || "");
+      const primary = currentIsNewer ? current : local;
+      const localHasBest = local.bestStreak > current.bestStreak;
+      const next = {
+        ...primary,
+        completed: Math.max(current.completed, local.completed),
+        streak: localIsNewer || (!currentIsNewer && local.streak > current.streak)
+          ? local.streak
+          : primary.streak,
+        bestStreak: Math.max(current.bestStreak, local.bestStreak),
+        bestStreakDate: localHasBest
+          ? local.bestStreakDate
+          : current.bestStreakDate || local.bestStreakDate,
+      };
+      transaction.set(ref, { ...next, updatedAt: serverTimestamp() }, { merge: true });
+      return next;
+    });
+    emit("hapod:remote-stats", { stats });
+  } catch {
+    emit("hapod:firebase-error");
+  }
+});
+
 window.addEventListener("hapod:restart-progress", async () => {
   const user = auth.currentUser;
   if (!user) return;
