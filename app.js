@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.24";
+const APP_VERSION = "0.8.25";
 
 const weeklyPlan = [
   {
@@ -342,9 +342,31 @@ const weeklyPlan = [
 
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
-// Add releases here when a change is ready to announce. Empty means no popup is shown.
-const RELEASE_NOTES = [];
-const RELEASE_NOTES_VERSION = "";
+// Add a localized entry here for every release. An optional image creates a visual update card.
+const RELEASE_NOTES_VERSION = "0.8.25";
+const RELEASE_NOTES = [
+  {
+    ukTitle: "Анімації для вправ",
+    ukBody: "У деталях вправ з'явилися рухомі приклади, щоб легше перевірити техніку перед стартом.",
+    enTitle: "Exercise animations",
+    enBody: "Exercise details now include moving examples, making it easier to check form before you begin.",
+    image: "assets/exercises/forearm-plank.gif",
+    ukImageAlt: "Анімація вправи планка",
+    enImageAlt: "Forearm plank exercise animation",
+  },
+  {
+    ukTitle: "Серія зберігається надійніше",
+    ukBody: "Якщо телефон і хмара встигли оновитися не одночасно, новіший завершений день тепер не буде втрачено.",
+    enTitle: "More reliable streaks",
+    enBody: "If your phone and cloud update at different times, your newest completed day will no longer be lost.",
+  },
+  {
+    ukTitle: "Більш зручний HAPOD",
+    ukBody: "Головний екран, тренування й меню стали компактнішими та плавнішими на телефоні й комп'ютері.",
+    enTitle: "A smoother HAPOD",
+    enBody: "The home screen, workout flow, and menus are now more compact and fluid on phones and computers.",
+  },
+];
 const ICONS = {
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" /><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.04.04a2 2 0 0 1-2.83 2.83l-.04-.04A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.06a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.06a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.06a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.7 1.7 0 0 0 19.4 9c.22.35.43.66.6 1H20a2 2 0 0 1 0 4h-.06a1.7 1.7 0 0 0-.54 1Z" /></svg>',
   x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
