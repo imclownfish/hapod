@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.25";
+const APP_VERSION = "0.8.26";
 
 const weeklyPlan = [
   {
@@ -340,31 +340,71 @@ const weeklyPlan = [
   },
 ];
 
+const BEGINNER_WEEKLY_PLAN = [
+  {
+    key: "sun", short: "Нд", title: "Неділя", subtitle: "Відпочинок", minutes: 0, restDay: true,
+    note: "Відпочинок або спокійна прогулянка. Сила росте і між тренуваннями.",
+    exercises: [{ name: "Відпочинок", type: "rest", target: "Відновлення", description: "Дай м'язам відновитися. Легка хода - за бажанням.", bodyPart: "Все тіло", shortBenefit: "Зменшує втому.", longBenefit: "Допомагає тренуватися стабільно." }],
+  },
+  {
+    key: "mon", short: "Пн", title: "Понеділок", subtitle: "Основи A", minutes: 25,
+    exercises: [
+      { name: "Віджимання", type: "reps", sets: 3, reps: "6-10", restSeconds: 75, target: "3 x 6-10", description: "Тримай тіло прямим, долоні трохи ширше плечей. Якщо звичайні віджимання важкі, роби їх від високої опори.", bodyPart: "Груди, трицепс, плечі, корпус", shortBenefit: "Тренує головні жимові м'язи.", longBenefit: "Будує базову силу верху тіла." },
+      { name: "Присідання з вагою тіла", type: "reps", sets: 3, reps: "10-12", restSeconds: 75, target: "3 x 10-12", description: "Сідай тазом назад, коліна веди в напрямку носків, вставай через всю стопу.", bodyPart: "Квадрицепс, сідниці, корпус", shortBenefit: "Дає просте навантаження на ноги.", longBenefit: "Покращує силу для ходи, сходів і спорту." },
+      { name: "Згинання рук з гантелями", type: "reps", sets: 3, reps: "10-12", restSeconds: 60, target: "3 x 10-12", description: "Лікті залишаються біля корпусу. Піднімай гантелі без розгойдування, опускай повільно.", bodyPart: "Біцепс, передпліччя", shortBenefit: "Вчить контролювати вагу руками.", longBenefit: "Підсилює хват і тягові рухи." },
+      { name: "Dead bug для початківців", type: "reps", sets: 3, reps: "8 / сторона", restSeconds: 45, target: "3 x 8 / сторона", description: "Притисни поперек до підлоги та повільно опускай протилежні руку й ногу.", bodyPart: "Прес, стабілізатори таза", shortBenefit: "Вмикає корпус без скручування спини.", longBenefit: "Покращує контроль попереку." },
+    ],
+  },
+  {
+    key: "tue", short: "Вт", title: "Вівторок", subtitle: "Хода / відновлення", minutes: 0, restDay: true,
+    note: "Легка хода 20-30 хвилин або повний відпочинок.",
+    exercises: [{ name: "Легка хода", type: "rest", target: "20-30 хв", description: "Йди у комфортному темпі, в якому можеш говорити реченнями.", bodyPart: "Серце, ноги, відновлення", shortBenefit: "Розганяє кров без сильної втоми.", longBenefit: "Підтримує звичку щоденного руху." }],
+  },
+  {
+    key: "wed", short: "Ср", title: "Середа", subtitle: "Основи B", minutes: 25,
+    exercises: [
+      { name: "Віджимання від опори", type: "reps", sets: 3, reps: "8-12", restSeconds: 75, target: "3 x 8-12", description: "Поклади руки на стіл, лавку або підвіконня. Чим вища опора, тим легше.", bodyPart: "Груди, трицепс, плечі", shortBenefit: "Дозволяє набрати якісні повтори без зриву техніки.", longBenefit: "Підводить до сильних віджимань від підлоги." },
+      { name: "Тяга гантелі однією рукою", type: "reps", sets: 3, reps: "10 / рука", restSeconds: 75, target: "3 x 10 / рука", description: "Сприся вільною рукою на стілець. Тягни лікоть до стегна, не крути корпус.", bodyPart: "Спина, біцепс, задні дельти", shortBenefit: "Балансить віджимання тяговим рухом.", longBenefit: "Покращує поставу і силу спини." },
+      { name: "Скручування на прес", type: "reps", sets: 2, reps: "8-12", restSeconds: 60, target: "2 x 8-12", description: "Піднімай лише лопатки, не тягни шию руками. Якщо поперек або шия болять, заміни на dead bug.", bodyPart: "Прямий м'яз живота", shortBenefit: "Дає просту роботу на прес.", longBenefit: "Покращує витривалість корпуса." },
+      { name: "Згинання рук з гантелями", type: "reps", sets: 3, reps: "10-12", restSeconds: 60, target: "3 x 10-12", description: "Починай з легшої ваги, яку можеш опускати повільно та без розгойдування.", bodyPart: "Біцепс, передпліччя", shortBenefit: "Додає обсяг роботи для рук.", longBenefit: "Підсилює руки для щоденних задач." },
+    ],
+  },
+  {
+    key: "thu", short: "Чт", title: "Четвер", subtitle: "Відпочинок", minutes: 0, restDay: true,
+    note: "Відновлення. За бажанням - легка прогулянка та розтяжка.",
+    exercises: [{ name: "Відпочинок", type: "rest", target: "Відновлення", description: "Сон, їжа і пауза теж частина прогресу.", bodyPart: "Все тіло", shortBenefit: "Знімає накопичену втому.", longBenefit: "Допомагає уникати перевантаження." }],
+  },
+  {
+    key: "fri", short: "Пт", title: "П'ятниця", subtitle: "Основи C", minutes: 25,
+    exercises: [
+      { name: "Віджимання", type: "reps", sets: 3, reps: "6-10", restSeconds: 75, target: "3 x 6-10", description: "Зупиняйся за 1-2 повтори до повної відмови, щоб техніка лишалася чистою.", bodyPart: "Груди, трицепс, плечі, корпус", shortBenefit: "Закріплює базовий жимовий рух.", longBenefit: "Поступово додає силу і витривалість." },
+      { name: "Румунська тяга для початківців", type: "reps", sets: 3, reps: "10", restSeconds: 90, target: "3 x 10", description: "М'які коліна, таз назад, гантелі близько до ніг. Спина нейтральна весь рух.", bodyPart: "Сідниці, задня поверхня стегна, спина", shortBenefit: "Вчить безпечному руху тазом.", longBenefit: "Будує сильні ноги і задній ланцюг." },
+      { name: "Коротка планка на передпліччях", type: "time", sets: 3, seconds: 25, restSeconds: 45, target: "3 x 25 с", description: "Лікті під плечима, сідниці стиснуті, не провисай у попереку.", bodyPart: "Прес, сідниці, плечі", shortBenefit: "Вмикає стабілізацію корпуса.", longBenefit: "Допомагає спині витримувати навантаження." },
+      { name: "Згинання рук з гантелями (коротко)", type: "reps", sets: 2, reps: "12", restSeconds: 60, target: "2 x 12", description: "Працюй повільно, без розгону корпусом.", bodyPart: "Біцепс, передпліччя", shortBenefit: "Завершує роботу рук.", longBenefit: "Підтримує силу хвата та рук." },
+    ],
+  },
+  {
+    key: "sat", short: "Сб", title: "Субота", subtitle: "Активне відновлення", minutes: 0, restDay: true,
+    note: "Легка прогулянка, улюблена активність або відпочинок.",
+    exercises: [{ name: "Активне відновлення", type: "rest", target: "20+ хв легкої активності", description: "Обери рух, який не виснажує: прогулянку, велосипед або легку розтяжку.", bodyPart: "Серце, суглоби, відновлення", shortBenefit: "Допомагає тілу відчути себе краще.", longBenefit: "Робить звичку до руху простішою." }],
+  },
+];
+
+const WORKOUT_PROGRAMS = {
+  andrii: { week: weeklyPlan },
+  beginner: { week: BEGINNER_WEEKLY_PLAN },
+};
+
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
 // Add a localized entry here for every release. An optional image creates a visual update card.
-const RELEASE_NOTES_VERSION = "0.8.25";
+const RELEASE_NOTES_VERSION = "0.8.26";
 const RELEASE_NOTES = [
   {
-    ukTitle: "Анімації для вправ",
-    ukBody: "У деталях вправ з'явилися рухомі приклади, щоб легше перевірити техніку перед стартом.",
-    enTitle: "Exercise animations",
-    enBody: "Exercise details now include moving examples, making it easier to check form before you begin.",
-    image: "assets/exercises/forearm-plank.gif",
-    ukImageAlt: "Анімація вправи планка",
-    enImageAlt: "Forearm plank exercise animation",
-  },
-  {
-    ukTitle: "Серія зберігається надійніше",
-    ukBody: "Якщо телефон і хмара встигли оновитися не одночасно, новіший завершений день тепер не буде втрачено.",
-    enTitle: "More reliable streaks",
-    enBody: "If your phone and cloud update at different times, your newest completed day will no longer be lost.",
-  },
-  {
-    ukTitle: "Більш зручний HAPOD",
-    ukBody: "Головний екран, тренування й меню стали компактнішими та плавнішими на телефоні й комп'ютері.",
-    enTitle: "A smoother HAPOD",
-    enBody: "The home screen, workout flow, and menus are now more compact and fluid on phones and computers.",
+    ukTitle: "Новий план для початківців",
+    ukBody: "Додали простий триденний план: віджимання, присідання, прес, тяги й гантелі. Зміни план у Налаштуваннях.",
+    enTitle: "New beginner plan",
+    enBody: "A simple three-day plan is here: push-ups, squats, core work, rows, and dumbbells. Switch plans in Settings.",
   },
 ];
 const ICONS = {
@@ -589,6 +629,110 @@ const EXERCISE_EN = {
     shortBenefit: "Keeps you moving without adding much fatigue.",
     longBenefit: "Helps with weight control and endurance.",
   },
+  "Відпочинок": {
+    name: "Rest",
+    target: "Recovery",
+    description: "Give your muscles time to recover. An easy walk is optional.",
+    bodyPart: "Whole body",
+    shortBenefit: "Reduces fatigue.",
+    longBenefit: "Helps you train consistently.",
+  },
+  "Віджимання": {
+    name: "Push-ups",
+    target: "3 x 6-10",
+    description: "Keep your body in a straight line with hands slightly wider than shoulders. If regular push-ups are hard, use a high surface.",
+    bodyPart: "Chest, triceps, shoulders, core",
+    shortBenefit: "Trains the main pressing muscles.",
+    longBenefit: "Builds foundational upper-body strength.",
+  },
+  "Присідання з вагою тіла": {
+    name: "Bodyweight squats",
+    target: "3 x 10-12",
+    description: "Sit the hips back, let knees follow the toes, and stand through the whole foot.",
+    bodyPart: "Quads, glutes, core",
+    shortBenefit: "Gives the legs a simple training stimulus.",
+    longBenefit: "Builds strength for walking, stairs, and sport.",
+  },
+  "Згинання рук з гантелями": {
+    name: "Dumbbell biceps curls",
+    target: "3 x 10-12",
+    description: "Keep elbows near your body. Lift without swinging and lower slowly.",
+    bodyPart: "Biceps, forearms",
+    shortBenefit: "Teaches controlled dumbbell work.",
+    longBenefit: "Strengthens grip and pulling movements.",
+  },
+  "Згинання рук з гантелями (коротко)": {
+    name: "Dumbbell biceps curls (short)",
+    target: "2 x 12",
+    description: "Move slowly without using the body to create momentum.",
+    bodyPart: "Biceps, forearms",
+    shortBenefit: "Finishes the arm work.",
+    longBenefit: "Supports grip and arm strength.",
+  },
+  "Dead bug для початківців": {
+    name: "Beginner dead bug",
+    target: "3 x 8 / side",
+    description: "Press the lower back to the floor and slowly lower the opposite arm and leg.",
+    bodyPart: "Abs, hip stabilizers",
+    shortBenefit: "Turns on the core without curling the spine.",
+    longBenefit: "Improves lower-back control.",
+  },
+  "Легка хода": {
+    name: "Easy walk",
+    target: "20-30 min",
+    description: "Walk at a comfortable pace where you can still speak in sentences.",
+    bodyPart: "Heart, legs, recovery",
+    shortBenefit: "Improves blood flow without hard fatigue.",
+    longBenefit: "Supports a daily movement habit.",
+  },
+  "Віджимання від опори": {
+    name: "Incline push-ups",
+    target: "3 x 8-12",
+    description: "Place hands on a table, bench, or countertop. A higher surface makes the movement easier.",
+    bodyPart: "Chest, triceps, shoulders",
+    shortBenefit: "Lets you build quality reps with good form.",
+    longBenefit: "Builds toward strong floor push-ups.",
+  },
+  "Тяга гантелі однією рукою": {
+    name: "One-arm dumbbell row",
+    target: "3 x 10 / arm",
+    description: "Support yourself with the free hand on a chair. Pull the elbow toward the hip without twisting the torso.",
+    bodyPart: "Back, biceps, rear delts",
+    shortBenefit: "Balances pushing with a pulling movement.",
+    longBenefit: "Improves posture and back strength.",
+  },
+  "Скручування на прес": {
+    name: "Ab crunches",
+    target: "2 x 8-12",
+    description: "Lift only the shoulder blades and do not pull the neck with your hands. Switch to dead bugs if your back or neck hurts.",
+    bodyPart: "Rectus abdominis",
+    shortBenefit: "Provides simple ab training.",
+    longBenefit: "Improves core endurance.",
+  },
+  "Румунська тяга для початківців": {
+    name: "Beginner Romanian deadlift",
+    target: "3 x 10",
+    description: "Keep soft knees, move hips back, and keep dumbbells close to the legs with a neutral back.",
+    bodyPart: "Glutes, hamstrings, back",
+    shortBenefit: "Teaches a safe hip hinge.",
+    longBenefit: "Builds strong legs and posterior chain.",
+  },
+  "Коротка планка на передпліччях": {
+    name: "Short forearm plank",
+    target: "3 x 25 sec",
+    description: "Keep elbows below shoulders, squeeze the glutes, and do not sag through the lower back.",
+    bodyPart: "Abs, glutes, shoulders",
+    shortBenefit: "Activates core stability.",
+    longBenefit: "Helps the back handle daily loads.",
+  },
+  "Активне відновлення": {
+    name: "Active recovery",
+    target: "20+ min easy activity",
+    description: "Choose movement that does not exhaust you: walking, cycling, or easy stretching.",
+    bodyPart: "Heart, joints, recovery",
+    shortBenefit: "Helps the body feel better.",
+    longBenefit: "Makes a movement habit easier to sustain.",
+  },
 };
 
 const EXERCISE_MEDIA = {
@@ -616,6 +760,16 @@ const EXERCISE_MEDIA = {
     src: "assets/exercises/dead-bug.gif",
     uk: "Анімація вправи dead bug",
     en: "Dead bug animation",
+  },
+  "Dead bug для початківців": {
+    src: "assets/exercises/dead-bug.gif",
+    uk: "Анімація вправи dead bug",
+    en: "Beginner dead bug animation",
+  },
+  "Коротка планка на передпліччях": {
+    src: "assets/exercises/forearm-plank.gif",
+    uk: "Анімація планки на передпліччях",
+    en: "Short forearm plank animation",
   },
   "Горизонтальна тяга під столом": {
     src: "assets/exercises/under-table-rows.gif?v=0.8.23",
@@ -779,6 +933,10 @@ const TEXT = {
     on: "Увімк.",
     off: "Вимк.",
     language: "Мова",
+    workoutPlan: "План тренувань",
+    workoutPlanText: "Обери план, який підходить саме тобі.",
+    andriiPlan: "Оригінальний план Андрія",
+    beginnerPlan: "Початківець: сила",
     theme: "Тема",
     dark: "Темна",
     light: "Світла",
@@ -881,6 +1039,10 @@ const TEXT = {
     on: "On",
     off: "Off",
     language: "Language",
+    workoutPlan: "Workout plan",
+    workoutPlanText: "Choose the plan that fits you.",
+    andriiPlan: "Andrii's original plan",
+    beginnerPlan: "Beginner strength",
     theme: "Theme",
     dark: "Dark",
     light: "Light",
@@ -890,6 +1052,7 @@ const TEXT = {
 };
 
 const state = {
+  programId: localStorage.getItem("hapodWorkoutProgram") || "andrii",
   selectedDay: new Date().getDay(),
   currentIndex: 0,
   phase: "prep",
@@ -904,7 +1067,7 @@ const state = {
   soundOn: localStorage.getItem("hapodSound") === "true",
   language: localStorage.getItem("hapodLanguage") || "uk",
   theme: localStorage.getItem("hapodTheme") || "dark",
-  unlockedDays: new Set(JSON.parse(localStorage.getItem("hapodUnlockedDays") || "[]")),
+  unlockedDays: new Set(),
   audioContext: null,
   dailyRefreshId: null,
   account: null,
@@ -912,6 +1075,8 @@ const state = {
   syncReady: false,
   accountError: "",
 };
+
+state.unlockedDays = loadUnlockedDays(state.programId);
 
 const els = {
   views: document.querySelectorAll(".view"),
@@ -986,6 +1151,9 @@ const els = {
   soundSettingTitle: document.querySelector("#soundSettingTitle"),
   soundSettingText: document.querySelector("#soundSettingText"),
   languageSettingTitle: document.querySelector("#languageSettingTitle"),
+  programSettingTitle: document.querySelector("#programSettingTitle"),
+  programSettingText: document.querySelector("#programSettingText"),
+  programSelect: document.querySelector("#programSelect"),
   themeSettingTitle: document.querySelector("#themeSettingTitle"),
   langUk: document.querySelector("#langUk"),
   langEn: document.querySelector("#langEn"),
@@ -1036,6 +1204,35 @@ function setButton(button, label, iconName) {
   button.innerHTML = iconName ? `${ICONS[iconName]}<span>${label}</span>` : label;
 }
 
+function activeWeek() {
+  return WORKOUT_PROGRAMS[state.programId]?.week || weeklyPlan;
+}
+
+function unlockedDaysStorageKey(programId = state.programId) {
+  return `hapodUnlockedDays:${programId}`;
+}
+
+function loadUnlockedDays(programId) {
+  try {
+    const stored = localStorage.getItem(unlockedDaysStorageKey(programId));
+    const legacy = programId === "andrii" ? localStorage.getItem("hapodUnlockedDays") : null;
+    return new Set(JSON.parse(stored || legacy || "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
+function changeWorkoutProgram(programId) {
+  if (!WORKOUT_PROGRAMS[programId] || programId === state.programId) return;
+  if (document.querySelector("#workoutView").classList.contains("active")) return;
+  state.programId = programId;
+  state.selectedDay = todayIndex();
+  state.unlockedDays = loadUnlockedDays(programId);
+  localStorage.setItem("hapodWorkoutProgram", programId);
+  updateHome();
+  renderPlan();
+}
+
 function isSelectedToday() {
   return state.selectedDay === todayIndex();
 }
@@ -1045,7 +1242,7 @@ function isSelectedUnlocked() {
 }
 
 function saveUnlockedDays() {
-  localStorage.setItem("hapodUnlockedDays", JSON.stringify([...state.unlockedDays]));
+  localStorage.setItem(unlockedDaysStorageKey(), JSON.stringify([...state.unlockedDays]));
 }
 
 function relockSelectedDayIfNeeded() {
@@ -1075,7 +1272,7 @@ function dailyFact(date = new Date()) {
 }
 
 function currentPlan() {
-  return weeklyPlan[state.selectedDay];
+  return activeWeek()[state.selectedDay];
 }
 
 function routine() {
@@ -1369,6 +1566,11 @@ function updateHome() {
   els.soundSettingTitle.textContent = t("soundCues");
   els.soundSettingText.textContent = t("soundText");
   els.languageSettingTitle.textContent = t("language");
+  els.programSettingTitle.textContent = t("workoutPlan");
+  els.programSettingText.textContent = t("workoutPlanText");
+  els.programSelect.value = state.programId;
+  els.programSelect.options[0].textContent = t("andriiPlan");
+  els.programSelect.options[1].textContent = t("beginnerPlan");
   els.themeSettingTitle.textContent = t("theme");
   els.themeDark.textContent = t("dark");
   els.themeLight.textContent = t("light");
@@ -1485,7 +1687,7 @@ function refreshWorkoutText() {
 function renderDayStrip() {
   els.dayStrip.innerHTML = "";
   WEEK_ORDER.forEach((index) => {
-    const day = weeklyPlan[index];
+    const day = activeWeek()[index];
     const copy = dayCopy(index);
     const button = document.createElement("button");
     button.type = "button";
@@ -1970,6 +2172,7 @@ els.langEn.addEventListener("click", () => {
   updateHome();
   renderPlan();
 });
+els.programSelect.addEventListener("change", (event) => changeWorkoutProgram(event.target.value));
 els.themeDark.addEventListener("click", () => {
   state.theme = "dark";
   localStorage.setItem("hapodTheme", state.theme);

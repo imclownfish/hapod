@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.25" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.26" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.25" />
+    <link rel="stylesheet" href="styles.css?v=0.8.26" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -196,6 +196,15 @@
             </div>
           </div>
 
+          <div class="setting-group">
+            <strong id="programSettingTitle">Workout plan</strong>
+            <p class="setting-help" id="programSettingText"></p>
+            <select class="program-select" id="programSelect" aria-describedby="programSettingText">
+              <option value="andrii">Andrii's plan</option>
+              <option value="beginner">Beginner strength</option>
+            </select>
+          </div>
+
           <div class="setting-row danger-setting">
             <div>
               <strong id="restartSettingTitle">Restart progress</strong>
@@ -295,7 +304,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.25"></script>
-    <script type="module" src="firebase.js?v=0.8.25"></script>
+    <script src="app.js?v=0.8.26"></script>
+    <script type="module" src="firebase.js?v=0.8.26"></script>
   </body>
 </html>
