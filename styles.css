@@ -1227,6 +1227,19 @@ html[lang="uk"] .legal-nav .legal-uk {
   margin-top: 0;
 }
 
+.account-progress-open {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.account-progress-hint {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .account-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1239,7 +1252,7 @@ html[lang="uk"] .legal-nav .legal-uk {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--surface) 78%, var(--leaf) 22%);
+  background: color-mix(in srgb, var(--panel) 78%, var(--leaf) 22%);
   animation: account-stat-in 360ms both cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -1283,6 +1296,188 @@ html[lang="uk"] .legal-nav .legal-uk {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.weight-card {
+  width: min(540px, 100%);
+}
+
+.weight-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.weight-summary article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 78%, var(--leaf) 22%);
+}
+
+.weight-summary span,
+.weight-summary small {
+  display: block;
+}
+
+.weight-summary span {
+  color: var(--deep);
+  font-size: clamp(1.25rem, 5vw, 1.7rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.weight-summary small {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.weight-chart {
+  min-height: 112px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft-panel);
+}
+
+.weight-chart > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.weight-chart-title {
+  margin-bottom: 8px !important;
+  color: var(--deep) !important;
+  font-size: 0.74rem !important;
+  font-weight: 850 !important;
+  text-transform: uppercase;
+}
+
+.weight-bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  min-height: 78px;
+  gap: 6px;
+}
+
+.weight-bar {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
+  height: 78px;
+  align-items: end;
+  text-align: center;
+}
+
+.weight-bar::before {
+  display: block;
+  grid-row: 2;
+  width: 100%;
+  height: var(--height);
+  min-height: 10px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, var(--leaf), color-mix(in srgb, var(--leaf) 54%, var(--blue) 46%));
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--leaf) 18%, transparent);
+  content: "";
+  animation: weight-bar-in 460ms both cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.weight-bar strong {
+  overflow: hidden;
+  color: var(--deep);
+  font-size: 0.66rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weight-bar small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.weight-form {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.weight-form label {
+  display: block;
+  color: var(--deep);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.weight-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(124px, 0.66fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.weight-input-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 12px;
+  color: var(--deep);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: none;
+  background: var(--soft-panel);
+  font: inherit;
+  font-weight: 800;
+}
+
+.weight-input-row input:focus {
+  border-color: var(--leaf);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--leaf) 18%, transparent);
+}
+
+.weight-unit-toggle {
+  padding: 3px;
+}
+
+.weight-unit-toggle button {
+  min-width: 0;
+  padding-inline: 10px;
+  font-size: 0.8rem;
+}
+
+.weight-form-note,
+.weight-privacy {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.weight-actions {
+  margin-top: 12px;
+}
+
+.weight-actions button {
+  min-height: 46px;
+  padding-inline: 10px;
+  font-size: 0.82rem;
+}
+
+@keyframes weight-bar-in {
+  from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
 }
 
 .danger-action {

@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.26" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.27" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.26" />
+    <link rel="stylesheet" href="styles.css?v=0.8.27" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -262,11 +262,56 @@
             </div>
           </div>
 
+          <button class="secondary-action account-progress-open" id="weightOpen" type="button">Track weight</button>
+          <p class="account-progress-hint" id="accountWeightHint"></p>
+
           <p class="account-error" id="accountError" role="alert" hidden></p>
           <div class="settings-links">
             <a class="settings-privacy" id="accountPrivacyLink" href="privacy.html">Privacy</a>
             <a class="settings-privacy" id="accountTermsLink" href="terms.html">Terms</a>
           </div>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="weightDialog" aria-hidden="true">
+        <div class="dialog-card weight-card" role="dialog" aria-modal="true" aria-labelledby="weightTitle">
+          <div class="section-heading compact-heading">
+            <button class="icon-button" id="weightClose" type="button" aria-label="Close progress">&larr;</button>
+            <div>
+              <p class="eyebrow" id="weightEyebrow">Progress</p>
+              <h2 id="weightTitle">Weight</h2>
+            </div>
+          </div>
+
+          <div class="weight-summary" aria-live="polite">
+            <article>
+              <span id="weightCurrent">--</span>
+              <small id="weightCurrentLabel">Latest weigh-in</small>
+            </article>
+            <article>
+              <span id="weightChange">--</span>
+              <small id="weightChangeLabel">Since first check-in</small>
+            </article>
+          </div>
+
+          <div class="weight-chart" id="weightChart" aria-label="Weight trend"></div>
+
+          <form class="weight-form" id="weightForm">
+            <label for="weightInput" id="weightInputLabel">Today's weight</label>
+            <div class="weight-input-row">
+              <input id="weightInput" inputmode="decimal" type="number" min="20" max="500" step="0.1" autocomplete="off" required />
+              <div class="segmented weight-unit-toggle" role="group" aria-label="Weight unit">
+                <button id="unitKg" type="button">kg</button>
+                <button id="unitLb" type="button">lb</button>
+              </div>
+            </div>
+            <p class="weight-form-note" id="weightFormNote"></p>
+            <div class="dialog-actions weight-actions">
+              <button class="secondary-action" id="weightRemove" type="button">Remove today</button>
+              <button class="primary-action" id="weightSave" type="submit">Save weigh-in</button>
+            </div>
+          </form>
+          <p class="weight-privacy" id="weightPrivacy"></p>
         </div>
       </section>
 
@@ -304,7 +349,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.26"></script>
-    <script type="module" src="firebase.js?v=0.8.26"></script>
+    <script src="app.js?v=0.8.27"></script>
+    <script type="module" src="firebase.js?v=0.8.27"></script>
   </body>
 </html>

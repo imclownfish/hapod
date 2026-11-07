@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.26";
+const APP_VERSION = "0.8.27";
 
 const weeklyPlan = [
   {
@@ -398,8 +398,14 @@ const WORKOUT_PROGRAMS = {
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
 // Add a localized entry here for every release. An optional image creates a visual update card.
-const RELEASE_NOTES_VERSION = "0.8.26";
+const RELEASE_NOTES_VERSION = "0.8.27";
 const RELEASE_NOTES = [
+  {
+    ukTitle: "Відстежуй вагу",
+    ukBody: "Додали приватний журнал ваги з коротким трендом. Він працює офлайн і синхронізується між пристроями після входу.",
+    enTitle: "Track your weight",
+    enBody: "A private weight log with a simple trend is here. It works offline and syncs across devices after sign-in.",
+  },
   {
     ukTitle: "Новий план для початківців",
     ukBody: "Додали простий триденний план: віджимання, присідання, прес, тяги й гантелі. Зміни план у Налаштуваннях.",
@@ -422,6 +428,7 @@ const ICONS = {
   home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" /></svg>',
   user: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></svg>',
+  scale: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M8 10a4 4 0 0 1 8 0" /><path d="m12 10 2-2" /></svg>',
 };
 const DAY_COPY = {
   uk: {
@@ -911,13 +918,28 @@ const TEXT = {
     accountBestStreak: "Найдовша серія",
     accountRecordDate: "Встановлено",
     accountNoRecord: "Ще без рекорду",
+    weightOpen: "Відстежити вагу",
+    weightHintEmpty: "Додай перше зважування, щоб бачити свій тренд.",
+    weightHint: "Остання вага: {value}",
+    weightEyebrow: "Прогрес",
+    weightTitle: "Вага",
+    weightCurrent: "Останнє зважування",
+    weightChange: "Від першого запису",
+    weightToday: "Вага сьогодні",
+    weightSave: "Зберегти вагу",
+    weightRemove: "Видалити сьогодні",
+    weightUpdated: "Сьогоднішній запис можна змінити.",
+    weightNew: "Один запис на день, щоб тренд був чесним.",
+    weightPrivacy: "Вага зберігається на цьому пристрої. Після входу вона синхронізується з твоїм акаунтом.",
+    weightNoData: "Додай перше зважування, щоб побачити тренд.",
+    weightTrend: "Останні записи",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
-    restartText: "Це скине завершені сесії та поточну серію до нуля на всіх пристроях. Акаунт залишиться.",
+    restartText: "Це скине завершені сесії, поточну серію та записи ваги на всіх пристроях. Акаунт залишиться.",
     restart: "Почати заново",
     restartSettingTitle: "Почати прогрес заново",
-    restartSettingText: "Скинути завершені сесії та серію до нуля.",
+    restartSettingText: "Скинути завершені сесії, серію та записи ваги.",
     cancelEyebrow: "Тренування",
     cancelTitle: "Завершити тренування?",
     cancelText: "Прогрес цієї сесії не буде збережено.",
@@ -1017,13 +1039,28 @@ const TEXT = {
     accountBestStreak: "Longest streak",
     accountRecordDate: "Set on",
     accountNoRecord: "No record yet",
+    weightOpen: "Track weight",
+    weightHintEmpty: "Add a first weigh-in to see your trend.",
+    weightHint: "Latest weight: {value}",
+    weightEyebrow: "Progress",
+    weightTitle: "Weight",
+    weightCurrent: "Latest weigh-in",
+    weightChange: "Since first check-in",
+    weightToday: "Today's weight",
+    weightSave: "Save weigh-in",
+    weightRemove: "Remove today",
+    weightUpdated: "You can revise today's check-in.",
+    weightNew: "One check-in a day keeps the trend honest.",
+    weightPrivacy: "Weight stays on this device. After sign-in, it syncs with your account.",
+    weightNoData: "Add a first weigh-in to see your trend.",
+    weightTrend: "Recent check-ins",
     signOut: "Sign out",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
-    restartText: "This resets completed sessions and your current streak to zero on every device. Your account stays active.",
+    restartText: "This resets completed sessions, your current streak, and weight check-ins on every device. Your account stays active.",
     restart: "Restart",
     restartSettingTitle: "Restart progress",
-    restartSettingText: "Reset completed sessions and streaks to zero.",
+    restartSettingText: "Reset completed sessions, streaks, and weight check-ins.",
     cancelEyebrow: "Workout",
     cancelTitle: "End this workout?",
     cancelText: "Progress from this session will not be saved.",
@@ -1074,6 +1111,7 @@ const state = {
   accountLoading: false,
   syncReady: false,
   accountError: "",
+  weightUnit: localStorage.getItem("hapodWeightUnit") === "lb" ? "lb" : "kg",
 };
 
 state.unlockedDays = loadUnlockedDays(state.programId);
@@ -1109,6 +1147,26 @@ const els = {
   signOut: document.querySelector("#signOut"),
   accountPrivacyLink: document.querySelector("#accountPrivacyLink"),
   accountTermsLink: document.querySelector("#accountTermsLink"),
+  weightOpen: document.querySelector("#weightOpen"),
+  accountWeightHint: document.querySelector("#accountWeightHint"),
+  weightDialog: document.querySelector("#weightDialog"),
+  weightClose: document.querySelector("#weightClose"),
+  weightEyebrow: document.querySelector("#weightEyebrow"),
+  weightTitle: document.querySelector("#weightTitle"),
+  weightCurrent: document.querySelector("#weightCurrent"),
+  weightCurrentLabel: document.querySelector("#weightCurrentLabel"),
+  weightChange: document.querySelector("#weightChange"),
+  weightChangeLabel: document.querySelector("#weightChangeLabel"),
+  weightChart: document.querySelector("#weightChart"),
+  weightForm: document.querySelector("#weightForm"),
+  weightInput: document.querySelector("#weightInput"),
+  weightInputLabel: document.querySelector("#weightInputLabel"),
+  weightFormNote: document.querySelector("#weightFormNote"),
+  unitKg: document.querySelector("#unitKg"),
+  unitLb: document.querySelector("#unitLb"),
+  weightSave: document.querySelector("#weightSave"),
+  weightRemove: document.querySelector("#weightRemove"),
+  weightPrivacy: document.querySelector("#weightPrivacy"),
   settingsDialog: document.querySelector("#settingsDialog"),
   settingsClose: document.querySelector("#settingsClose"),
   privacyLink: document.querySelector("#privacyLink"),
@@ -1338,6 +1396,81 @@ function saveStats(stats) {
   localStorage.setItem("hapodStats", JSON.stringify(stats));
 }
 
+const WEIGHT_STORAGE_KEY = "hapodWeightEntries";
+const KG_PER_LB = 0.45359237;
+
+function normalizeWeightEntries(entries) {
+  const byDate = new Map();
+  (Array.isArray(entries) ? entries : []).forEach((entry) => {
+    const kilograms = Number(entry?.kilograms);
+    const date = typeof entry?.date === "string" ? entry.date : "";
+    const updatedAt = Number(entry?.updatedAt) || 0;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(kilograms) || kilograms < 20 || kilograms > 500) return;
+    const current = byDate.get(date);
+    if (!current || updatedAt >= current.updatedAt) {
+      byDate.set(date, { date, kilograms: Math.round(kilograms * 10) / 10, updatedAt });
+    }
+  });
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-365);
+}
+
+function getWeightEntries() {
+  try {
+    return normalizeWeightEntries(JSON.parse(localStorage.getItem(WEIGHT_STORAGE_KEY) || "[]"));
+  } catch {
+    return [];
+  }
+}
+
+function saveWeightEntries(entries) {
+  localStorage.setItem(WEIGHT_STORAGE_KEY, JSON.stringify(normalizeWeightEntries(entries)));
+}
+
+function mergeWeightEntries(localEntries, remoteEntries) {
+  return normalizeWeightEntries([...(remoteEntries || []), ...(localEntries || [])]);
+}
+
+function weightInUnit(kilograms) {
+  return state.weightUnit === "lb" ? kilograms / KG_PER_LB : kilograms;
+}
+
+function kilogramsFromInput(value) {
+  const weight = Number(value);
+  if (!Number.isFinite(weight)) return null;
+  return state.weightUnit === "lb" ? weight * KG_PER_LB : weight;
+}
+
+function formatWeight(kilograms, maximumFractionDigits = 1) {
+  if (!Number.isFinite(kilograms)) return "--";
+  const unit = state.weightUnit;
+  const value = weightInUnit(kilograms);
+  return `${new Intl.NumberFormat(state.language === "uk" ? "uk-UA" : "en-US", {
+    maximumFractionDigits,
+    minimumFractionDigits: 0,
+  }).format(value)} ${unit}`;
+}
+
+function weightDifference(current, first) {
+  if (!Number.isFinite(current) || !Number.isFinite(first)) return "--";
+  const difference = weightInUnit(current - first);
+  if (Math.abs(difference) < 0.05) return `0 ${state.weightUnit}`;
+  const rounded = new Intl.NumberFormat(state.language === "uk" ? "uk-UA" : "en-US", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 0,
+    signDisplay: "always",
+  }).format(difference);
+  return `${rounded} ${state.weightUnit}`;
+}
+
+function persistWeightEntries(entries) {
+  const normalized = normalizeWeightEntries(entries);
+  saveWeightEntries(normalized);
+  if (state.account && state.syncReady) {
+    sendFirebaseEvent("hapod:sync-weight-entries", { entries: normalized });
+  }
+  return normalized;
+}
+
 function dateRank(dateKey) {
   return typeof dateKey === "string" ? dateKey : "";
 }
@@ -1380,6 +1513,7 @@ function resetLocalProgress() {
   state.unlockedDays.clear();
   saveUnlockedDays();
   saveStats(EMPTY_STATS);
+  saveWeightEntries([]);
   state.selectedDay = todayIndex();
 }
 
@@ -1624,6 +1758,72 @@ function updateAccountUI() {
   els.googleSignIn.disabled = state.accountLoading;
   els.accountError.hidden = !state.accountError;
   els.accountError.textContent = state.accountError ? t("accountError") : "";
+  renderWeightUI();
+}
+
+function renderWeightUI() {
+  const entries = getWeightEntries();
+  const latest = entries.at(-1);
+  const today = entries.find((entry) => entry.date === localDateKey());
+  const first = entries[0];
+  const accountHint = latest
+    ? t("weightHint").replace("{value}", formatWeight(latest.kilograms))
+    : t("weightHintEmpty");
+
+  setButton(els.weightOpen, t("weightOpen"), "scale");
+  els.accountWeightHint.textContent = accountHint;
+  els.weightEyebrow.textContent = t("weightEyebrow");
+  els.weightTitle.textContent = t("weightTitle");
+  els.weightCurrent.textContent = latest ? formatWeight(latest.kilograms) : "--";
+  els.weightCurrentLabel.textContent = t("weightCurrent");
+  els.weightChange.textContent = entries.length > 1
+    ? weightDifference(latest.kilograms, first.kilograms)
+    : "--";
+  els.weightChangeLabel.textContent = t("weightChange");
+  els.weightInputLabel.textContent = t("weightToday");
+  els.weightInput.value = today ? weightInUnit(today.kilograms).toFixed(1).replace(/\.0$/, "") : "";
+  els.weightFormNote.textContent = today ? t("weightUpdated") : t("weightNew");
+  els.weightPrivacy.textContent = t("weightPrivacy");
+  setButton(els.weightSave, t("weightSave"), "check");
+  setButton(els.weightRemove, t("weightRemove"), "cancel");
+  els.weightRemove.hidden = !today;
+  els.unitKg.setAttribute("aria-pressed", String(state.weightUnit === "kg"));
+  els.unitLb.setAttribute("aria-pressed", String(state.weightUnit === "lb"));
+  renderWeightChart(entries);
+}
+
+function renderWeightChart(entries) {
+  els.weightChart.innerHTML = "";
+  if (entries.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = t("weightNoData");
+    els.weightChart.append(empty);
+    return;
+  }
+
+  const heading = document.createElement("p");
+  heading.className = "weight-chart-title";
+  heading.textContent = t("weightTrend");
+  const bars = document.createElement("div");
+  bars.className = "weight-bars";
+  const recent = entries.slice(-7);
+  const values = recent.map((entry) => weightInUnit(entry.kilograms));
+  const min = Math.min(...values);
+  const range = Math.max(Math.max(...values) - min, 0.4);
+  recent.forEach((entry) => {
+    const value = weightInUnit(entry.kilograms);
+    const bar = document.createElement("div");
+    bar.className = "weight-bar";
+    bar.style.setProperty("--height", `${28 + ((value - min) / range) * 64}%`);
+    bar.title = `${entry.date}: ${formatWeight(entry.kilograms)}`;
+    const valueLabel = document.createElement("strong");
+    valueLabel.textContent = new Intl.NumberFormat(state.language === "uk" ? "uk-UA" : "en-US", { maximumFractionDigits: 1 }).format(value);
+    const dateLabel = document.createElement("small");
+    dateLabel.textContent = entry.date.slice(5).replace("-", "/");
+    bar.append(valueLabel, dateLabel);
+    bars.append(bar);
+  });
+  els.weightChart.append(heading, bars);
 }
 
 function renderWhatsNew() {
@@ -2093,6 +2293,50 @@ els.accountClose.addEventListener("click", () => hideDialog(els.accountDialog));
 els.accountDialog.addEventListener("click", (event) => {
   if (event.target === els.accountDialog) hideDialog(els.accountDialog);
 });
+els.weightOpen.addEventListener("click", () => {
+  hideDialog(els.accountDialog);
+  renderWeightUI();
+  showDialog(els.weightDialog);
+});
+els.weightClose.addEventListener("click", () => {
+  hideDialog(els.weightDialog);
+  showDialog(els.accountDialog);
+});
+els.weightDialog.addEventListener("click", (event) => {
+  if (event.target === els.weightDialog) {
+    hideDialog(els.weightDialog);
+    showDialog(els.accountDialog);
+  }
+});
+els.weightForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const kilograms = kilogramsFromInput(els.weightInput.value);
+  if (!kilograms || kilograms < 20 || kilograms > 500) {
+    els.weightInput.focus();
+    return;
+  }
+  const today = localDateKey();
+  const entries = getWeightEntries().filter((entry) => entry.date !== today);
+  persistWeightEntries([...entries, { date: today, kilograms, updatedAt: Date.now() }]);
+  renderWeightUI();
+});
+els.weightRemove.addEventListener("click", () => {
+  const today = localDateKey();
+  persistWeightEntries(getWeightEntries().filter((entry) => entry.date !== today));
+  renderWeightUI();
+});
+function changeWeightUnit(unit) {
+  if (unit === state.weightUnit) return;
+  const inputKilograms = kilogramsFromInput(els.weightInput.value);
+  state.weightUnit = unit;
+  localStorage.setItem("hapodWeightUnit", unit);
+  renderWeightUI();
+  if (inputKilograms && !getWeightEntries().some((entry) => entry.date === localDateKey())) {
+    els.weightInput.value = weightInUnit(inputKilograms).toFixed(1).replace(/\.0$/, "");
+  }
+}
+els.unitKg.addEventListener("click", () => changeWeightUnit("kg"));
+els.unitLb.addEventListener("click", () => changeWeightUnit("lb"));
 els.googleSignIn.addEventListener("click", () => {
   state.accountError = "";
   state.accountLoading = true;
@@ -2217,7 +2461,7 @@ window.addEventListener("hapod:auth-state", (event) => {
 });
 
 window.addEventListener("hapod:account-ready", (event) => {
-  const { user, stats } = event.detail;
+  const { user, stats, weightEntries } = event.detail;
   state.account = user;
   state.accountLoading = false;
   state.accountError = "";
@@ -2230,7 +2474,13 @@ window.addEventListener("hapod:account-ready", (event) => {
     }
   } else {
     state.syncReady = true;
-    sendFirebaseEvent("hapod:initialize-account", { stats: getStats() });
+    sendFirebaseEvent("hapod:initialize-account", { stats: getStats(), weightEntries: getWeightEntries() });
+  }
+  const localWeightEntries = getWeightEntries();
+  const mergedWeightEntries = mergeWeightEntries(localWeightEntries, weightEntries);
+  saveWeightEntries(mergedWeightEntries);
+  if (JSON.stringify(mergedWeightEntries) !== JSON.stringify(normalizeWeightEntries(weightEntries))) {
+    sendFirebaseEvent("hapod:sync-weight-entries", { entries: mergedWeightEntries });
   }
   updateHome();
 });
@@ -2239,6 +2489,11 @@ window.addEventListener("hapod:remote-stats", (event) => {
   saveStats(event.detail.stats);
   state.syncReady = true;
   updateHome();
+});
+
+window.addEventListener("hapod:remote-weight-entries", (event) => {
+  saveWeightEntries(event.detail.entries);
+  updateAccountUI();
 });
 
 window.addEventListener("hapod:firebase-error", () => {

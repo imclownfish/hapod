@@ -54,6 +54,25 @@ function statsFromSnapshot(snapshot) {
   };
 }
 
+function normalizeWeightEntries(entries) {
+  const byDate = new Map();
+  (Array.isArray(entries) ? entries : []).forEach((entry) => {
+    const kilograms = Number(entry?.kilograms);
+    const date = typeof entry?.date === "string" ? entry.date : "";
+    const updatedAt = Number(entry?.updatedAt) || 0;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(kilograms) || kilograms < 20 || kilograms > 500) return;
+    const current = byDate.get(date);
+    if (!current || updatedAt >= current.updatedAt) {
+      byDate.set(date, { date, kilograms: Math.round(kilograms * 10) / 10, updatedAt });
+    }
+  });
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-365);
+}
+
+function weightEntriesFromSnapshot(snapshot) {
+  return snapshot.exists() ? normalizeWeightEntries(snapshot.data().weightEntries) : [];
+}
+
 function statsRef(user) {
   return doc(db, "users", user.uid);
 }
@@ -74,7 +93,11 @@ onAuthStateChanged(auth, async (user) => {
   emit("hapod:auth-state", { user: profile });
   try {
     const snapshot = await getDoc(statsRef(user));
-    emit("hapod:account-ready", { user: profile, stats: statsFromSnapshot(snapshot) });
+    emit("hapod:account-ready", {
+      user: profile,
+      stats: statsFromSnapshot(snapshot),
+      weightEntries: weightEntriesFromSnapshot(snapshot),
+    });
   } catch {
     emit("hapod:firebase-error");
   }
@@ -100,6 +123,7 @@ window.addEventListener("hapod:initialize-account", async (event) => {
   const user = auth.currentUser;
   if (!user) return;
   const stats = event.detail.stats;
+  const weightEntries = normalizeWeightEntries(event.detail.weightEntries);
   try {
     await setDoc(statsRef(user), {
       completed: stats.completed,
@@ -107,9 +131,22 @@ window.addEventListener("hapod:initialize-account", async (event) => {
       lastCompletedDate: stats.lastCompletedDate,
       bestStreak: stats.bestStreak,
       bestStreakDate: stats.bestStreakDate,
+      weightEntries,
       updatedAt: serverTimestamp(),
     });
     emit("hapod:remote-stats", { stats });
+  } catch {
+    emit("hapod:firebase-error");
+  }
+});
+
+window.addEventListener("hapod:sync-weight-entries", async (event) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const entries = normalizeWeightEntries(event.detail.entries);
+  try {
+    await setDoc(statsRef(user), { weightEntries: entries, updatedAt: serverTimestamp() }, { merge: true });
+    emit("hapod:remote-weight-entries", { entries });
   } catch {
     emit("hapod:firebase-error");
   }
@@ -213,10 +250,11 @@ window.addEventListener("hapod:reconcile-stats", async (event) => {
 window.addEventListener("hapod:restart-progress", async () => {
   const user = auth.currentUser;
   if (!user) return;
-  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null };
+  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null, weightEntries: [] };
   try {
     await setDoc(statsRef(user), { ...stats, updatedAt: serverTimestamp() });
     emit("hapod:remote-stats", { stats });
+    emit("hapod:remote-weight-entries", { entries: [] });
   } catch {
     emit("hapod:firebase-error");
   }
