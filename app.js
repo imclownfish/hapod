@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.27";
+const APP_VERSION = "0.8.28";
 
 const weeklyPlan = [
   {
@@ -398,8 +398,14 @@ const WORKOUT_PROGRAMS = {
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
 // Add a localized entry here for every release. An optional image creates a visual update card.
-const RELEASE_NOTES_VERSION = "0.8.27";
+const RELEASE_NOTES_VERSION = "0.8.28";
 const RELEASE_NOTES = [
+  {
+    ukTitle: "Журнал їжі",
+    ukBody: "Відстежуй калорії та макронутрієнти за день. Є швидкі корисні продукти і ручне додавання власних страв.",
+    enTitle: "Food log",
+    enBody: "Track daily calories and macros. Add a quick healthy staple or log your own food manually.",
+  },
   {
     ukTitle: "Відстежуй вагу",
     ukBody: "Додали приватний журнал ваги з коротким трендом. Він працює офлайн і синхронізується між пристроями після входу.",
@@ -933,6 +939,26 @@ const TEXT = {
     weightPrivacy: "Вага зберігається на цьому пристрої. Після входу вона синхронізується з твоїм акаунтом.",
     weightNoData: "Додай перше зважування, щоб побачити тренд.",
     weightTrend: "Останні записи",
+    nutritionOpen: "Журнал їжі",
+    nutritionHintEmpty: "Додай їжу, щоб побачити денний підсумок.",
+    nutritionHint: "Сьогодні: {value} kcal",
+    nutritionEyebrow: "Харчування",
+    nutritionTitle: "Журнал їжі",
+    nutritionCalories: "kcal сьогодні",
+    nutritionProtein: "білки",
+    nutritionCarbs: "вуглеводи",
+    nutritionFat: "жири",
+    quickFoods: "Швидко додати",
+    foodLogEmpty: "Ще немає записів на сьогодні.",
+    foodName: "Продукт або страва",
+    foodCalories: "kcal",
+    foodProtein: "Білки, г",
+    foodCarbs: "Вуглеводи, г",
+    foodFat: "Жири, г",
+    foodSave: "Додати їжу",
+    foodNote: "Швидкі продукти мають типові порції. Для точності перевіряй етикетку.",
+    foodPrivacy: "Записи харчування зберігаються на цьому пристрої. Після входу вони синхронізуються з твоїм акаунтом.",
+    foodRemove: "Видалити",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
@@ -1054,6 +1080,26 @@ const TEXT = {
     weightPrivacy: "Weight stays on this device. After sign-in, it syncs with your account.",
     weightNoData: "Add a first weigh-in to see your trend.",
     weightTrend: "Recent check-ins",
+    nutritionOpen: "Food log",
+    nutritionHintEmpty: "Add food to see your daily total.",
+    nutritionHint: "Today: {value} kcal",
+    nutritionEyebrow: "Nutrition",
+    nutritionTitle: "Food log",
+    nutritionCalories: "kcal today",
+    nutritionProtein: "protein",
+    nutritionCarbs: "carbs",
+    nutritionFat: "fat",
+    quickFoods: "Quick add",
+    foodLogEmpty: "No food logged today yet.",
+    foodName: "Food or meal",
+    foodCalories: "kcal",
+    foodProtein: "Protein g",
+    foodCarbs: "Carbs g",
+    foodFat: "Fat g",
+    foodSave: "Add food",
+    foodNote: "Quick foods use typical servings. Check the label for accuracy.",
+    foodPrivacy: "Food entries stay on this device. After sign-in, they sync with your account.",
+    foodRemove: "Remove",
     signOut: "Sign out",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
@@ -1149,6 +1195,36 @@ const els = {
   accountTermsLink: document.querySelector("#accountTermsLink"),
   weightOpen: document.querySelector("#weightOpen"),
   accountWeightHint: document.querySelector("#accountWeightHint"),
+  nutritionOpen: document.querySelector("#nutritionOpen"),
+  accountNutritionHint: document.querySelector("#accountNutritionHint"),
+  nutritionDialog: document.querySelector("#nutritionDialog"),
+  nutritionClose: document.querySelector("#nutritionClose"),
+  nutritionEyebrow: document.querySelector("#nutritionEyebrow"),
+  nutritionTitle: document.querySelector("#nutritionTitle"),
+  nutritionCalories: document.querySelector("#nutritionCalories"),
+  nutritionProtein: document.querySelector("#nutritionProtein"),
+  nutritionCarbs: document.querySelector("#nutritionCarbs"),
+  nutritionFat: document.querySelector("#nutritionFat"),
+  nutritionCaloriesLabel: document.querySelector("#nutritionCaloriesLabel"),
+  nutritionProteinLabel: document.querySelector("#nutritionProteinLabel"),
+  nutritionCarbsLabel: document.querySelector("#nutritionCarbsLabel"),
+  nutritionFatLabel: document.querySelector("#nutritionFatLabel"),
+  quickFoods: document.querySelector("#quickFoods"),
+  foodLog: document.querySelector("#foodLog"),
+  foodForm: document.querySelector("#foodForm"),
+  foodName: document.querySelector("#foodName"),
+  foodCalories: document.querySelector("#foodCalories"),
+  foodProtein: document.querySelector("#foodProteinInput"),
+  foodCarbs: document.querySelector("#foodCarbsInput"),
+  foodFat: document.querySelector("#foodFatInput"),
+  foodNameLabel: document.querySelector("#foodNameLabel"),
+  foodCaloriesLabel: document.querySelector("#foodCaloriesLabel"),
+  foodProteinLabel: document.querySelector("#foodProteinLabel"),
+  foodCarbsLabel: document.querySelector("#foodCarbsLabel"),
+  foodFatLabel: document.querySelector("#foodFatLabel"),
+  foodFormNote: document.querySelector("#foodFormNote"),
+  foodSave: document.querySelector("#foodSave"),
+  foodPrivacy: document.querySelector("#foodPrivacy"),
   weightDialog: document.querySelector("#weightDialog"),
   weightClose: document.querySelector("#weightClose"),
   weightEyebrow: document.querySelector("#weightEyebrow"),
@@ -1471,6 +1547,47 @@ function persistWeightEntries(entries) {
   return normalized;
 }
 
+const FOOD_STORAGE_KEY = "hapodFoodEntries";
+const QUICK_FOODS = [
+  { uk: "Яйце", en: "Egg", calories: 78, protein: 6.3, carbs: 0.6, fat: 5.3 },
+  { uk: "Вівсянка 40 г", en: "Oats 40 g", calories: 150, protein: 5, carbs: 27, fat: 3 },
+  { uk: "Куряче філе 100 г", en: "Chicken breast 100 g", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+  { uk: "Банан", en: "Banana", calories: 105, protein: 1.3, carbs: 27, fat: 0.4 },
+];
+
+function normalizeFoodEntries(entries) {
+  const byId = new Map();
+  (Array.isArray(entries) ? entries : []).forEach((entry) => {
+    const id = typeof entry?.id === "string" ? entry.id.slice(0, 80) : "";
+    const date = typeof entry?.date === "string" ? entry.date : "";
+    const name = typeof entry?.name === "string" ? entry.name.trim().slice(0, 48) : "";
+    const calories = Number(entry?.calories);
+    const protein = Math.max(0, Number(entry?.protein) || 0);
+    const carbs = Math.max(0, Number(entry?.carbs) || 0);
+    const fat = Math.max(0, Number(entry?.fat) || 0);
+    const updatedAt = Number(entry?.updatedAt) || 0;
+    if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !name || !Number.isFinite(calories) || calories < 0 || calories > 10000 || protein > 1000 || carbs > 1000 || fat > 1000) return;
+    const current = byId.get(id);
+    if (!current || updatedAt >= current.updatedAt) byId.set(id, { id, date, name, calories, protein, carbs, fat, updatedAt });
+  });
+  return [...byId.values()].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 500);
+}
+
+function getFoodEntries() {
+  try { return normalizeFoodEntries(JSON.parse(localStorage.getItem(FOOD_STORAGE_KEY) || "[]")); } catch { return []; }
+}
+
+function saveFoodEntries(entries) { localStorage.setItem(FOOD_STORAGE_KEY, JSON.stringify(normalizeFoodEntries(entries))); }
+
+function persistFoodEntries(entries) {
+  const normalized = normalizeFoodEntries(entries);
+  saveFoodEntries(normalized);
+  if (state.account && state.syncReady) sendFirebaseEvent("hapod:sync-food-entries", { entries: normalized });
+  return normalized;
+}
+
+function foodId() { return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`; }
+
 function dateRank(dateKey) {
   return typeof dateKey === "string" ? dateKey : "";
 }
@@ -1514,6 +1631,7 @@ function resetLocalProgress() {
   saveUnlockedDays();
   saveStats(EMPTY_STATS);
   saveWeightEntries([]);
+  saveFoodEntries([]);
   state.selectedDay = todayIndex();
 }
 
@@ -1759,6 +1877,81 @@ function updateAccountUI() {
   els.accountError.hidden = !state.accountError;
   els.accountError.textContent = state.accountError ? t("accountError") : "";
   renderWeightUI();
+  renderNutritionUI();
+}
+
+function renderNutritionUI() {
+  const todayEntries = getFoodEntries().filter((entry) => entry.date === localDateKey());
+  const totals = todayEntries.reduce((total, entry) => ({
+    calories: total.calories + entry.calories,
+    protein: total.protein + entry.protein,
+    carbs: total.carbs + entry.carbs,
+    fat: total.fat + entry.fat,
+  }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+  const rounded = (value) => new Intl.NumberFormat(state.language === "uk" ? "uk-UA" : "en-US", { maximumFractionDigits: 1 }).format(value);
+  setButton(els.nutritionOpen, t("nutritionOpen"), "list");
+  els.accountNutritionHint.textContent = todayEntries.length
+    ? t("nutritionHint").replace("{value}", rounded(totals.calories))
+    : t("nutritionHintEmpty");
+  els.nutritionEyebrow.textContent = t("nutritionEyebrow");
+  els.nutritionTitle.textContent = t("nutritionTitle");
+  els.nutritionCalories.textContent = rounded(totals.calories);
+  els.nutritionProtein.textContent = `${rounded(totals.protein)} g`;
+  els.nutritionCarbs.textContent = `${rounded(totals.carbs)} g`;
+  els.nutritionFat.textContent = `${rounded(totals.fat)} g`;
+  els.nutritionCaloriesLabel.textContent = t("nutritionCalories");
+  els.nutritionProteinLabel.textContent = t("nutritionProtein");
+  els.nutritionCarbsLabel.textContent = t("nutritionCarbs");
+  els.nutritionFatLabel.textContent = t("nutritionFat");
+  els.foodNameLabel.textContent = t("foodName");
+  els.foodCaloriesLabel.textContent = t("foodCalories");
+  els.foodProteinLabel.textContent = t("foodProtein");
+  els.foodCarbsLabel.textContent = t("foodCarbs");
+  els.foodFatLabel.textContent = t("foodFat");
+  els.foodFormNote.textContent = t("foodNote");
+  els.foodPrivacy.textContent = t("foodPrivacy");
+  setButton(els.foodSave, t("foodSave"), "check");
+  els.quickFoods.innerHTML = "";
+  QUICK_FOODS.forEach((food) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quick-food";
+    button.textContent = food[state.language];
+    button.addEventListener("click", () => addFood({ ...food, name: food[state.language] }));
+    els.quickFoods.append(button);
+  });
+  els.foodLog.innerHTML = "";
+  if (todayEntries.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = t("foodLogEmpty");
+    els.foodLog.append(empty);
+  } else {
+    todayEntries.slice(0, 5).forEach((entry) => {
+      const item = document.createElement("article");
+      const copy = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = entry.name;
+      const detail = document.createElement("small");
+      detail.textContent = `${rounded(entry.calories)} kcal · P ${rounded(entry.protein)} · C ${rounded(entry.carbs)} · F ${rounded(entry.fat)}`;
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.setAttribute("aria-label", `${t("foodRemove")}: ${entry.name}`);
+      remove.textContent = "×";
+      remove.addEventListener("click", () => { persistFoodEntries(getFoodEntries().filter((food) => food.id !== entry.id)); renderNutritionUI(); });
+      copy.append(title, detail);
+      item.append(copy, remove);
+      els.foodLog.append(item);
+    });
+  }
+}
+
+function addFood(food) {
+  persistFoodEntries([...getFoodEntries(), {
+    id: foodId(), date: localDateKey(), name: food.name,
+    calories: Number(food.calories), protein: Number(food.protein) || 0, carbs: Number(food.carbs) || 0, fat: Number(food.fat) || 0,
+    updatedAt: Date.now(),
+  }]);
+  renderNutritionUI();
 }
 
 function renderWeightUI() {
@@ -2298,6 +2491,34 @@ els.weightOpen.addEventListener("click", () => {
   renderWeightUI();
   showDialog(els.weightDialog);
 });
+els.nutritionOpen.addEventListener("click", () => {
+  hideDialog(els.accountDialog);
+  renderNutritionUI();
+  showDialog(els.nutritionDialog);
+});
+els.nutritionClose.addEventListener("click", () => {
+  hideDialog(els.nutritionDialog);
+  showDialog(els.accountDialog);
+});
+els.nutritionDialog.addEventListener("click", (event) => {
+  if (event.target === els.nutritionDialog) {
+    hideDialog(els.nutritionDialog);
+    showDialog(els.accountDialog);
+  }
+});
+els.foodForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = els.foodName.value.trim();
+  const calories = Number(els.foodCalories.value);
+  if (!name || !Number.isFinite(calories) || calories < 0 || calories > 10000) return;
+  addFood({
+    name, calories,
+    protein: Number(els.foodProtein.value) || 0,
+    carbs: Number(els.foodCarbs.value) || 0,
+    fat: Number(els.foodFat.value) || 0,
+  });
+  els.foodForm.reset();
+});
 els.weightClose.addEventListener("click", () => {
   hideDialog(els.weightDialog);
   showDialog(els.accountDialog);
@@ -2461,7 +2682,7 @@ window.addEventListener("hapod:auth-state", (event) => {
 });
 
 window.addEventListener("hapod:account-ready", (event) => {
-  const { user, stats, weightEntries } = event.detail;
+  const { user, stats, weightEntries, foodEntries } = event.detail;
   state.account = user;
   state.accountLoading = false;
   state.accountError = "";
@@ -2474,13 +2695,19 @@ window.addEventListener("hapod:account-ready", (event) => {
     }
   } else {
     state.syncReady = true;
-    sendFirebaseEvent("hapod:initialize-account", { stats: getStats(), weightEntries: getWeightEntries() });
+    sendFirebaseEvent("hapod:initialize-account", { stats: getStats(), weightEntries: getWeightEntries(), foodEntries: getFoodEntries() });
   }
   const localWeightEntries = getWeightEntries();
   const mergedWeightEntries = mergeWeightEntries(localWeightEntries, weightEntries);
   saveWeightEntries(mergedWeightEntries);
   if (JSON.stringify(mergedWeightEntries) !== JSON.stringify(normalizeWeightEntries(weightEntries))) {
     sendFirebaseEvent("hapod:sync-weight-entries", { entries: mergedWeightEntries });
+  }
+  const localFoodEntries = getFoodEntries();
+  const mergedFoodEntries = normalizeFoodEntries([...(foodEntries || []), ...localFoodEntries]);
+  saveFoodEntries(mergedFoodEntries);
+  if (JSON.stringify(mergedFoodEntries) !== JSON.stringify(normalizeFoodEntries(foodEntries))) {
+    sendFirebaseEvent("hapod:sync-food-entries", { entries: mergedFoodEntries });
   }
   updateHome();
 });
@@ -2493,6 +2720,11 @@ window.addEventListener("hapod:remote-stats", (event) => {
 
 window.addEventListener("hapod:remote-weight-entries", (event) => {
   saveWeightEntries(event.detail.entries);
+  updateAccountUI();
+});
+
+window.addEventListener("hapod:remote-food-entries", (event) => {
+  saveFoodEntries(event.detail.entries);
   updateAccountUI();
 });
 

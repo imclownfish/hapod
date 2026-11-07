@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.27" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.28" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.27" />
+    <link rel="stylesheet" href="styles.css?v=0.8.28" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -264,12 +264,47 @@
 
           <button class="secondary-action account-progress-open" id="weightOpen" type="button">Track weight</button>
           <p class="account-progress-hint" id="accountWeightHint"></p>
+          <button class="secondary-action account-progress-open" id="nutritionOpen" type="button">Food log</button>
+          <p class="account-progress-hint" id="accountNutritionHint"></p>
 
           <p class="account-error" id="accountError" role="alert" hidden></p>
           <div class="settings-links">
             <a class="settings-privacy" id="accountPrivacyLink" href="privacy.html">Privacy</a>
             <a class="settings-privacy" id="accountTermsLink" href="terms.html">Terms</a>
           </div>
+        </div>
+      </section>
+
+      <section class="dialog-layer" id="nutritionDialog" aria-hidden="true">
+        <div class="dialog-card nutrition-card" role="dialog" aria-modal="true" aria-labelledby="nutritionTitle">
+          <div class="section-heading compact-heading">
+            <button class="icon-button" id="nutritionClose" type="button" aria-label="Close food log">&larr;</button>
+            <div>
+              <p class="eyebrow" id="nutritionEyebrow">Nutrition</p>
+              <h2 id="nutritionTitle">Food log</h2>
+            </div>
+          </div>
+          <div class="nutrition-summary" aria-live="polite">
+            <article><strong id="nutritionCalories">0</strong><span id="nutritionCaloriesLabel">kcal today</span></article>
+            <article><strong id="nutritionProtein">0 g</strong><span id="nutritionProteinLabel">protein</span></article>
+            <article><strong id="nutritionCarbs">0 g</strong><span id="nutritionCarbsLabel">carbs</span></article>
+            <article><strong id="nutritionFat">0 g</strong><span id="nutritionFatLabel">fat</span></article>
+          </div>
+          <div class="quick-foods" id="quickFoods" aria-label="Quick foods"></div>
+          <div class="food-log" id="foodLog" aria-live="polite"></div>
+          <form class="food-form" id="foodForm">
+            <label for="foodName" id="foodNameLabel">Food</label>
+            <input id="foodName" type="text" maxlength="48" autocomplete="off" required />
+            <div class="food-macros">
+              <label><span id="foodCaloriesLabel">kcal</span><input id="foodCalories" type="number" min="0" max="10000" step="1" inputmode="decimal" required /></label>
+              <label><span id="foodProteinLabel">Protein g</span><input id="foodProteinInput" type="number" min="0" max="1000" step="0.1" inputmode="decimal" /></label>
+              <label><span id="foodCarbsLabel">Carbs g</span><input id="foodCarbsInput" type="number" min="0" max="1000" step="0.1" inputmode="decimal" /></label>
+              <label><span id="foodFatLabel">Fat g</span><input id="foodFatInput" type="number" min="0" max="1000" step="0.1" inputmode="decimal" /></label>
+            </div>
+            <p class="food-form-note" id="foodFormNote"></p>
+            <button class="primary-action" id="foodSave" type="submit">Add food</button>
+          </form>
+          <p class="food-privacy" id="foodPrivacy"></p>
         </div>
       </section>
 
@@ -349,7 +384,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.27"></script>
-    <script type="module" src="firebase.js?v=0.8.27"></script>
+    <script src="app.js?v=0.8.28"></script>
+    <script type="module" src="firebase.js?v=0.8.28"></script>
   </body>
 </html>

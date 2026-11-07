@@ -73,6 +73,28 @@ function weightEntriesFromSnapshot(snapshot) {
   return snapshot.exists() ? normalizeWeightEntries(snapshot.data().weightEntries) : [];
 }
 
+function normalizeFoodEntries(entries) {
+  const byId = new Map();
+  (Array.isArray(entries) ? entries : []).forEach((entry) => {
+    const id = typeof entry?.id === "string" ? entry.id.slice(0, 80) : "";
+    const date = typeof entry?.date === "string" ? entry.date : "";
+    const name = typeof entry?.name === "string" ? entry.name.trim().slice(0, 48) : "";
+    const calories = Number(entry?.calories);
+    const protein = Math.max(0, Number(entry?.protein) || 0);
+    const carbs = Math.max(0, Number(entry?.carbs) || 0);
+    const fat = Math.max(0, Number(entry?.fat) || 0);
+    const updatedAt = Number(entry?.updatedAt) || 0;
+    if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !name || !Number.isFinite(calories) || calories < 0 || calories > 10000 || protein > 1000 || carbs > 1000 || fat > 1000) return;
+    const current = byId.get(id);
+    if (!current || updatedAt >= current.updatedAt) byId.set(id, { id, date, name, calories, protein, carbs, fat, updatedAt });
+  });
+  return [...byId.values()].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 500);
+}
+
+function foodEntriesFromSnapshot(snapshot) {
+  return snapshot.exists() ? normalizeFoodEntries(snapshot.data().foodEntries) : [];
+}
+
 function statsRef(user) {
   return doc(db, "users", user.uid);
 }
@@ -97,6 +119,7 @@ onAuthStateChanged(auth, async (user) => {
       user: profile,
       stats: statsFromSnapshot(snapshot),
       weightEntries: weightEntriesFromSnapshot(snapshot),
+      foodEntries: foodEntriesFromSnapshot(snapshot),
     });
   } catch {
     emit("hapod:firebase-error");
@@ -124,6 +147,7 @@ window.addEventListener("hapod:initialize-account", async (event) => {
   if (!user) return;
   const stats = event.detail.stats;
   const weightEntries = normalizeWeightEntries(event.detail.weightEntries);
+  const foodEntries = normalizeFoodEntries(event.detail.foodEntries);
   try {
     await setDoc(statsRef(user), {
       completed: stats.completed,
@@ -132,6 +156,7 @@ window.addEventListener("hapod:initialize-account", async (event) => {
       bestStreak: stats.bestStreak,
       bestStreakDate: stats.bestStreakDate,
       weightEntries,
+      foodEntries,
       updatedAt: serverTimestamp(),
     });
     emit("hapod:remote-stats", { stats });
@@ -147,6 +172,18 @@ window.addEventListener("hapod:sync-weight-entries", async (event) => {
   try {
     await setDoc(statsRef(user), { weightEntries: entries, updatedAt: serverTimestamp() }, { merge: true });
     emit("hapod:remote-weight-entries", { entries });
+  } catch {
+    emit("hapod:firebase-error");
+  }
+});
+
+window.addEventListener("hapod:sync-food-entries", async (event) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const entries = normalizeFoodEntries(event.detail.entries);
+  try {
+    await setDoc(statsRef(user), { foodEntries: entries, updatedAt: serverTimestamp() }, { merge: true });
+    emit("hapod:remote-food-entries", { entries });
   } catch {
     emit("hapod:firebase-error");
   }
@@ -250,11 +287,12 @@ window.addEventListener("hapod:reconcile-stats", async (event) => {
 window.addEventListener("hapod:restart-progress", async () => {
   const user = auth.currentUser;
   if (!user) return;
-  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null, weightEntries: [] };
+  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null, weightEntries: [], foodEntries: [] };
   try {
     await setDoc(statsRef(user), { ...stats, updatedAt: serverTimestamp() });
     emit("hapod:remote-stats", { stats });
     emit("hapod:remote-weight-entries", { entries: [] });
+    emit("hapod:remote-food-entries", { entries: [] });
   } catch {
     emit("hapod:firebase-error");
   }
