@@ -1303,6 +1303,9 @@ html[lang="uk"] .legal-nav .legal-uk {
 }
 
 .nutrition-card { width: min(560px, 100%); }
+.nutrition-title-row { display: flex; align-items: center; gap: 8px; }
+.nutrition-title-row h2 { margin-bottom: 0; }
+.experimental-badge { display: inline-flex; align-items: center; min-height: 22px; padding: 3px 7px; color: var(--gold); border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--gold) 10%, transparent); font-size: 0.62rem; font-weight: 850; line-height: 1; text-transform: uppercase; white-space: nowrap; }
 
 .nutrition-summary {
   display: grid;

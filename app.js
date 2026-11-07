@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.28";
+const APP_VERSION = "0.8.29";
 
 const weeklyPlan = [
   {
@@ -398,8 +398,14 @@ const WORKOUT_PROGRAMS = {
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
 // Add a localized entry here for every release. An optional image creates a visual update card.
-const RELEASE_NOTES_VERSION = "0.8.28";
+const RELEASE_NOTES_VERSION = "0.8.29";
 const RELEASE_NOTES = [
+  {
+    ukTitle: "Експериментальний журнал їжі",
+    ukBody: "Додали позначку, щоб було зрозуміло: значення їжі та майбутні оцінки з фото можуть бути лише приблизними.",
+    enTitle: "Experimental food log",
+    enBody: "A new label makes it clear that food values and future photo estimates can only be approximate.",
+  },
   {
     ukTitle: "Журнал їжі",
     ukBody: "Відстежуй калорії та макронутрієнти за день. Є швидкі корисні продукти і ручне додавання власних страв.",
@@ -944,6 +950,7 @@ const TEXT = {
     nutritionHint: "Сьогодні: {value} kcal",
     nutritionEyebrow: "Харчування",
     nutritionTitle: "Журнал їжі",
+    experimental: "Експеримент",
     nutritionCalories: "kcal сьогодні",
     nutritionProtein: "білки",
     nutritionCarbs: "вуглеводи",
@@ -957,7 +964,7 @@ const TEXT = {
     foodFat: "Жири, г",
     foodSave: "Додати їжу",
     foodNote: "Швидкі продукти мають типові порції. Для точності перевіряй етикетку.",
-    foodPrivacy: "Записи харчування зберігаються на цьому пристрої. Після входу вони синхронізуються з твоїм акаунтом.",
+    foodPrivacy: "Експеримент: записи та майбутні оцінки з фото можуть бути неточними. Записи харчування зберігаються на цьому пристрої, а після входу синхронізуються з твоїм акаунтом.",
     foodRemove: "Видалити",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
@@ -1085,6 +1092,7 @@ const TEXT = {
     nutritionHint: "Today: {value} kcal",
     nutritionEyebrow: "Nutrition",
     nutritionTitle: "Food log",
+    experimental: "Experimental",
     nutritionCalories: "kcal today",
     nutritionProtein: "protein",
     nutritionCarbs: "carbs",
@@ -1098,7 +1106,7 @@ const TEXT = {
     foodFat: "Fat g",
     foodSave: "Add food",
     foodNote: "Quick foods use typical servings. Check the label for accuracy.",
-    foodPrivacy: "Food entries stay on this device. After sign-in, they sync with your account.",
+    foodPrivacy: "Experimental: food entries and future photo estimates may be inaccurate. Entries stay on this device and sync with your account after sign-in.",
     foodRemove: "Remove",
     signOut: "Sign out",
     restartEyebrow: "Progress",
@@ -1201,6 +1209,7 @@ const els = {
   nutritionClose: document.querySelector("#nutritionClose"),
   nutritionEyebrow: document.querySelector("#nutritionEyebrow"),
   nutritionTitle: document.querySelector("#nutritionTitle"),
+  nutritionExperimental: document.querySelector("#nutritionExperimental"),
   nutritionCalories: document.querySelector("#nutritionCalories"),
   nutritionProtein: document.querySelector("#nutritionProtein"),
   nutritionCarbs: document.querySelector("#nutritionCarbs"),
@@ -1895,6 +1904,7 @@ function renderNutritionUI() {
     : t("nutritionHintEmpty");
   els.nutritionEyebrow.textContent = t("nutritionEyebrow");
   els.nutritionTitle.textContent = t("nutritionTitle");
+  els.nutritionExperimental.textContent = t("experimental");
   els.nutritionCalories.textContent = rounded(totals.calories);
   els.nutritionProtein.textContent = `${rounded(totals.protein)} g`;
   els.nutritionCarbs.textContent = `${rounded(totals.carbs)} g`;
