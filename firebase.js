@@ -95,6 +95,23 @@ function foodEntriesFromSnapshot(snapshot) {
   return snapshot.exists() ? normalizeFoodEntries(snapshot.data().foodEntries) : [];
 }
 
+function normalizeRecipes(recipes) {
+  const byId = new Map();
+  (Array.isArray(recipes) ? recipes : []).forEach((recipe) => {
+    const id = typeof recipe?.id === "string" ? recipe.id.slice(0, 80) : "";
+    const name = typeof recipe?.name === "string" ? recipe.name.trim().slice(0, 48) : "";
+    const servings = Number(recipe?.servings);
+    const updatedAt = Number(recipe?.updatedAt) || 0;
+    const ingredients = normalizeFoodEntries((recipe?.ingredients || []).map((entry, index) => ({ ...entry, id: entry.id || `${id}-${index}`, date: "2000-01-01" })));
+    if (!id || !name || !Number.isFinite(servings) || servings < 1 || servings > 100 || ingredients.length === 0) return;
+    const current = byId.get(id);
+    if (!current || updatedAt >= current.updatedAt) byId.set(id, { id, name, servings, ingredients, updatedAt });
+  });
+  return [...byId.values()].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 50);
+}
+
+function recipesFromSnapshot(snapshot) { return snapshot.exists() ? normalizeRecipes(snapshot.data().recipes) : []; }
+
 function statsRef(user) {
   return doc(db, "users", user.uid);
 }
@@ -120,6 +137,7 @@ onAuthStateChanged(auth, async (user) => {
       stats: statsFromSnapshot(snapshot),
       weightEntries: weightEntriesFromSnapshot(snapshot),
       foodEntries: foodEntriesFromSnapshot(snapshot),
+      recipes: recipesFromSnapshot(snapshot),
     });
   } catch {
     emit("hapod:firebase-error");
@@ -148,6 +166,7 @@ window.addEventListener("hapod:initialize-account", async (event) => {
   const stats = event.detail.stats;
   const weightEntries = normalizeWeightEntries(event.detail.weightEntries);
   const foodEntries = normalizeFoodEntries(event.detail.foodEntries);
+  const recipes = normalizeRecipes(event.detail.recipes);
   try {
     await setDoc(statsRef(user), {
       completed: stats.completed,
@@ -157,6 +176,7 @@ window.addEventListener("hapod:initialize-account", async (event) => {
       bestStreakDate: stats.bestStreakDate,
       weightEntries,
       foodEntries,
+      recipes,
       updatedAt: serverTimestamp(),
     });
     emit("hapod:remote-stats", { stats });
@@ -184,6 +204,18 @@ window.addEventListener("hapod:sync-food-entries", async (event) => {
   try {
     await setDoc(statsRef(user), { foodEntries: entries, updatedAt: serverTimestamp() }, { merge: true });
     emit("hapod:remote-food-entries", { entries });
+  } catch {
+    emit("hapod:firebase-error");
+  }
+});
+
+window.addEventListener("hapod:sync-recipes", async (event) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  const recipes = normalizeRecipes(event.detail.recipes);
+  try {
+    await setDoc(statsRef(user), { recipes, updatedAt: serverTimestamp() }, { merge: true });
+    emit("hapod:remote-recipes", { recipes });
   } catch {
     emit("hapod:firebase-error");
   }
@@ -287,12 +319,13 @@ window.addEventListener("hapod:reconcile-stats", async (event) => {
 window.addEventListener("hapod:restart-progress", async () => {
   const user = auth.currentUser;
   if (!user) return;
-  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null, weightEntries: [], foodEntries: [] };
+  const stats = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null, weightEntries: [], foodEntries: [], recipes: [] };
   try {
     await setDoc(statsRef(user), { ...stats, updatedAt: serverTimestamp() });
     emit("hapod:remote-stats", { stats });
     emit("hapod:remote-weight-entries", { entries: [] });
     emit("hapod:remote-food-entries", { entries: [] });
+    emit("hapod:remote-recipes", { recipes: [] });
   } catch {
     emit("hapod:firebase-error");
   }

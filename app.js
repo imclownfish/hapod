@@ -1,4 +1,4 @@
-const APP_VERSION = "0.8.29";
+const APP_VERSION = "0.8.30";
 
 const weeklyPlan = [
   {
@@ -398,8 +398,14 @@ const WORKOUT_PROGRAMS = {
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const PREP_SECONDS = 20;
 // Add a localized entry here for every release. An optional image creates a visual update card.
-const RELEASE_NOTES_VERSION = "0.8.29";
+const RELEASE_NOTES_VERSION = "0.8.30";
 const RELEASE_NOTES = [
+  {
+    ukTitle: "Рецепти та чесніші серії",
+    ukBody: "Зберігай домашні рецепти з інгредієнтами та порціями. Заплановані дні відпочинку тепер додаються до серії автоматично.",
+    enTitle: "Recipes and fairer streaks",
+    enBody: "Save homemade recipes with ingredients and servings. Scheduled rest days now count toward your streak automatically.",
+  },
   {
     ukTitle: "Експериментальний журнал їжі",
     ukBody: "Додали позначку, щоб було зрозуміло: значення їжі та майбутні оцінки з фото можуть бути лише приблизними.",
@@ -864,6 +870,7 @@ const TEXT = {
     sessions: "сесій",
     start: "Почати",
     markDay: "Відмітити день",
+    restCounted: "День відпочинку враховано",
     plan: "План",
     week: "Тиждень",
     todayAuto: "Сьогоднішній день обрано автоматично",
@@ -966,6 +973,14 @@ const TEXT = {
     foodNote: "Швидкі продукти мають типові порції. Для точності перевіряй етикетку.",
     foodPrivacy: "Експеримент: записи та майбутні оцінки з фото можуть бути неточними. Записи харчування зберігаються на цьому пристрої, а після входу синхронізуються з твоїм акаунтом.",
     foodRemove: "Видалити",
+    recipeOpen: "Створити рецепт",
+    recipeTitle: "Домашній рецепт",
+    recipeName: "Назва рецепта",
+    recipeServings: "Порцій",
+    recipeIngredient: "Інгредієнт",
+    recipeAddIngredient: "Додати інгредієнт",
+    recipeSave: "Зберегти рецепт",
+    recipeRemove: "Видалити",
     signOut: "Вийти",
     restartEyebrow: "Прогрес",
     restartTitle: "Почати прогрес заново?",
@@ -1006,6 +1021,7 @@ const TEXT = {
     sessions: "sessions",
     start: "Start",
     markDay: "Mark day",
+    restCounted: "Rest day counted",
     plan: "Plan",
     week: "Week",
     todayAuto: "Today is selected automatically",
@@ -1108,6 +1124,14 @@ const TEXT = {
     foodNote: "Quick foods use typical servings. Check the label for accuracy.",
     foodPrivacy: "Experimental: food entries and future photo estimates may be inaccurate. Entries stay on this device and sync with your account after sign-in.",
     foodRemove: "Remove",
+    recipeOpen: "Create recipe",
+    recipeTitle: "Homemade recipe",
+    recipeName: "Recipe name",
+    recipeServings: "Servings",
+    recipeIngredient: "Ingredient",
+    recipeAddIngredient: "Add ingredient",
+    recipeSave: "Save recipe",
+    recipeRemove: "Remove",
     signOut: "Sign out",
     restartEyebrow: "Progress",
     restartTitle: "Restart your progress?",
@@ -1234,6 +1258,17 @@ const els = {
   foodFormNote: document.querySelector("#foodFormNote"),
   foodSave: document.querySelector("#foodSave"),
   foodPrivacy: document.querySelector("#foodPrivacy"),
+  recipeToggle: document.querySelector("#recipeToggle"),
+  recipeBuilder: document.querySelector("#recipeBuilder"),
+  recipeTitle: document.querySelector("#recipeTitle"),
+  recipeClose: document.querySelector("#recipeClose"),
+  recipeName: document.querySelector("#recipeName"),
+  recipeNameLabel: document.querySelector("#recipeNameLabel"),
+  recipeServings: document.querySelector("#recipeServings"),
+  recipeServingsLabel: document.querySelector("#recipeServingsLabel"),
+  recipeIngredients: document.querySelector("#recipeIngredients"),
+  recipeAddIngredient: document.querySelector("#recipeAddIngredient"),
+  recipeSave: document.querySelector("#recipeSave"),
   weightDialog: document.querySelector("#weightDialog"),
   weightClose: document.querySelector("#weightClose"),
   weightEyebrow: document.querySelector("#weightEyebrow"),
@@ -1424,11 +1459,46 @@ function routine() {
 
 const EMPTY_STATS = { completed: 0, streak: 0, lastCompletedDate: null, bestStreak: 0, bestStreakDate: null };
 
-function hasActiveStreak(lastCompletedDate) {
-  if (!lastCompletedDate) return false;
+function dateFromKey(dateKey) {
+  return new Date(`${dateKey}T12:00:00`);
+}
+
+function nextDateKey(dateKey) {
+  const date = dateFromKey(dateKey);
+  date.setDate(date.getDate() + 1);
+  return localDateKey(date);
+}
+
+function reconcileScheduledRestDays(stats) {
+  const today = localDateKey();
+  if (!stats.lastCompletedDate) {
+    if (activeWeek()[new Date().getDay()]?.restDay) {
+      return { ...stats, completed: 1, streak: 1, lastCompletedDate: today, bestStreak: Math.max(stats.bestStreak, 1), bestStreakDate: stats.bestStreakDate || today };
+    }
+    return stats;
+  }
+
+  let nextDate = nextDateKey(stats.lastCompletedDate);
+  let updated = { ...stats };
+  while (nextDate <= today) {
+    const date = dateFromKey(nextDate);
+    if (!activeWeek()[date.getDay()]?.restDay) break;
+    updated.completed += 1;
+    updated.streak += 1;
+    updated.lastCompletedDate = nextDate;
+    if (updated.streak > updated.bestStreak) {
+      updated.bestStreak = updated.streak;
+      updated.bestStreakDate = nextDate;
+    }
+    nextDate = nextDateKey(nextDate);
+  }
+
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  return lastCompletedDate === localDateKey() || lastCompletedDate === localDateKey(yesterday);
+  if (updated.lastCompletedDate !== today && updated.lastCompletedDate !== localDateKey(yesterday)) {
+    updated.streak = 0;
+  }
+  return updated;
 }
 
 function normalizeStats(stats) {
@@ -1449,10 +1519,7 @@ function normalizeStats(stats) {
           : lastCompletedDate,
   };
 
-  if (normalized.streak > 0 && !hasActiveStreak(normalized.lastCompletedDate)) {
-    normalized.streak = 0;
-  }
-  return normalized;
+  return reconcileScheduledRestDays(normalized);
 }
 
 function getStats() {
@@ -1465,7 +1532,9 @@ function getStats() {
   const rawStats = stored && typeof stored === "object" ? stored : EMPTY_STATS;
   const stats = normalizeStats(rawStats);
   if (
+    stats.completed !== rawStats.completed ||
     stats.streak !== rawStats.streak ||
+    stats.lastCompletedDate !== rawStats.lastCompletedDate ||
     stats.bestStreak !== rawStats.bestStreak ||
     stats.bestStreakDate !== rawStats.bestStreakDate
   ) {
@@ -1597,6 +1666,46 @@ function persistFoodEntries(entries) {
 
 function foodId() { return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`; }
 
+const RECIPE_STORAGE_KEY = "hapodRecipes";
+
+function normalizeRecipes(recipes) {
+  const byId = new Map();
+  (Array.isArray(recipes) ? recipes : []).forEach((recipe) => {
+    const id = typeof recipe?.id === "string" ? recipe.id.slice(0, 80) : "";
+    const name = typeof recipe?.name === "string" ? recipe.name.trim().slice(0, 48) : "";
+    const servings = Number(recipe?.servings);
+    const updatedAt = Number(recipe?.updatedAt) || 0;
+    const ingredients = normalizeFoodEntries((recipe?.ingredients || []).map((entry, index) => ({ ...entry, id: entry.id || `${id}-${index}`, date: "2000-01-01" })));
+    if (!id || !name || !Number.isFinite(servings) || servings < 1 || servings > 100 || ingredients.length === 0) return;
+    const current = byId.get(id);
+    if (!current || updatedAt >= current.updatedAt) byId.set(id, { id, name, servings, ingredients, updatedAt });
+  });
+  return [...byId.values()].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 50);
+}
+
+function getRecipes() {
+  try { return normalizeRecipes(JSON.parse(localStorage.getItem(RECIPE_STORAGE_KEY) || "[]")); } catch { return []; }
+}
+
+function saveRecipes(recipes) { localStorage.setItem(RECIPE_STORAGE_KEY, JSON.stringify(normalizeRecipes(recipes))); }
+
+function persistRecipes(recipes) {
+  const normalized = normalizeRecipes(recipes);
+  saveRecipes(normalized);
+  if (state.account && state.syncReady) sendFirebaseEvent("hapod:sync-recipes", { recipes: normalized });
+  return normalized;
+}
+
+function recipeNutrition(recipe) {
+  const total = recipe.ingredients.reduce((sum, entry) => ({
+    calories: sum.calories + entry.calories,
+    protein: sum.protein + entry.protein,
+    carbs: sum.carbs + entry.carbs,
+    fat: sum.fat + entry.fat,
+  }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+  return Object.fromEntries(Object.entries(total).map(([key, value]) => [key, value / recipe.servings]));
+}
+
 function dateRank(dateKey) {
   return typeof dateKey === "string" ? dateKey : "";
 }
@@ -1641,6 +1750,7 @@ function resetLocalProgress() {
   saveStats(EMPTY_STATS);
   saveWeightEntries([]);
   saveFoodEntries([]);
+  saveRecipes([]);
   state.selectedDay = todayIndex();
 }
 
@@ -1802,7 +1912,13 @@ function updateHome() {
       : t("lockedDay")
     : "";
   els.daySectionCopy.classList.toggle("has-status", hasDayStatus);
-  setButton(els.startWorkout, plan.restDay ? t("markDay") : t("start"), plan.restDay ? "check" : "play");
+  const restDayCounted = plan.restDay && isSelectedToday() && stats.lastCompletedDate === localDateKey();
+  setButton(
+    els.startWorkout,
+    plan.restDay ? (restDayCounted ? t("restCounted") : t("markDay")) : t("start"),
+    plan.restDay ? "check" : "play"
+  );
+  els.startWorkout.disabled = restDayCounted;
   setButton(els.viewPlan, t("homeTitle"), "list");
   setButton(els.cancelWorkout, t("cancel"), "cancel");
   document.querySelector("#infoTitle").textContent = t("details");
@@ -1930,6 +2046,21 @@ function renderNutritionUI() {
     button.addEventListener("click", () => addFood({ ...food, name: food[state.language] }));
     els.quickFoods.append(button);
   });
+  getRecipes().forEach((recipe) => {
+    const nutrition = recipeNutrition(recipe);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quick-food is-recipe";
+    button.textContent = recipe.name;
+    button.addEventListener("click", () => addFood({ ...nutrition, name: recipe.name }));
+    els.quickFoods.append(button);
+  });
+  els.recipeTitle.textContent = t("recipeTitle");
+  els.recipeNameLabel.textContent = t("recipeName");
+  els.recipeServingsLabel.textContent = t("recipeServings");
+  setButton(els.recipeToggle, t("recipeOpen"), "list");
+  setButton(els.recipeAddIngredient, t("recipeAddIngredient"), "play");
+  setButton(els.recipeSave, t("recipeSave"), "check");
   els.foodLog.innerHTML = "";
   if (todayEntries.length === 0) {
     const empty = document.createElement("p");
@@ -1962,6 +2093,21 @@ function addFood(food) {
     updatedAt: Date.now(),
   }]);
   renderNutritionUI();
+}
+
+function addRecipeIngredient(values = {}) {
+  const row = document.createElement("div");
+  row.className = "recipe-ingredient";
+  row.innerHTML = `<input class="recipe-ingredient-name" type="text" maxlength="40" placeholder="${t("recipeIngredient")}" value="${values.name || ""}"><input class="recipe-ingredient-calories" type="number" min="0" max="10000" step="1" placeholder="kcal" value="${values.calories ?? ""}"><input class="recipe-ingredient-protein" type="number" min="0" max="1000" step="0.1" placeholder="P" value="${values.protein ?? ""}"><input class="recipe-ingredient-carbs" type="number" min="0" max="1000" step="0.1" placeholder="C" value="${values.carbs ?? ""}"><input class="recipe-ingredient-fat" type="number" min="0" max="1000" step="0.1" placeholder="F" value="${values.fat ?? ""}"><button type="button" aria-label="${t("recipeRemove")}">&times;</button>`;
+  row.querySelector("button").addEventListener("click", () => row.remove());
+  els.recipeIngredients.append(row);
+}
+
+function resetRecipeBuilder() {
+  els.recipeName.value = "";
+  els.recipeServings.value = "1";
+  els.recipeIngredients.innerHTML = "";
+  addRecipeIngredient();
 }
 
 function renderWeightUI() {
@@ -2529,6 +2675,30 @@ els.foodForm.addEventListener("submit", (event) => {
   });
   els.foodForm.reset();
 });
+els.recipeToggle.addEventListener("click", () => {
+  const opening = els.recipeBuilder.hidden;
+  els.recipeBuilder.hidden = !opening;
+  if (opening && els.recipeIngredients.children.length === 0) resetRecipeBuilder();
+});
+els.recipeClose.addEventListener("click", () => { els.recipeBuilder.hidden = true; });
+els.recipeAddIngredient.addEventListener("click", () => addRecipeIngredient());
+els.recipeSave.addEventListener("click", () => {
+  const name = els.recipeName.value.trim();
+  const servings = Number(els.recipeServings.value);
+  const ingredients = [...els.recipeIngredients.children].map((row) => ({
+    id: foodId(), date: "2000-01-01", name: row.querySelector(".recipe-ingredient-name").value.trim(),
+    calories: Number(row.querySelector(".recipe-ingredient-calories").value),
+    protein: Number(row.querySelector(".recipe-ingredient-protein").value) || 0,
+    carbs: Number(row.querySelector(".recipe-ingredient-carbs").value) || 0,
+    fat: Number(row.querySelector(".recipe-ingredient-fat").value) || 0,
+    updatedAt: Date.now(),
+  })).filter((ingredient) => ingredient.name && Number.isFinite(ingredient.calories));
+  if (!name || !Number.isFinite(servings) || servings < 1 || ingredients.length === 0) return;
+  persistRecipes([...getRecipes(), { id: foodId(), name, servings, ingredients, updatedAt: Date.now() }]);
+  els.recipeBuilder.hidden = true;
+  resetRecipeBuilder();
+  renderNutritionUI();
+});
 els.weightClose.addEventListener("click", () => {
   hideDialog(els.weightDialog);
   showDialog(els.accountDialog);
@@ -2692,7 +2862,7 @@ window.addEventListener("hapod:auth-state", (event) => {
 });
 
 window.addEventListener("hapod:account-ready", (event) => {
-  const { user, stats, weightEntries, foodEntries } = event.detail;
+  const { user, stats, weightEntries, foodEntries, recipes } = event.detail;
   state.account = user;
   state.accountLoading = false;
   state.accountError = "";
@@ -2705,7 +2875,7 @@ window.addEventListener("hapod:account-ready", (event) => {
     }
   } else {
     state.syncReady = true;
-    sendFirebaseEvent("hapod:initialize-account", { stats: getStats(), weightEntries: getWeightEntries(), foodEntries: getFoodEntries() });
+    sendFirebaseEvent("hapod:initialize-account", { stats: getStats(), weightEntries: getWeightEntries(), foodEntries: getFoodEntries(), recipes: getRecipes() });
   }
   const localWeightEntries = getWeightEntries();
   const mergedWeightEntries = mergeWeightEntries(localWeightEntries, weightEntries);
@@ -2718,6 +2888,11 @@ window.addEventListener("hapod:account-ready", (event) => {
   saveFoodEntries(mergedFoodEntries);
   if (JSON.stringify(mergedFoodEntries) !== JSON.stringify(normalizeFoodEntries(foodEntries))) {
     sendFirebaseEvent("hapod:sync-food-entries", { entries: mergedFoodEntries });
+  }
+  const mergedRecipes = normalizeRecipes([...(recipes || []), ...getRecipes()]);
+  saveRecipes(mergedRecipes);
+  if (JSON.stringify(mergedRecipes) !== JSON.stringify(normalizeRecipes(recipes))) {
+    sendFirebaseEvent("hapod:sync-recipes", { recipes: mergedRecipes });
   }
   updateHome();
 });
@@ -2735,6 +2910,11 @@ window.addEventListener("hapod:remote-weight-entries", (event) => {
 
 window.addEventListener("hapod:remote-food-entries", (event) => {
   saveFoodEntries(event.detail.entries);
+  updateAccountUI();
+});
+
+window.addEventListener("hapod:remote-recipes", (event) => {
+  saveRecipes(event.detail.recipes);
   updateAccountUI();
 });
 

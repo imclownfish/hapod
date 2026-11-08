@@ -11,10 +11,10 @@
       name="description"
       content="HAPOD - a focused daily workout companion."
     />
-    <link rel="manifest" href="manifest.webmanifest?v=0.8.29" />
+    <link rel="manifest" href="manifest.webmanifest?v=0.8.30" />
     <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=0.8.29" />
+    <link rel="stylesheet" href="styles.css?v=0.8.30" />
     <title>HAPOD</title>
   </head>
   <body>
@@ -291,6 +291,13 @@
             <article><strong id="nutritionFat">0 g</strong><span id="nutritionFatLabel">fat</span></article>
           </div>
           <div class="quick-foods" id="quickFoods" aria-label="Quick foods"></div>
+          <button class="secondary-action recipe-toggle" id="recipeToggle" type="button">Create recipe</button>
+          <section class="recipe-builder" id="recipeBuilder" hidden>
+            <div class="recipe-builder-head"><strong id="recipeTitle">Homemade recipe</strong><button id="recipeClose" type="button" aria-label="Close recipe builder">&times;</button></div>
+            <div class="recipe-basics"><label><span id="recipeNameLabel">Recipe name</span><input id="recipeName" type="text" maxlength="48" autocomplete="off" /></label><label><span id="recipeServingsLabel">Servings</span><input id="recipeServings" type="number" min="1" max="100" step="1" value="1" inputmode="numeric" /></label></div>
+            <div class="recipe-ingredients" id="recipeIngredients"></div>
+            <div class="recipe-actions"><button class="secondary-action" id="recipeAddIngredient" type="button">Add ingredient</button><button class="primary-action" id="recipeSave" type="button">Save recipe</button></div>
+          </section>
           <div class="food-log" id="foodLog" aria-live="polite"></div>
           <form class="food-form" id="foodForm">
             <label for="foodName" id="foodNameLabel">Food</label>
@@ -384,7 +391,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=0.8.29"></script>
-    <script type="module" src="firebase.js?v=0.8.29"></script>
+    <script src="app.js?v=0.8.30"></script>
+    <script type="module" src="firebase.js?v=0.8.30"></script>
   </body>
 </html>
